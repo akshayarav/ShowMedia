@@ -1,10 +1,10 @@
 import './index.css'
-import Sidebar from "./Sidebar/sidebar";
+import Shows from "./Shows/shows";
 
 function App() {
     return (
       <div className = "container"> 
-        <Sidebar />
+        <Shows />
       </div>
     );
   }
