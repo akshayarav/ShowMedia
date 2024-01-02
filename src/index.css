@@ -1,11 +1,4 @@
 /*
-Template Name: Vogel - Social Network & Community HTML Template
-Author: Askbootstrap
-Author URI: https://themeforest.net/user/askbootstrap
-Version: 1.2
-*/
-
-/*
 -- Fonts
 -- Body
 -- FAQ
@@ -19,6 +12,11 @@ Version: 1.2
 -- Media
 -- Dark
 */
+
+.show-card-image {
+  width: 180px;  /* Adjust width as needed */
+  height: auto !important;  /* This keeps the aspect ratio intact */
+}
 
 /* Body */
 body {
@@ -196,6 +194,7 @@ body {
 .fix-sidebar {
     position: sticky;
     top: 20px;
+    padding-bottom: 20px;
 }
 .sticky-sidebar2 {
     position: sticky;
