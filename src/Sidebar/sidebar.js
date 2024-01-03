@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './sidebar.css'; 
+import './sidebar.css';
 import SignModal from './SignModal';
 import { Link } from 'react-router-dom';
 
@@ -12,16 +12,16 @@ function Sidebar() {
       <div className="ps-0 m-none fix-sidebar">
         <div className="sidebar-nav mb-3">
           <div class="pb-4 mb-4">
-              <a href="index.html" class="text-decoration-none">
-              <img src="logo.png" class="img-fluid logo" alt="brand-logo"/>
-              </a>
+            <a href="index.html" class="text-decoration-none">
+              <img src="logo.png" class="img-fluid logo" alt="brand-logo" />
+            </a>
           </div>
           <ul className="navbar-nav justify-content-end flex-grow-1">
             <li className="nav-item">
               <Link to="/feed" className="nav-link"> <span class="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
             <li className="nav-item">
-            <Link to="/profile" className="nav-link"> <span class="material-icons me-3">account_circle</span> <span>Profile</span></Link>
+              <Link to="/profile" className="nav-link"> <span class="material-icons me-3">account_circle</span> <span>Profile</span></Link>
             </li>
             <li className="nav-item">
               <Link to="/shows" className="nav-link"> <span class="material-icons me-3">explore</span> <span>Shows</span></Link>

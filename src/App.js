@@ -11,8 +11,8 @@ function App() {
         <Routes>
           <Route path="/feed" element={<Feed />} />
           <Route path="/shows" element={<Shows />} />
-          <Route path="/profile" element={<Profile />} /> 
-          <Route path="/" element={<Sidebar />} /> 
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<Sidebar />} />
         </Routes>
       </div>
     </Router>
