@@ -1,10 +1,10 @@
 import Sidebar from "../Sidebar/sidebar"
 
-function Profile () {
+function Profile() {
     return (
-        <div>
+        <body class="bg-light">
             <Sidebar />
-        </div>
+        </body>
     )
 }
 export default Profile
