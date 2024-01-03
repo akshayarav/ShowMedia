@@ -5,13 +5,18 @@ import ShowCard from "./ShowCard/ShowCard";
 
 function Shows() {
     const [shows, setShows] = useState([]);
+    const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
+
+    const apiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=1`;
 
     useEffect(() => {
-        // Replace 'API_ENDPOINT' with the actual endpoint you want to hit
-        Axios.get('API_ENDPOINT')
+        Axios.get(apiUrl)
             .then(response => {
-                const fetchedShows = response.data.map(show => {
-                    return { name: show.title, image: show.poster };
+                const fetchedShows = response.data.results.map(show => {
+                    return {
+                        name: show.name,
+                        image: `https://image.tmdb.org/t/p/w500${show.poster_path}`
+                    };
                 });
                 setShows(fetchedShows);
             })
@@ -20,16 +25,32 @@ function Shows() {
             });
     }, []);
 
+    const toggleOffcanvas = () => {
+        setIsOffcanvasOpen(!isOffcanvasOpen);
+        console.log(isOffcanvasOpen)
+    };
+
     return (
         <body className="bg-light">
+            <div className="web-none d-flex align-items-center px-3 pt-3">
+                <a href="index.html" className="text-decoration-none">
+                    <img src="img/logo.png" className="img-fluid logo-mobile" alt="brand-logo" />
+                </a>
+                <button className="ms-auto btn btn-primary ln-0" type="button" onClick={toggleOffcanvas}>
+                    <span className="material-icons">menu</span>
+                </button>
+            </div>
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <Sidebar />
-                        {shows.map((show, index) => (
-                            <ShowCard key={index} name={show.name} image={show.image} />
-                        ))}
-                        <ShowCard name="EXAMPLE 1" image="test.png" />
+                        <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={toggleOffcanvas} />
+                        <div className="col col-xl-9 order-lg-2 col-lg-9 col-md-9 col-sm-9">
+                            <div className="row">
+                                {shows.map((show, index) => (
+                                    <ShowCard key={index} name={show.name} image={show.image} />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

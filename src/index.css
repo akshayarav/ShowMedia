@@ -18,6 +18,25 @@
   height: auto !important;  /* This keeps the aspect ratio intact */
 }
 
+.image-container img {
+    width: 100%; /* Ensure the image takes the full width */
+    height: auto !important; /* Maintain aspect ratio */
+    object-fit: cover; /* Cover the area without stretching */
+    border-top-left-radius: calc(.375rem - 1px); /* Match your .rounded-4 radius */
+    border-top-right-radius: calc(.375rem - 1px); /* Match your .rounded-4 radius */
+}
+
+.details-container {
+    padding: 15px; /* Or your desired padding */
+}
+
+/* Ensure that the border radius is applied to the container, not the image */
+.profile {
+    overflow: hidden; /* Clip the contents to the padding box */
+    border-radius: .375rem; /* Rounded corners */
+}
+
+
 /* Body */
 body {
     font-size: 13px;

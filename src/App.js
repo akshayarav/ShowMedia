@@ -12,7 +12,7 @@ function App() {
           <Route path="/feed" element={<Feed />} />
           <Route path="/shows" element={<Shows />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/" element={<Sidebar />} />
+          <Route path="/" element={<Feed />} />
         </Routes>
       </div>
     </Router>
