@@ -29,6 +29,7 @@ function Shows() {
                         {shows.map((show, index) => (
                             <ShowCard key={index} name={show.name} image={show.image} />
                         ))}
+                        <ShowCard name = "EXAMPLE 1" image = "test.png" />
                     </div>
                 </div>
             </div>

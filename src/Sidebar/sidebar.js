@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './sidebar.css'; 
 import SignModal from './SignModal';
+import { Link } from 'react-router-dom';
 
 function Sidebar() {
   const [showModal, setShowModal] = useState(false);
@@ -8,9 +9,6 @@ function Sidebar() {
 
   return (
     <aside className="col col-xl-3 order-xl-1 col-lg-6 order-lg-2 col-md-6 col-sm-6 col-12">
-    <head>
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-    </head>
       <div className="ps-0 m-none fix-sidebar">
         <div className="sidebar-nav mb-3">
           <div class="pb-4 mb-4">
@@ -20,13 +18,13 @@ function Sidebar() {
           </div>
           <ul className="navbar-nav justify-content-end flex-grow-1">
             <li className="nav-item">
-              <a href="index.html" className="nav-link"> <span class="material-icons me-3">house</span> <span>Feed</span></a>
+              <Link to="/feed" className="nav-link"> <span class="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
             <li className="nav-item">
-              <a href="profile.html" className="nav-link"> <span class="material-icons me-3">account_circle</span> <span>Profile</span></a>
+            <Link to="/profile" className="nav-link"> <span class="material-icons me-3">account_circle</span> <span>Profile</span></Link>
             </li>
             <li className="nav-item">
-              <a href="profile.html" className="nav-link"> <span class="material-icons me-3">explore</span> <span>Shows</span></a>
+              <Link to="/shows" className="nav-link"> <span class="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>
           </ul>
         </div>
