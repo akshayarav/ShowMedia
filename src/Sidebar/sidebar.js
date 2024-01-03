@@ -4,7 +4,7 @@ import './sidebar.css';
 import SignModal from './SignModal';
 import { Link } from 'react-router-dom';
 
-function Sidebar({ isOffcanvasOpen }) {
+function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => setShowModal(!showModal);
   const offcanvasRef = useRef();
@@ -13,6 +13,21 @@ function Sidebar({ isOffcanvasOpen }) {
   const offcanvasClasses = `p-2 bg-light offcanvas offcanvas-start ${isOffcanvasOpen ? 'show' : ''}`;
   console.log(offcanvasClasses)
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+        if (offcanvasRef.current && !offcanvasRef.current.contains(event.target)) {
+            toggleOffcanvas();
+        }
+    };
+
+    if (isOffcanvasOpen) {
+        document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+    };
+}, [isOffcanvasOpen, toggleOffcanvas]);
 
 
 
