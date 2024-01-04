@@ -35,6 +35,11 @@ app.listen(PORT, () => {
 
 app.post('/register', async (req, res) => {
   try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      return res.status(409).json({ error: "Email already has an account" });
+    }
+
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     const newUser = new User({
       email: req.body.email,
