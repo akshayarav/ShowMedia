@@ -43,7 +43,7 @@ function Shows() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={toggleOffcanvas} />
+
                         <div className="col col-xl-9 order-lg-2 col-lg-9 col-md-9 col-sm-9">
                             <div className="row">
                                 {shows.map((show, index) => (
@@ -51,6 +51,7 @@ function Shows() {
                                 ))}
                             </div>
                         </div>
+                        <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={toggleOffcanvas} />
                     </div>
                 </div>
             </div>

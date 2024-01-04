@@ -7,14 +7,12 @@ import Profile from './Profile/profile';
 function App() {
   return (
     <Router>
-      <div className="container">
         <Routes>
           <Route path="/feed" element={<Feed />} />
           <Route path="/shows" element={<Shows />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/" element={<Feed />} />
         </Routes>
-      </div>
     </Router>
   );
 }

@@ -9,10 +9,10 @@ function SignModal({ closeModal }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(''); // Clear any existing errors
-        setSuccess(''); // Clear any existing success messages
+        setError(''); 
+        setSuccess(''); 
         try {
-            const response = await fetch('http://localhost:3001/register', {
+            const response = await fetch('http://localhost:3001/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,15 +25,13 @@ function SignModal({ closeModal }) {
 
             const data = await response.json();
 
-            if (response.status === 201) {
-                setSuccess('Account created successfully!'); // Set success message
-                // Optionally close the modal after a short delay
+            if (response.status === 200) {
+                setSuccess('Successfully Logged In!'); // Set success message
                 setTimeout(() => {
                     closeModal();
                 }, 2000);
             } else {
-                // Handle errors
-                setError(data.error || 'Failed to create account.'); // Set error message
+                setError(data.error); 
             }
         } catch (error) {
             setError('There was an error submitting the form.');
@@ -44,14 +42,14 @@ function SignModal({ closeModal }) {
     return (
         <Modal show={true} onHide={closeModal} centered>
             <Modal.Header closeButton>
-                <Modal.Title>Sign Up</Modal.Title>
+                <Modal.Title>Sign In</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {error && <Alert variant="danger">{error}</Alert>}
                 {success && <Alert variant="success">{success}</Alert>}
                 <div className="modal-content rounded-4 p-4 border-0">
                     <div className="modal-header border-0 p-1">
-                        <h6 className="modal-title fw-bold text-body fs-6" id="exampleModalLabel">Make Account</h6>
+                        <h6 className="modal-title fw-bold text-body fs-6" id="exampleModalLabel">Login to Account</h6>
                     </div>
                     <form onSubmit={handleSubmit}>
                         <div className="modal-body p-0">
@@ -90,7 +88,7 @@ function SignModal({ closeModal }) {
                                         </div>
                                     </div>
                                     <div className="p-1">
-                                        <button type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase m-0">Make Account</button>
+                                        <button type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase m-0">Sign In</button>
                                     </div>
                                 </div>
                             </div>

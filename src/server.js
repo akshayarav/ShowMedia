@@ -22,6 +22,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 const userSchema = new mongoose.Schema({
   email: String,
+  username: String,
   passwordHash: String,
 });
 
@@ -37,6 +38,7 @@ app.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     const newUser = new User({
       email: req.body.email,
+      username: req.body.username,
       passwordHash: hashedPassword
     });
 

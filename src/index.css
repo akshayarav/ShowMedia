@@ -13,6 +13,10 @@
 -- Dark
 */
 
+.button-top-padding {
+    margin-top: 10px !important;
+  }
+
 .show-card-image {
   width: 180px;  /* Adjust width as needed */
   height: auto !important;  /* This keeps the aspect ratio intact */
