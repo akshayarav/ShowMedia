@@ -31,13 +31,6 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.error('MongoDB connection error:', error);
 });
 
-const showSchema = new mongoose.Schema({
-  title: String,
-  description: String
-});
-
-const Show = mongoose.model('Show', showSchema);
-
 const ratingSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -138,3 +131,25 @@ app.post('/rate', async (req, res) => {
     res.status(500).json({ message: 'Error adding rating' });
   }
 });
+
+app.get('/api/ratings/:userId', async (req, res) => {
+  console.log('Fetching ratings for userId:', req.params.userId);
+  try {
+      const userId = req.params.userId;
+      if (!userId) {
+          console.log('No userId provided');
+          return res.status(400).send('No userId provided');
+      }
+
+      console.log('Attempting to query database for ratings');
+      const ratings = await Rating.find({ user: userId });
+
+      console.log('Ratings found:', ratings.length); // Log the number of ratings found
+      res.send(ratings);
+  } catch (error) {
+      console.error('Error occurred in /api/ratings/:userId:', error); // Log the error details
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+
