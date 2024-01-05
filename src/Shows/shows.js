@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import Sidebar from "../Sidebar/sidebar";
 import ShowCard from "./ShowCard/ShowCard";
+import SearchBar from './SearchBar';
 
 function Shows() {
     const [shows, setShows] = useState([]);
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const filteredShows = shows.filter(show => show.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const apiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=1`;
 
@@ -27,7 +30,6 @@ function Shows() {
 
     const toggleOffcanvas = () => {
         setIsOffcanvasOpen(!isOffcanvasOpen);
-        console.log(isOffcanvasOpen)
     };
 
     return (
@@ -43,10 +45,10 @@ function Shows() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-
+                        <SearchBar onSearch={setSearchTerm} /> {/* Add the SearchBar component */}
                         <div className="col col-xl-9 order-lg-2 col-lg-9 col-md-9 col-sm-9">
                             <div className="row">
-                                {shows.map((show, index) => (
+                                {filteredShows.map((show, index) => ( // Use filteredShows for rendering
                                     <ShowCard key={index} name={show.name} image={show.image} />
                                 ))}
                             </div>
