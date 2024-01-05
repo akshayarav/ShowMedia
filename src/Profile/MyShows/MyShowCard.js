@@ -1,20 +1,40 @@
-function MyShowCard ({rating, name, image}) {
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function MyShowCard ({rating, showId}) {
+    const [show, setShow] = useState(null);
+
+    useEffect(() => {
+        const url = `https://api.themoviedb.org/3/tv/${showId}?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`;
+        const fetchShow = async () => {
+            try {
+                const response = await axios.get(url); // Or directly to TMDb if CORS is handled
+                setShow(response.data);
+            } catch (error) {
+                console.error('Error fetching show details:', error);
+            }
+        };
+
+        fetchShow();
+    }, [showId]);
+
+    if (!show) return <div>Loading...</div>;
+
     return (
-        <div class="p-3 border-bottom d-flex text-dark text-decoration-none account-item">
+        <div className="p-3 border-bottom d-flex text-dark text-decoration-none account-item">
            <a href="profile.html">
-              <img src="img/rmate5.jpg" class="img-fluid rounded-circle me-3" alt="profile-img"/>
+              <img src={`https://image.tmdb.org/t/p/w500${show.poster_path}`} className="img-fluid rounded-circle me-3" alt="profile-img"/>
            </a>
            <div>
-              <p class="fw-bold mb-0 pe-3 d-flex align-items-center"><a class="text-decoration-none text-dark" href="profile.html">Webartinfo</a><span class="ms-2 material-icons bg-primary p-0 md-16 fw-bold text-white rounded-circle ov-icon">done</span></p>
-              <div class="text-muted fw-light">
-                 <p class="mb-1 small">@abcdsec</p>
-                 <span class="text-muted d-flex align-items-center small"><span class="material-icons me-1 small">open_in_new</span>Promoted</span>
+              <p className="fw-bold mb-0 pe-3 d-flex align-items-center"><a className="text-decoration-none text-dark" href="profile.html">{show.name}</a><span className="ms-2 material-icons bg-primary p-0 md-16 fw-bold text-white rounded-circle ov-icon">done</span></p>
+              <div className="text-muted fw-light">
+                 <p className="mb-1 small">Rating: {rating}</p>
               </div>
            </div>
-           <div class="ms-auto">
-              <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                 <input type="checkbox" class="btn-check" id="btncddheck7"/>
-                 <label class="btn btn-outline-primary btn-sm px-3 rounded-pill" for="btncddheck7"><span class="follow">+ Follow</span><span class="following d-none">Following</span></label>
+           <div className="ms-auto">
+              <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                 <input type="checkbox" className="btn-check" id="btncddheck7"/>
+                 <label className="btn btn-outline-primary btn-sm px-3 rounded-pill" for="btncddheck7"><span className="follow">Edit</span><span className="following d-none">Edit</span></label>
               </div>
            </div>
         </div>
