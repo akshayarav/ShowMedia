@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ShowModal from "./ShowModal";
 
-function ShowCard({ name, image }) {
+function ShowCard({ name, image, id }) {
     const [showModal, setShowModal] = useState(false);
     const toggleShowModal = () => setShowModal(!showModal);
 
@@ -20,7 +20,7 @@ function ShowCard({ name, image }) {
                         <p className="text-muted mb-0">{name}</p>
                     </div>
                 </div>
-                {showModal && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} />}
+                {showModal && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} id = {id} />}
             </div>
         </main >
     )

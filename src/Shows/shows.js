@@ -14,6 +14,7 @@ function Shows() {
             .then(response => {
                 const fetchedShows = response.data.results.map(show => {
                     return {
+                        id: show.id,
                         name: show.name,
                         image: `https://image.tmdb.org/t/p/w500${show.poster_path}`
                     };
@@ -47,7 +48,7 @@ function Shows() {
                         <div className="col col-xl-9 order-lg-2 col-lg-9 col-md-9 col-sm-9">
                             <div className="row">
                                 {shows.map((show, index) => (
-                                    <ShowCard key={index} name={show.name} image={show.image} />
+                                    <ShowCard key={index} id={show.id} name={show.name} image={show.image} />
                                 ))}
                             </div>
                         </div>

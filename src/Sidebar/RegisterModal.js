@@ -43,7 +43,7 @@ function RegisterModal({ closeModal }) {
                 if (response.status === 201) {
                     setSuccess('Account created successfully!');
                     setTimeout(() => {
-                        login(data.token); 
+                        login(data.token, data.userId); 
                         closeModal()
                     }, 1000);
                 } else {
