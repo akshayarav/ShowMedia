@@ -45,8 +45,8 @@ function Shows() {
             </div>
             <div className="py-4">
                 <div className="container">
+                <SearchBar onSearch={setSearchTerm} /> {/* Add the SearchBar component */}
                     <div className="row position-relative">
-                        <SearchBar onSearch={setSearchTerm} /> {/* Add the SearchBar component */}
                         <div className="col col-xl-9 order-lg-2 col-lg-9 col-md-9 col-sm-9">
                           <div className="row">
                               {filteredShows.map((show, index) => (

@@ -2,7 +2,8 @@ import React from 'react';
 
 function SearchBar({ onSearch }) {
     return (
-        <div className="sticky-sidebar2 mb-3">
+        // Modified the class to use col-xl-9 and added an offset of 3 for xl screens
+        <div className="col col-xl-9 offset-xl-3 col-lg-9 col-md-9 col-sm-9 col-9">
             <div className="input-group mb-4 shadow-sm rounded-4 overflow-hidden py-2 bg-white">
                 <span className="input-group-text material-icons border-0 bg-white text-primary">search</span>
                 <input

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import Sidebar from "../Sidebar/sidebar";
 import { Tabs, Tab } from 'react-bootstrap';
+import MyShows from './MyShows/MyShows';
 
 
 function Profile() {
@@ -31,24 +32,24 @@ function Profile() {
                             <div className="main-content">
                                 <ul className="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-white mt-4" id="pills-tab" role="tablist">
                                     <li className="nav-item" role="presentation">
-                                        <button className="p-3 nav-link text-muted active" id="pills-feed-tab" data-bs-toggle="pill" data-bs-target="#pills-feed" type="button" role="tab" aria-controls="pills-feed" aria-selected="true">Overview</button>
+                                        <button className="p-3 nav-link text-muted active" id="pills-overview-tab" data-bs-toggle="pill" data-bs-target="#pills-overview" type="button" role="tab" aria-controls="pills-overview" aria-selected="true">Overview</button>
                                     </li>
                                     <li className="nav-item" role="presentation">
-                                        <button className="p-3 nav-link text-muted" id="pills-people-tab" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">Activity</button>
+                                        <button className="p-3 nav-link text-muted" id="pills-feed-tab" data-bs-toggle="pill" data-bs-target="#pills-feed" type="button" role="tab" aria-controls="pills-feed" aria-selected="false">Activity</button>
                                     </li>
                                     <li className="nav-item" role="presentation">
-                                        <button className="p-3 nav-link text-muted" id="pills-trending-tab" data-bs-toggle="pill" data-bs-target="#pills-trending" type="button" role="tab" aria-controls="pills-trending" aria-selected="false">My Shows</button>
+                                        <button className="p-3 nav-link text-muted" id="pills-shows-tab" data-bs-toggle="pill" data-bs-target="#pills-shows" type="button" role="tab" aria-controls="pills-shows" aria-selected="false">My Shows</button>
                                     </li>
                                 </ul>
                                 <div className="tab-content" id="pills-tabContent">
-                                    <div className="tab-pane fade show active" id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
+                                    <div className="tab-pane fade show active" id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
                                         {/* Content for Overview tab */}
                                     </div>
-                                    <div className="tab-pane fade" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
+                                    <div className="tab-pane fade" id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
                                         {/* Content for Activity tab */}
                                     </div>
-                                    <div className="tab-pane fade" id="pills-trending" role="tabpanel" aria-labelledby="pills-trending-tab">
-                                        {/* Content for My Shows tab */}
+                                    <div className="tab-pane fade" id="pills-shows" role="tabpanel" aria-labelledby="pills-shows-tab">
+                                        <MyShows />
                                     </div>
                                 </div>
                             </div>
