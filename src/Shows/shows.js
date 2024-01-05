@@ -17,6 +17,7 @@ function Shows() {
             .then(response => {
                 const fetchedShows = response.data.results.map(show => {
                     return {
+                        id: show.id,
                         name: show.name,
                         image: `https://image.tmdb.org/t/p/w500${show.poster_path}`
                     };
@@ -47,11 +48,11 @@ function Shows() {
                     <div className="row position-relative">
                         <SearchBar onSearch={setSearchTerm} /> {/* Add the SearchBar component */}
                         <div className="col col-xl-9 order-lg-2 col-lg-9 col-md-9 col-sm-9">
-                            <div className="row">
-                                {filteredShows.map((show, index) => ( // Use filteredShows for rendering
-                                    <ShowCard key={index} name={show.name} image={show.image} />
-                                ))}
-                            </div>
+                          <div className="row">
+                              {filteredShows.map((show, index) => (
+                                  <ShowCard key={index} id={show.id} name={show.name} image={show.image} />
+                              ))}
+                          </div>
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={toggleOffcanvas} />
                     </div>
