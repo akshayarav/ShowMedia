@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
+import AuthContext from '../AuthContext';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 function SignModal({ closeModal }) {
@@ -7,6 +8,7 @@ function SignModal({ closeModal }) {
     const [pass, setPass] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const { login } = useContext(AuthContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,10 +29,11 @@ function SignModal({ closeModal }) {
             const data = await response.json();
 
             if (response.status === 200) {
-                setSuccess('Successfully Logged In!'); // Set success message
+                setSuccess('Successfully Logged In!');
                 setTimeout(() => {
-                    closeModal();
-                }, 2000);
+                    login(data.token); 
+                    closeModal()
+                }, 1000);
             } else {
                 setError(data.error); 
             }

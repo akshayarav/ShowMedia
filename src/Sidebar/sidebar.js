@@ -1,9 +1,10 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import './sidebar.css';
 import SignModal from './SignModal';
 import { Link } from 'react-router-dom';
 import RegisterModal from './RegisterModal';
+import AuthContext from '../AuthContext';
 
 function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
   const [showSignInModal, setShowSignInModal] = useState(false);
@@ -13,9 +14,12 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
   const toggleRegisterModal = () => setShowRegisterModal(!showRegisterModal);
   const offcanvasRef = useRef();
 
+  const { isAuthenticated, logout } = useContext(AuthContext);
 
   const offcanvasClasses = `p-2 bg-light offcanvas offcanvas-start ${isOffcanvasOpen ? 'show' : ''}`;
   console.log(offcanvasClasses)
+
+  const handleLogOut = () => logout()
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -32,6 +36,34 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOffcanvasOpen, toggleOffcanvas]);
+
+  const authButtons = isAuthenticated ? (
+    <button
+      className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0 button-top-padding"
+      onClick={handleLogOut}
+    >
+      Log Out
+    </button>
+  ) : (
+    <>
+      <button
+        className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0"
+        onClick={toggleSignInModal}
+      >
+        Sign In
+      </button>
+      {showSignInModal && <SignModal closeModal={toggleSignInModal} />}
+
+      <button
+        className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0 button-top-padding"
+        onClick={toggleRegisterModal}
+      >
+        Register
+      </button>
+      {showRegisterModal && <RegisterModal closeModal={toggleRegisterModal} />}
+    </>
+  );
+
 
 
 
@@ -56,14 +88,7 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
             </li>
           </ul>
         </div>
-        <button
-          className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0"
-          onClick={toggleSignInModal}
-        >Sign In</button> {showSignInModal && <SignModal closeModal={toggleSignInModal} />}
-        <button
-          className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0 button-top-padding"
-          onClick={toggleRegisterModal}
-        >Register</button> {showRegisterModal && <RegisterModal closeModal={toggleRegisterModal} />}
+        {authButtons}
       </div>
       <div className="ps-0 m-none fix-sidebar">
         <div className="sidebar-nav mb-3">
@@ -84,14 +109,7 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
             </li>
           </ul>
         </div>
-        <button
-          className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0"
-          onClick={toggleSignInModal}
-        >Sign In</button> {showSignInModal && <SignModal closeModal={toggleSignInModal} />}
-        <button
-          className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0 button-top-padding"
-          onClick={toggleRegisterModal}
-        >Register</button> {showRegisterModal && <RegisterModal closeModal={toggleRegisterModal} />}
+        {authButtons}
       </div>
     </aside>
   );

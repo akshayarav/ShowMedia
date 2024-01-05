@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
+import AuthContext from '../AuthContext';
 const apiUrl = process.env.REACT_APP_API_URL;
-
 
 function RegisterModal({ closeModal }) {
     const [email, setEmail] = useState('');
@@ -11,7 +11,10 @@ function RegisterModal({ closeModal }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    const { isAuthenticated, login, logout } = useContext(AuthContext);
+
     const handleSubmit = async (e) => {
+        console.log(`${apiUrl}/register`)
         e.preventDefault();
         setError('');
         setSuccess('');
@@ -40,8 +43,9 @@ function RegisterModal({ closeModal }) {
                 if (response.status === 201) {
                     setSuccess('Account created successfully!');
                     setTimeout(() => {
-                        closeModal();
-                    }, 2000);
+                        login(data.token); 
+                        closeModal()
+                    }, 1000);
                 } else {
                     // Handle errors
                     setError(data.error || 'Failed to create account.'); // Set error message
