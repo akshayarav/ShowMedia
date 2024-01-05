@@ -45,6 +45,7 @@ function RegisterModal({ closeModal }) {
                     setTimeout(() => {
                         login(data.token, data.userId); 
                         closeModal()
+                        window.location.reload();
                     }, 1000);
                 } else {
                     // Handle errors

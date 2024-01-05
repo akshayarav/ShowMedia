@@ -9,7 +9,7 @@ import AuthContext from '../AuthContext';
 function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  
+
   const toggleSignInModal = () => setShowSignInModal(!showSignInModal);
   const toggleRegisterModal = () => setShowRegisterModal(!showRegisterModal);
   const offcanvasRef = useRef();
@@ -19,7 +19,10 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
   const offcanvasClasses = `p-2 bg-light offcanvas offcanvas-start ${isOffcanvasOpen ? 'show' : ''}`;
   console.log(offcanvasClasses)
 
-  const handleLogOut = () => logout()
+  const handleLogOut = () => {
+    logout();
+    window.location.reload();
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -80,9 +83,11 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
             <li className="nav-item">
               <Link to="/feed" className="nav-link"> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
-            <li className="nav-item">
-              <Link to="/profile" className="nav-link"> <span className="material-icons me-3">account_circle</span> <span>Profile</span></Link>
-            </li>
+            {isAuthenticated && (
+              <li className="nav-item">
+                <Link to="/profile" className="nav-link"> <span className="material-icons me-3">account_circle</span> <span>Profile</span></Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link to="/shows" className="nav-link"> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>
@@ -101,9 +106,11 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
             <li className="nav-item">
               <Link to="/feed" className="nav-link"> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
-            <li className="nav-item">
-              <Link to="/profile" className="nav-link"> <span className="material-icons me-3">account_circle</span> <span>Profile</span></Link>
-            </li>
+            {isAuthenticated && (
+              <li className="nav-item">
+                <Link to="/profile" className="nav-link"> <span className="material-icons me-3">account_circle</span> <span>Profile</span></Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link to="/shows" className="nav-link"> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>

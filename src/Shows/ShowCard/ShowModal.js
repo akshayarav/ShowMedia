@@ -6,14 +6,6 @@ function ShowModal({ closeModal, showName, showImg, id }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const apiUrl = process.env.REACT_APP_API_URL;
-
-    function countDecimals(value) {
-        if (Math.floor(value) === value) return 0;
-        const str = value.toString(); 
-        const index = str.indexOf('.'); 
-        if (index === -1) return 0;
-        return str.length - index - 1; 
-    }
     
 
     const handleSubmit = async (e) => {
@@ -58,6 +50,9 @@ function ShowModal({ closeModal, showName, showImg, id }) {
 
             if (response.ok) {
                 setSuccess('Show rating added successfully!');
+                setTimeout(() => {
+                    closeModal()
+                }, 1000);
             } else {
                 setError(data.message || 'Failed to add rating');
             }

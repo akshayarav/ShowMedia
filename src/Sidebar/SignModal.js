@@ -33,6 +33,7 @@ function SignModal({ closeModal }) {
                 setTimeout(() => {
                     login(data.token, data.userId); 
                     closeModal()
+                    window.location.reload();
                 }, 1000);
             } else {
                 setError(data.error); 
