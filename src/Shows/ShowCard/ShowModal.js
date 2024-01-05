@@ -7,11 +7,25 @@ function ShowModal({ closeModal, showName, showImg, id }) {
     const [success, setSuccess] = useState('');
     const apiUrl = process.env.REACT_APP_API_URL;
 
+    function countDecimals(value) {
+        if (Math.floor(value) === value) return 0;
+        const str = value.toString(); 
+        const index = str.indexOf('.'); 
+        if (index === -1) return 0;
+        return str.length - index - 1; 
+    }
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setSuccess('');
         const userId = localStorage.getItem('userId');
+
+        if (rating > 10 || rating < 1) {
+            setError("Show rating must be on scale 1-10")
+            return
+        }
 
         if (!userId) {
             setError('Log In First!');
@@ -81,6 +95,7 @@ function ShowModal({ closeModal, showName, showImg, id }) {
                                                     value={rating}
                                                     onChange={(e) => setRating(e.target.value)}
                                                     placeholder="Enter Rating"
+                                                    maxLength="3"
                                                 />
                                                 <label htmlFor="floatingRating">Rating</label>
                                             </div>
