@@ -17,12 +17,12 @@ function Shows() {
     useEffect(() => {
         Axios.get(popularApiUrl)
             .then(response => {
-                const fetchedShows = response.data.results.map(show => ({
+                const newShows = response.data.results.map(show => ({
                     id: show.id,
                     name: show.name,
                     image: `https://image.tmdb.org/t/p/w500${show.poster_path}`
                 }));
-                setShows(fetchedShows);
+                setShows(prevShows => [...prevShows, ...newShows]);
             })
             .catch(error => {
                 console.error('Error fetching data: ', error);
@@ -34,6 +34,7 @@ function Shows() {
             debounceSearch(searchTerm);
         } else {
             setCurrentPage(1);
+            setShows([]); // Clear the shows before fetching popular shows again
             Axios.get(popularApiUrl)
                 .then(response => {
                     const fetchedShows = response.data.results.map(show => ({
