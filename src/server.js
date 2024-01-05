@@ -30,6 +30,27 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.error('MongoDB connection error:', error);
 });
 
+const showSchema = new mongoose.Schema({
+  title: String,
+  description: String
+});
+
+const Show = mongoose.model('Show', showSchema);
+
+const ratingSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  show: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Show'
+  },
+  rating: Number
+});
+
+const Rating = mongoose.model('Rating', ratingSchema);
+
 const userSchema = new mongoose.Schema({
   email: String,
   username: String,
