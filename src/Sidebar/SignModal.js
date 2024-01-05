@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function SignModal({ closeModal }) {
     const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ function SignModal({ closeModal }) {
         setError(''); 
         setSuccess(''); 
         try {
-            const response = await fetch('http://localhost:3001/login', {
+            const response = await fetch(`${apiUrl}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

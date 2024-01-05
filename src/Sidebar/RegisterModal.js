@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
+const apiUrl = process.env.REACT_APP_API_URL;
+
 
 function RegisterModal({ closeModal }) {
     const [email, setEmail] = useState('');
@@ -21,7 +23,7 @@ function RegisterModal({ closeModal }) {
         else if (pass.length === 0) {setError("Please enter a valid password")}
         else {
             try {
-                const response = await fetch('http://localhost:3001/register', {
+                const response = await fetch(`${apiUrl}/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

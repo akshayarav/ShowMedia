@@ -11,6 +11,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+console.log("CORS CONNECT")
+console.log(process.env.ALLOWED_ORIGIN)
+
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGIN, 
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
