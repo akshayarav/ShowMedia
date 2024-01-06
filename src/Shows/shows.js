@@ -4,6 +4,7 @@ import debounce from 'lodash.debounce';
 import Sidebar from "../Sidebar/sidebar";
 import ShowCard from "./ShowCard/ShowCard";
 import SearchBar from './SearchBar';
+import MobileBar from '../MobileBar/MobileBar';
 
 function Shows() {
     const [shows, setShows] = useState([]);
@@ -74,14 +75,7 @@ function Shows() {
 
     return (
         <body className="bg-light">
-            <div className="web-none d-flex align-items-center px-3 pt-3">
-                <a href="index.html" className="text-decoration-none">
-                    <img src="img/logo.png" className="img-fluid logo-mobile" alt="brand-logo" />
-                </a>
-                <button className="ms-auto btn btn-primary ln-0" type="button" onClick={() => setIsOffcanvasOpen(!isOffcanvasOpen)}>
-                    <span className="material-icons">menu</span>
-                </button>
-            </div>
+            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)}/>
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
