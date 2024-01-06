@@ -10,7 +10,7 @@ function App() {
         <Routes>
           <Route path="/feed" element={<Feed />} />
           <Route path="/shows" element={<Shows />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:username" element={<Profile />} />
           <Route path="/" element={<Feed />} />
         </Routes>
     </Router>

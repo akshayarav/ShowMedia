@@ -40,7 +40,7 @@ const ratingSchema = new mongoose.Schema({
     type: Number,
     ref: 'Show'
   },
-  rating: Number
+  rating: Number,
 });
 
 const Rating = mongoose.model('Rating', ratingSchema);
@@ -49,6 +49,8 @@ const userSchema = new mongoose.Schema({
   email: String,
   username: String,
   passwordHash: String,
+  first: String,
+  last: String
 });
 
 const User = mongoose.model('User', userSchema);
@@ -65,18 +67,25 @@ app.post('/register', async (req, res) => {
       return res.status(409).json({ error: "Email already has an account" });
     }
 
+    const username = await User.findOne({ username: req.body.username });
+    if (username) {
+      return res.status(409).json({ error: "Username already taken" });
+    }
+
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     const newUser = new User({
       email: req.body.email,
       username: req.body.username,
-      passwordHash: hashedPassword
+      passwordHash: hashedPassword,
+      first: req.body.first,
+      last: req.body.last
     });
 
     const savedUser = await newUser.save();
     const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
     res.status(201).json({
       token: token, // Generate and send a token
-      userId: savedUser._id
+      userId: savedUser._id,
     });
   } catch (error) {
     console.error('Register error:', error);
@@ -94,6 +103,7 @@ app.post('/login', async (req, res) => {
         res.status(200).json({
           token: token,
           userId: user._id,
+          username: user.username,
           message: "Login successful!"
         });
       } else {
@@ -133,7 +143,6 @@ app.post('/rate', async (req, res) => {
 });
 
 app.get('/api/ratings/:userId', async (req, res) => {
-  console.log('Fetching ratings for userId:', req.params.userId);
   try {
       const userId = req.params.userId;
       if (!userId) {
@@ -141,15 +150,35 @@ app.get('/api/ratings/:userId', async (req, res) => {
           return res.status(400).send('No userId provided');
       }
 
-      console.log('Attempting to query database for ratings');
       const ratings = await Rating.find({ user: userId });
 
-      console.log('Ratings found:', ratings.length); // Log the number of ratings found
       res.send(ratings);
   } catch (error) {
       console.error('Error occurred in /api/ratings/:userId:', error); // Log the error details
       res.status(500).send('Internal Server Error');
   }
 });
+
+app.get('/verify', async (req, res) => {
+  const { token } = req.query;
+  // Find the user with this token and set their account to verified
+});
+
+app.get('/api/user/:username', async (req, res) => {
+  try {
+    const username = req.params.username;
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Exclude sensitive data from the user object before sending it
+    const { passwordHash, ...userData } = user.toObject();
+    res.json(userData);
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 

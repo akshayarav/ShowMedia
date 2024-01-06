@@ -5,8 +5,11 @@ import SignModal from './SignModal';
 import { Link } from 'react-router-dom';
 import RegisterModal from './RegisterModal';
 import AuthContext from '../AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
+  const navigate = useNavigate();
+
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
@@ -16,12 +19,14 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
 
   const { isAuthenticated, logout } = useContext(AuthContext);
 
+  const currentUser = localStorage.getItem('username');
+
   const offcanvasClasses = `p-2 bg-light offcanvas offcanvas-start ${isOffcanvasOpen ? 'show' : ''}`;
   console.log(offcanvasClasses)
 
   const handleLogOut = () => {
     logout();
-    window.location.reload();
+    navigate('/feed');
   };
 
   useEffect(() => {
@@ -76,7 +81,7 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
         <div className="sidebar-nav mb-3">
           <div className="pb-4 mb-4">
             <Link to="/feed" className="text-decoration-none">
-              <img src="logo.png" className="img-fluid logo" alt="brand-logo" />
+              <img src="/logo.png" className="img-fluid logo" alt="brand-logo" />
             </Link>
           </div>
           <ul className="navbar-nav justify-content-end flex-grow-1">
@@ -84,10 +89,12 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
               <Link to="/feed" className="nav-link"> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
             {isAuthenticated && (
-              <li className="nav-item">
-                <Link to="/profile" className="nav-link"> <span className="material-icons me-3">account_circle</span> <span>Profile</span></Link>
-              </li>
-            )}
+            <li className="nav-item">
+              <Link to={`/profile/${currentUser}`} className="nav-link">
+                <span className="material-icons me-3">account_circle</span> <span>Profile</span>
+              </Link>
+            </li>
+          )}
             <li className="nav-item">
               <Link to="/shows" className="nav-link"> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>
@@ -99,7 +106,7 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
         <div className="sidebar-nav mb-3">
           <div className="pb-4 mb-4">
             <Link to="/feed" className="text-decoration-none">
-              <img src="logo.png" className="img-fluid logo" alt="brand-logo" />
+              <img src="/logo.png" className="img-fluid logo" alt="brand-logo" />
             </Link>
           </div>
           <ul className="navbar-nav justify-content-end flex-grow-1">
@@ -107,10 +114,12 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
               <Link to="/feed" className="nav-link"> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
             {isAuthenticated && (
-              <li className="nav-item">
-                <Link to="/profile" className="nav-link"> <span className="material-icons me-3">account_circle</span> <span>Profile</span></Link>
-              </li>
-            )}
+            <li className="nav-item">
+              <Link to={`/profile/${currentUser}`} className="nav-link">
+                <span className="material-icons me-3">account_circle</span> <span>Profile</span>
+              </Link>
+            </li>
+          )}
             <li className="nav-item">
               <Link to="/shows" className="nav-link"> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>

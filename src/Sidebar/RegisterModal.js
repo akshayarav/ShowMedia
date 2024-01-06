@@ -8,6 +8,8 @@ function RegisterModal({ closeModal }) {
     const [username, setUsername] = useState('');
     const [pass, setPass] = useState('');
     const [passConfirm, setPassConfirm] = useState('');
+    const [first, setFirst] = useState('');
+    const [last, setLast] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
@@ -18,12 +20,17 @@ function RegisterModal({ closeModal }) {
         e.preventDefault();
         setError('');
         setSuccess('');
-        if (passConfirm !== pass) {
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            setError("Please enter a valid email address");
+        } else if (passConfirm !== pass) {
             setError("Passwords don't match")
         }
-        else if (email.length === 0) {setError("Please enter a valid email")}
-        else if (username.length === 0) {setError("Please enter a valid username")}
-        else if (pass.length === 0) {setError("Please enter a valid password")}
+        else if (email.length === 0) { setError("Please enter a valid email") }
+        else if (username.length === 0) { setError("Please enter a valid username") }
+        else if (pass.length === 0) { setError("Please enter a valid password") }
         else {
             try {
                 const response = await fetch(`${apiUrl}/register`, {
@@ -35,6 +42,8 @@ function RegisterModal({ closeModal }) {
                         email: email,
                         username: username,
                         password: pass,
+                        first: first,
+                        last: last
                     }),
                 });
 
@@ -43,7 +52,7 @@ function RegisterModal({ closeModal }) {
                 if (response.status === 201) {
                     setSuccess('Account created successfully!');
                     setTimeout(() => {
-                        login(data.token, data.userId); 
+                        login(data.token, data.userId, username);
                         closeModal()
                         window.location.reload();
                     }, 1000);
@@ -104,6 +113,35 @@ function RegisterModal({ closeModal }) {
                                                     placeholder="Enter Username"
                                                 />
                                                 <label htmlFor="floatingUser">Enter Username</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6 className="fw-bold mx-1 mb-2 text-dark">Name</h6>
+                                    <div className="row mx-0 mb-3">
+                                        <div className="col-9 p-1">
+                                            <div className="form-floating d-flex align-items-end">
+                                                <input
+                                                    type="text"
+                                                    className="form-control rounded-5"
+                                                    id="floatingFirst"
+                                                    value={first}
+                                                    onChange={(e) => setFirst(e.target.value)}
+                                                    placeholder="Enter First Name"
+                                                />
+                                                <label htmlFor="floatingFirst">First Name</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-9 p-1">
+                                            <div className="form-floating d-flex align-items-end">
+                                                <input
+                                                    type="text"
+                                                    className="form-control rounded-5"
+                                                    id="floatingLast"
+                                                    value={last}
+                                                    onChange={(e) => setLast(e.target.value)}
+                                                    placeholder="Enter Last Name"
+                                                />
+                                                <label htmlFor="floatingLast">Last Name</label>
                                             </div>
                                         </div>
                                     </div>

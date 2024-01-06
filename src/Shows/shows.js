@@ -84,9 +84,10 @@ function Shows() {
             </div>
             <div className="py-4">
                 <div className="container">
-                    <SearchBar onSearch={setSearchTerm} />
                     <div className="row position-relative">
                         <div className="col col-xl-9 order-lg-2 col-lg-9 col-md-9 col-sm-9">
+                            <SearchBar onSearch={setSearchTerm} />
+
                             <div className="row">
                                 {shows.map((show, index) => (
                                     <ShowCard key={index} id={show.id} name={show.name} image={show.image} />

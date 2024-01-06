@@ -31,7 +31,7 @@ function SignModal({ closeModal }) {
             if (response.status === 200) {
                 setSuccess('Successfully Logged In!');
                 setTimeout(() => {
-                    login(data.token, data.userId); 
+                    login(data.token, data.userId, data.username); 
                     closeModal()
                     window.location.reload();
                 }, 1000);

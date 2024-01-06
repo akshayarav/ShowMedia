@@ -3,16 +3,29 @@ import Axios from 'axios';
 import Sidebar from "../Sidebar/sidebar";
 import { Tabs, Tab } from 'react-bootstrap';
 import MyShows from './MyShows/MyShows';
+import { useParams } from 'react-router-dom';
 
 
 function Profile() {
+    const apiUrl = process.env.REACT_APP_API_URL;
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
-    const [key, setKey] = useState('feed');
+    const [userData, setUserData] = useState(null);
+    const { username } = useParams();
 
     const toggleOffcanvas = () => {
         setIsOffcanvasOpen(!isOffcanvasOpen);
         console.log(isOffcanvasOpen)
     };
+
+    useEffect(() => {
+        Axios.get(`${apiUrl}/api/user/${username}`)
+            .then(response => {
+                setUserData(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
+    }, [username]);
 
     return (
         <body className="bg-light">
