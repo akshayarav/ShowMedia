@@ -1,8 +1,9 @@
 import Sidebar from "../Sidebar/sidebar"
 import React, { useState, useEffect } from 'react';
 import FeedItem from "./FeedItem/feeditem"
-import MobileBar
-    from "../MobileBar/MobileBar";
+import MobileBar from "../MobileBar/MobileBar";
+import SearchBar from "../SearchBar/SearchBar";
+
 function Feed() {
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
 
@@ -18,6 +19,7 @@ function Feed() {
                             </div>
                         </main>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
+                        <SearchBar />
                     </div>
                 </div>
             </div>
