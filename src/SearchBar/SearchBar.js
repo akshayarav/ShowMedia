@@ -6,20 +6,25 @@ function SearchBar() {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const debounceTimeout = 500; // milliseconds
 
     useEffect(() => {
-        if (searchTerm) {
-            axios.get(`${apiUrl}/api/search/users?q=${searchTerm}`)
-                .then(response => {
-                    setSearchResults(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching search results:', error);
-                });
-        } else {
-            setSearchResults([]);
-        }
-    }, [searchTerm]);
+        const timeoutId = setTimeout(() => {
+            if (searchTerm) {
+                axios.get(`${apiUrl}/api/search/users?q=${searchTerm}`)
+                    .then(response => {
+                        setSearchResults(response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching search results:', error);
+                    });
+            } else {
+                setSearchResults([]);
+            }
+        }, debounceTimeout);
+
+        return () => clearTimeout(timeoutId); // Cleanup function to cancel the timeout
+    }, [searchTerm, apiUrl]);
 
     return (
         <aside className="col col-xl-3 order-xl-3 col-lg-6 order-lg-3 col-md-6 col-sm-6 col-12">
