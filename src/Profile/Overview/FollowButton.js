@@ -10,42 +10,38 @@ function FollowButton({ other_user }) {
     const { followerUpdate, setFollowerUpdate } = useContext(FollowerUpdateContext);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        setIsLoading(true);
-        axios.get(`${apiUrl}/following/${userId}`)
-            .then(response => {
-                const isCurrentlyFollowing = response.data.some(userData => userData.username === other_user);
-                setIsFollowing(isCurrentlyFollowing);
-                setIsLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-                setError(error.message || 'Error fetching user data');
-            });
-    }, [apiUrl, userId, followerUpdate]);
+    const user = JSON.parse(localStorage.getItem('user'));
 
+    useEffect(() => {
+        const isCurrentlyFollowing = user.following.some(userData => userData.username === other_user.username);
+        setIsFollowing(isCurrentlyFollowing);
+    }, [apiUrl, userId, followerUpdate, other_user]);
 
     const handleFollow = () => {
-        if (isLoading) {
-            return; 
+        if (isFollowing) {
+            user.following = user.following.filter(userData => userData.username !== other_user.username);
+            console.log(user.following)
+        }
+        else {
+            user.following.push({ username: other_user.username, _id: other_user._id });
         }
 
-        const newFollowingStatus = !isFollowing;
-        setIsFollowing(newFollowingStatus);  // Optimistically update the UI
+        localStorage.setItem('user', JSON.stringify(user));
 
-        const endpoint = newFollowingStatus ? `${apiUrl}/follow/${other_user}` : `${apiUrl}/unfollow/${other_user}`;
+
+        const newFollowingStatus = !isFollowing;
+        setIsFollowing(newFollowingStatus); 
+
+        const endpoint = newFollowingStatus ? `${apiUrl}/follow/${other_user.username}` : `${apiUrl}/unfollow/${other_user.username}`;
 
         axios.post(endpoint, { userId: userId })
             .then(response => {
-                setFollowerUpdate({ auth_user: localStorage.getItem('username'), other_user: other_user, following: newFollowingStatus });
+                setFollowerUpdate({ auth_user: localStorage.getItem('username'), other_user: other_user.username, following: newFollowingStatus });
             })
             .catch(error => {
                 console.error('Error following/unfollowing user:', error);
-                setIsFollowing(!newFollowingStatus);  // Revert on error
+                setIsFollowing(!newFollowingStatus); 
             })
-            .finally(() => {
-                setIsLoading(false);  // Stop loading regardless of result
-            });
     };
 
 

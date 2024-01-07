@@ -41,7 +41,7 @@ function SearchBar() {
                     </div>
                     <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
                         {searchResults.map(user => (
-                            <UserCard key={user._id} other_user={user.username} />
+                            <UserCard key={user._id} other_user={user} />
                         ))}
                     </div>
                 </div>

@@ -261,7 +261,11 @@ app.get('/following/:userId', async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId).populate('following');
+    const user = await User.findById(userId)
+      .populate({
+        path: 'following',
+        select: 'username'  // Select only the username field
+      });
     res.status(200).json(user.following);
   } catch (error) {
     console.error('Error getting following list:', error);
@@ -303,13 +307,18 @@ app.get('/followers/:userId', async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId).populate('followers');
+    const user = await User.findById(userId)
+      .populate({
+        path: 'followers',
+        select: 'username'  // Select only the username field
+      });
     res.status(200).json(user.followers);
   } catch (error) {
-    console.error('Error getting following list:', error);
+    console.error('Error getting followers list:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 
 

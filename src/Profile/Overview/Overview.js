@@ -53,10 +53,11 @@ function Overview() {
                     setError(error.message || 'Error fetching user data');
                 });
         }
-    }, [username, profileUser]);
+    }, [username]);
 
     useEffect(() => {
         if (followerUpdate.other_user === username || followerUpdate.auth_user === username) {
+            console.log("REACHED")
             axios.get(`${apiUrl}/api/user/${username}`)
                 .then(response => {
                     setProfileUser(response.data);
@@ -94,7 +95,7 @@ function Overview() {
                         <button onClick={toggleEditModal} className="btn btn-outline-primary btn-sm px-3 rounded-pill" htmlFor="btncheck1">Edit Profile</button>
                         {showEditModal && <EditModal closeModal={toggleEditModal} />}
                     </div>
-                ) : <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group"><FollowButton other_user={username} /></div>}
+                ) : <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group"><FollowButton other_user={profileUser} /></div>}
             </div>
             <div className="p-3">
                 <p className="mb-2 fs-6">{profileUser.bio}</p>
@@ -107,7 +108,7 @@ function Overview() {
                             ))}
                         </div>
                     </div>
-                    {showFollowersModal && <FollowersModal closeModal={toggleFollowersModal} title={"Followers"} userId={profileUser._id} followers = {followers}/>}
+                    {showFollowersModal && <FollowersModal closeModal={toggleFollowersModal} title={"Followers"} followers={followers} />}
                     <div onClick={toggleFollowingModal} role="button" tabIndex="0">
                         <div className="ms-5 ps-5">
                             <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
@@ -120,7 +121,7 @@ function Overview() {
                             </div>
                         </div>
                     </div>
-                    {showFollowingModal && <FollowersModal closeModal={toggleFollowingModal} title={"Following"} userId={profileUser._id} following = {following}/>}
+                    {showFollowingModal && <FollowersModal closeModal={toggleFollowingModal} title={"Following"} following={following} />}
                 </div>
             </div>
         </div>

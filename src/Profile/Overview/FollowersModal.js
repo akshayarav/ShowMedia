@@ -1,9 +1,8 @@
 import { Modal, Button, Alert } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import UserCard from '../../SearchBar/UserCard'
 
-function FollowersModal({ closeModal, title, userId, following, followers }) {
+function FollowersModal({ closeModal, title, following, followers }) {
 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
