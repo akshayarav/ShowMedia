@@ -32,22 +32,22 @@ function Profile() {
     }
 
     return (
-        <body className="bg-light">
+        <div className="bg-light">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
                         <main className="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
                             <div className="main-content">
-                                <ul class="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-white sticky-sidebar2" id="pills-tab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="p-3 nav-link text-muted active" id="pills-overview-tab" data-bs-toggle="pill" data-bs-target="#pills-overview" type="button" role="tab" aria-controls="pills-overview" aria-selected="true">Overview</button>
+                                <ul className="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-white sticky-sidebar2" id="pills-tab" role="tablist">
+                                    <li className="nav-item" role="presentation">
+                                        <button className="p-3 nav-link text-muted active" id="pills-overview-tab" data-bs-toggle="pill" data-bs-target="#pills-overview" type="button" role="tab" aria-controls="pills-overview" aria-selected="true">Overview</button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="p-3 nav-link text-muted" id="pills-feed-tab" data-bs-toggle="pill" data-bs-target="#pills-feed" type="button" role="tab" aria-controls="pills-feed" aria-selected="false">Feed</button>
+                                    <li className="nav-item" role="presentation">
+                                        <button className="p-3 nav-link text-muted" id="pills-feed-tab" data-bs-toggle="pill" data-bs-target="#pills-feed" type="button" role="tab" aria-controls="pills-feed" aria-selected="false">Feed</button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="p-3 nav-link text-muted" id="pills-shows-tab" data-bs-toggle="pill" data-bs-target="#pills-shows" type="button" role="tab" aria-controls="pills-shows" aria-selected="false">Shows</button>
+                                    <li className="nav-item" role="presentation">
+                                        <button className="p-3 nav-link text-muted" id="pills-shows-tab" data-bs-toggle="pill" data-bs-target="#pills-shows" type="button" role="tab" aria-controls="pills-shows" aria-selected="false">Shows</button>
                                     </li>
                                 </ul>
                                 <div className="tab-content" id="pills-tabContent">
@@ -68,7 +68,7 @@ function Profile() {
                     </div>
                 </div>
             </div>
-        </body>
+        </div>
     )
 }
 export default Profile

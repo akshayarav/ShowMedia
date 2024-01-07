@@ -76,7 +76,7 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
 
   return (
     <aside className="col col-xl-3 order-xl-1 col-lg-6 order-lg-1 col-md-6 col-sm-6 col-12">
-      <div className={offcanvasClasses} tabindex="-1" id="offcanvasExample" ref={offcanvasRef}>
+      <div className={offcanvasClasses} tabIndex="-1" id="offcanvasExample" ref={offcanvasRef}>
         <div className="sidebar-nav mb-3">
           <div className="pb-4 mb-4">
             <Link to="/feed" className="text-decoration-none">

@@ -75,7 +75,7 @@ function Shows() {
     };
 
     return (
-        <body className="bg-light">
+        <div className="bg-light">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
             <div className="py-4">
                 <div className="container">
@@ -98,7 +98,7 @@ function Shows() {
                     </div>
                 </div>
             </div>
-        </body>
+        </div>
     );
 }
 

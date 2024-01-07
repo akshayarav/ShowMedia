@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Feed from "./Feed/feed";
 import Shows from "./Shows/shows";
-import Sidebar from './Sidebar/sidebar';
 import Profile from './Profile/profile';
 
 function App() {

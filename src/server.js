@@ -53,12 +53,20 @@ const userSchema = new mongoose.Schema({
   last: String,
   profilePicture: {
     type: String,
-    default: '/default_profile.jpg' 
+    default: '/default_profile.jpg'
   },
   bio: {
     type: String,
     default: ''
-  }
+  },
+  following: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  followers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 });
 
 
@@ -93,7 +101,7 @@ app.post('/register', async (req, res) => {
     const savedUser = await newUser.save();
     const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
     res.status(201).json({
-      token: token, 
+      token: token,
       userId: savedUser._id,
     });
   } catch (error) {
@@ -153,18 +161,18 @@ app.post('/rate', async (req, res) => {
 
 app.get('/api/ratings/:userId', async (req, res) => {
   try {
-      const userId = req.params.userId;
-      if (!userId) {
-          console.log('No userId provided');
-          return res.status(400).send('No userId provided');
-      }
+    const userId = req.params.userId;
+    if (!userId) {
+      console.log('No userId provided');
+      return res.status(400).send('No userId provided');
+    }
 
-      const ratings = await Rating.find({ user: userId });
+    const ratings = await Rating.find({ user: userId });
 
-      res.send(ratings);
+    res.send(ratings);
   } catch (error) {
-      console.error('Error occurred in /api/ratings/:userId:', error); // Log the error details
-      res.status(500).send('Internal Server Error');
+    console.error('Error occurred in /api/ratings/:userId:', error); // Log the error details
+    res.status(500).send('Internal Server Error');
   }
 });
 
@@ -205,16 +213,101 @@ app.post('/edit/:username', async (req, res) => {
   const { bio } = req.body;
 
   try {
-      const updatedUser = await User.findOneAndUpdate({ username }, { bio }, { new: true });
-      
-      if (!updatedUser) {
-          return res.status(404).send('User not found');
-      }
+    const updatedUser = await User.findOneAndUpdate({ username }, { bio }, { new: true });
 
-      res.status(200).send(updatedUser);
+    if (!updatedUser) {
+      return res.status(404).send('User not found');
+    }
+
+    res.status(200).send(updatedUser);
   } catch (error) {
-      console.error('Error updating bio:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error updating bio:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/follow/:username', async (req, res) => {
+  const { username } = req.params;
+  const { userId } = req.body;
+
+  try {
+    const userToFollow = await User.findOne({ username });
+    const currentUser = await User.findById(userId);
+
+    if (!userToFollow || !currentUser) {
+      return res.status(404).send('User not found');
+    }
+
+    if (currentUser.following.includes(userToFollow._id)) {
+      return res.status(400).send('You are already following this user');
+    }
+
+    currentUser.following.push(userToFollow._id);
+    await currentUser.save();
+
+    userToFollow.followers.push(currentUser._id);
+    await userToFollow.save();
+
+    const updatedUser = await User.findById(userId).populate('following');
+    res.status(200).json(updatedUser);
+
+  } catch (error) {
+    console.error('Error following user:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/following/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId).populate('following');
+    res.status(200).json(user.following);
+  } catch (error) {
+    console.error('Error getting following list:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/unfollow/:username', async (req, res) => {
+  const { username } = req.params;
+  const { userId } = req.body;
+
+  try {
+    const userToUnfollow = await User.findOne({ username });
+    const currentUser = await User.findById(userId);
+
+    if (!userToUnfollow || !currentUser) {
+      return res.status(404).send('User not found');
+    }
+
+    if (!currentUser.following.includes(userToUnfollow._id)) {
+      return res.status(400).send('You are not following this user');
+    }
+
+    currentUser.following.pull(userToUnfollow._id);
+    await currentUser.save();
+
+    userToUnfollow.followers.pull(currentUser._id);
+    await userToUnfollow.save();
+
+    const updatedUser = await User.findById(userId).populate('following');
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error('Error unfollowing user:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/followers/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId).populate('followers');
+    res.status(200).json(user.followers);
+  } catch (error) {
+    console.error('Error getting following list:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
