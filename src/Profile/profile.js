@@ -13,6 +13,8 @@ function Profile() {
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
     const [userData, setUserData] = useState(null);
     const { username } = useParams();
+    const [error, setError] = useState(null);
+
 
     useEffect(() => {
         Axios.get(`${apiUrl}/api/user/${username}`)
@@ -21,8 +23,13 @@ function Profile() {
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
+                setError(error.message || 'Error fetching user data');
             });
     }, [username]);
+
+    if (error) {
+        return <div className="error-message">Error: {error}</div>;
+    }
 
     return (
         <body className="bg-light">
