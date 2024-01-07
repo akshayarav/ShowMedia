@@ -5,16 +5,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './AuthContext';
-import { UserProvider } from './UserContext';
+import { FollowerUpdateProvider } from './FollowerUpdateContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthProvider >
-      <UserProvider >
+      <FollowerUpdateProvider >
         <App />
-      </UserProvider>
+      </FollowerUpdateProvider>
     </AuthProvider>
   </React.StrictMode>
 );
