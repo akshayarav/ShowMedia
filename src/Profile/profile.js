@@ -5,6 +5,7 @@ import MyShows from './MyShows/MyShows';
 import { useParams } from 'react-router-dom';
 import MobileBar from '../MobileBar/MobileBar';
 import SearchBar from '../SearchBar/SearchBar';
+import Overview from './Overview/Overview';
 
 
 function Profile() {
@@ -44,7 +45,7 @@ function Profile() {
                                 </ul>
                                 <div className="tab-content" id="pills-tabContent">
                                     <div className="tab-pane fade show active" id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
-                                        {/* Content for Overview tab */}
+                                        <Overview />
                                     </div>
                                     <div className="tab-pane fade" id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
                                         {/* Content for Activity tab */}

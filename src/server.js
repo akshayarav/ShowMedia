@@ -50,8 +50,13 @@ const userSchema = new mongoose.Schema({
   username: String,
   passwordHash: String,
   first: String,
-  last: String
+  last: String,
+  profilePicture: {
+    type: String,
+    default: '/default_profile.jpg' // default value if not provided
+  }
 });
+
 
 const User = mongoose.model('User', userSchema);
 
@@ -84,7 +89,7 @@ app.post('/register', async (req, res) => {
     const savedUser = await newUser.save();
     const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
     res.status(201).json({
-      token: token, // Generate and send a token
+      token: token, 
       userId: savedUser._id,
     });
   } catch (error) {
@@ -121,11 +126,11 @@ app.post('/login', async (req, res) => {
 app.post('/rate', async (req, res) => {
   try {
     const { userId, showId, rating } = req.body;
-    // const user = await User.findById(userId);
+    const user = await User.findById(userId);
 
-    // if (!user) {
-    //   return res.status(404).json({ message: 'User or show not found' });
-    // }
+    if (!user) {
+      return res.status(404).json({ message: 'User or show not found' });
+    }
 
     const newRating = new Rating({
       user: userId,
@@ -171,7 +176,6 @@ app.get('/api/user/:username', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    // Exclude sensitive data from the user object before sending it
     const { passwordHash, ...userData } = user.toObject();
     res.json(userData);
   } catch (error) {
