@@ -5,6 +5,7 @@ import Sidebar from "../Sidebar/sidebar";
 import ShowCard from "./ShowCard/ShowCard";
 import SearchBar from './SearchBar';
 import MobileBar from '../MobileBar/MobileBar';
+import defaultImage from './ShowCard/error.jpg';
 
 function Shows() {
     const [shows, setShows] = useState([]);
@@ -21,7 +22,7 @@ function Shows() {
                 const newShows = response.data.results.map(show => ({
                     id: show.id,
                     name: show.name,
-                    image: `https://image.tmdb.org/t/p/w500${show.poster_path}`
+                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage
                 }));
                 setShows(prevShows => [...prevShows, ...newShows]);
             })
@@ -35,13 +36,13 @@ function Shows() {
             debounceSearch(searchTerm);
         } else {
             setCurrentPage(1);
-            setShows([]); // Clear the shows before fetching popular shows again
+            setShows([]);
             Axios.get(popularApiUrl)
                 .then(response => {
                     const fetchedShows = response.data.results.map(show => ({
                         id: show.id,
                         name: show.name,
-                        image: `https://image.tmdb.org/t/p/w500${show.poster_path}`
+                        image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage
                     }));
                     setShows(fetchedShows);
                 })
@@ -57,7 +58,7 @@ function Shows() {
                 const searchedShows = response.data.results.map(show => ({
                     id: show.id,
                     name: show.name,
-                    image: `https://image.tmdb.org/t/p/w500${show.poster_path}`
+                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage
                 }));
                 setShows(searchedShows);
             })
@@ -75,7 +76,7 @@ function Shows() {
 
     return (
         <body className="bg-light">
-            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)}/>
+            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
