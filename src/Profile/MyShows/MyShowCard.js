@@ -32,7 +32,7 @@ function MyShowCard({ rating, showId }) {
             <div className="ms-auto">
                 <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
                     <input type="checkbox" className="btn-check" id="btncddheck7" />
-                    <label className="btn btn-outline-primary btn-sm px-3 rounded-pill" for="btncddheck7"><span className="follow">Edit</span><span className="following d-none">Edit</span></label>
+                    <label className="btn btn-outline-primary btn-sm px-3 rounded-pill" htmlFor="btncddheck7"><span className="follow">Edit</span><span className="following d-none">Edit</span></label>
                 </div>
             </div>
         </div>

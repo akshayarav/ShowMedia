@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 function MyShows () {
     const apiUrl = process.env.REACT_APP_API_URL;
     const { username } = useParams();
-    console.log("USERNAME: " + username)
     const [ratings, setRatings] = useState([]);
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState(null);
@@ -15,7 +14,6 @@ function MyShows () {
         axios.get(`${apiUrl}/api/user/${username}`)
             .then(response => {
                 setUserData(response.data);
-                // Now fetch ratings
                 fetchRatings(response.data._id);
             })
             .catch(error => {

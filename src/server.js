@@ -53,7 +53,11 @@ const userSchema = new mongoose.Schema({
   last: String,
   profilePicture: {
     type: String,
-    default: '/default_profile.jpg' // default value if not provided
+    default: '/default_profile.jpg' 
+  },
+  bio: {
+    type: String,
+    default: ''
   }
 });
 
@@ -195,5 +199,24 @@ app.get('/api/search/users', async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+app.post('/edit/:username', async (req, res) => {
+  const { username } = req.params;
+  const { bio } = req.body;
+
+  try {
+      const updatedUser = await User.findOneAndUpdate({ username }, { bio }, { new: true });
+      
+      if (!updatedUser) {
+          return res.status(404).send('User not found');
+      }
+
+      res.status(200).send(updatedUser);
+  } catch (error) {
+      console.error('Error updating bio:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
 
 
