@@ -20,7 +20,7 @@ function FollowersModal({ closeModal, title, following, followers }) {
                 <div className="modal-content rounded-4 p-4 border-0">
                     <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
                         {users.map(user => (
-                            <UserCard key={user._id} other_user={user.username} />
+                            <UserCard key={user._id} other_user={user} />
                         ))}
                     </div>
                 </div>

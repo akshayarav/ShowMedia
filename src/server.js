@@ -264,7 +264,6 @@ app.get('/following/:userId', async (req, res) => {
     const user = await User.findById(userId)
       .populate({
         path: 'following',
-        select: 'username'  // Select only the username field
       });
     res.status(200).json(user.following);
   } catch (error) {
@@ -310,7 +309,6 @@ app.get('/followers/:userId', async (req, res) => {
     const user = await User.findById(userId)
       .populate({
         path: 'followers',
-        select: 'username'  // Select only the username field
       });
     res.status(200).json(user.followers);
   } catch (error) {

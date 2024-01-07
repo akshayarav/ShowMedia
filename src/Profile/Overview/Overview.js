@@ -27,37 +27,34 @@ function Overview() {
     const { followerUpdate } = useContext(FollowerUpdateContext);
 
     useEffect(() => {
-        axios.get(`${apiUrl}/api/user/${username}`)
-            .then(response => {
-                setProfileUser(response.data);
-            })
-            .catch(error => {
+        console.log("REACHED");
+    
+        const fetchData = async () => {
+            try {
+                // Fetch profile user data
+                const profileResponse = await axios.get(`${apiUrl}/api/user/${username}`);
+                setProfileUser(profileResponse.data);
+    
+                // Once profile user data is fetched, fetch following and followers
+                const followingResponse = await axios.get(`${apiUrl}/following/${profileResponse.data._id}`);
+                setFollowing(followingResponse.data);
+    
+                const followersResponse = await axios.get(`${apiUrl}/followers/${profileResponse.data._id}`);
+                setFollowers(followersResponse.data);
+    
+            } catch (error) {
                 console.error('Error fetching user data:', error);
                 setError(error.message || 'Error fetching user data');
-            });
-        if (profileUser) {
-            axios.get(`${apiUrl}/following/${profileUser._id}`)
-                .then(response => {
-                    setFollowing(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching user data:', error);
-                    setError(error.message || 'Error fetching user data');
-                });
-            axios.get(`${apiUrl}/followers/${profileUser._id}`)
-                .then(response => {
-                    setFollowers(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching user data:', error);
-                    setError(error.message || 'Error fetching user data');
-                });
-        }
-    }, [username]);
+            }
+        };
+    
+        fetchData();
+    }, [username, followerUpdate]);
+    
+
 
     useEffect(() => {
         if (followerUpdate.other_user === username || followerUpdate.auth_user === username) {
-            console.log("REACHED")
             axios.get(`${apiUrl}/api/user/${username}`)
                 .then(response => {
                     setProfileUser(response.data);
