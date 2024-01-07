@@ -199,7 +199,7 @@ app.get('/api/user/:username', async (req, res) => {
 app.get('/api/search/users', async (req, res) => {
   try {
     const searchQuery = req.query.q || '';
-    const regex = new RegExp(searchQuery, 'i'); // 'i' makes it case insensitive
+    const regex = new RegExp(searchQuery, 'i');
     const users = await User.find({ username: { $regex: regex } }).select('-passwordHash');
     res.json(users);
   } catch (error) {

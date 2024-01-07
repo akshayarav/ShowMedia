@@ -3,28 +3,57 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import EditModal from './EditModal';
 import { FollowerUpdateContext } from '../../FollowerUpdateContext';
-import FollowButton from '../FollowButton';
+import FollowButton from './FollowButton';
+import FollowersModal from './FollowersModal';
 
 function Overview() {
+    const apiUrl = process.env.REACT_APP_API_URL;
+
     const auth_username = localStorage.getItem('username')
     const { username } = useParams();
+
     const [error, setError] = useState(null);
     const [profileUser, setProfileUser] = useState(null);
-    const apiUrl = process.env.REACT_APP_API_URL;
+    const [followers, setFollowers] = useState([])
+    const [following, setFollowing] = useState([])
+
     const [showEditModal, setShowEditModal] = useState(false);
-    const { followerUpdate } = useContext(FollowerUpdateContext);
     const toggleEditModal = () => setShowEditModal(!showEditModal);
+    const [showFollowersModal, setShowFollowersModal] = useState(false);
+    const [showFollowingModal, setShowFollowingModal] = useState(false);
+    const toggleFollowersModal = () => setShowFollowersModal(!showFollowersModal);
+    const toggleFollowingModal = () => setShowFollowingModal(!showFollowingModal);
+
+    const { followerUpdate } = useContext(FollowerUpdateContext);
 
     useEffect(() => {
-            axios.get(`${apiUrl}/api/user/${username}`)
+        axios.get(`${apiUrl}/api/user/${username}`)
+            .then(response => {
+                setProfileUser(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+                setError(error.message || 'Error fetching user data');
+            });
+        if (profileUser) {
+            axios.get(`${apiUrl}/following/${profileUser._id}`)
                 .then(response => {
-                    setProfileUser(response.data);
+                    setFollowing(response.data);
                 })
                 .catch(error => {
                     console.error('Error fetching user data:', error);
                     setError(error.message || 'Error fetching user data');
                 });
-    }, [username]);
+            axios.get(`${apiUrl}/followers/${profileUser._id}`)
+                .then(response => {
+                    setFollowers(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                    setError(error.message || 'Error fetching user data');
+                });
+        }
+    }, [username, profileUser]);
 
     useEffect(() => {
         if (followerUpdate.other_user === username || followerUpdate.auth_user === username) {
@@ -65,23 +94,33 @@ function Overview() {
                         <button onClick={toggleEditModal} className="btn btn-outline-primary btn-sm px-3 rounded-pill" htmlFor="btncheck1">Edit Profile</button>
                         {showEditModal && <EditModal closeModal={toggleEditModal} />}
                     </div>
-                ) : <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group"><FollowButton other_user={username}/></div>}
+                ) : <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group"><FollowButton other_user={username} /></div>}
             </div>
             <div className="p-3">
                 <p className="mb-2 fs-6">{profileUser.bio}</p>
                 <div className="d-flex followers">
-                    <div>
+                    <div onClick={toggleFollowersModal} role="button" tabIndex="0">
                         <p className="mb-0">{numFollowers} <span className="text-muted">Followers</span></p>
                         <div className="d-flex">
-                            <img src="img/rmate1.jpg" className="img-fluid rounded-circle" alt="follower-img" />
+                            {followers.map(user => (
+                                <img src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
+                            ))}
                         </div>
                     </div>
-                    <div className="ms-5 ps-5">
-                        <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
-                        <div className="d-flex">
-                            <img src="img/rmate1.jpg" className="img-fluid rounded-circle" alt="follower-img" />
+                    {showFollowersModal && <FollowersModal closeModal={toggleFollowersModal} title={"Followers"} userId={profileUser._id} followers = {followers}/>}
+                    <div onClick={toggleFollowingModal} role="button" tabIndex="0">
+                        <div className="ms-5 ps-5">
+                            <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
+                            <div className="d-flex">
+                                <div className="d-flex">
+                                    {following.map(user => (
+                                        <img src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    {showFollowingModal && <FollowersModal closeModal={toggleFollowingModal} title={"Following"} userId={profileUser._id} following = {following}/>}
                 </div>
             </div>
         </div>

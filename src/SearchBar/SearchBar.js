@@ -4,6 +4,7 @@ import UserCard from "./UserCard";
 
 function SearchBar() {
     const apiUrl = process.env.REACT_APP_API_URL
+    const userId = localStorage.getItem('userId')
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
@@ -11,7 +12,8 @@ function SearchBar() {
         if (searchTerm) {
             axios.get(`${apiUrl}/api/search/users?q=${searchTerm}`)
                 .then(response => {
-                    setSearchResults(response.data);
+                    const filteredResults = response.data.filter(user => user._id !== userId);
+                    setSearchResults(filteredResults);
                 })
                 .catch(error => {
                     console.error('Error fetching search results:', error);

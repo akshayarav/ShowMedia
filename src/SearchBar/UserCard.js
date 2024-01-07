@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import FollowButton from '../Profile/FollowButton';
+import FollowButton from '../Profile/Overview/FollowButton';
 
 function UserCard({ other_user }) {
     const [error, setError] = useState(null);
