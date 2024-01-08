@@ -7,7 +7,6 @@ function MyShows() {
     const apiUrl = process.env.REACT_APP_API_URL;
     const { username } = useParams();
     const [ratings, setRatings] = useState([]);
-    const [watching, setWatching] = useState([])
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState(null);
 
@@ -59,9 +58,9 @@ function MyShows() {
                                                         key={`${rating.show}-${rating.season}`}
                                                         rating={rating.rating}
                                                         showId={rating.show}
-                                                        seasonNumber={rating.season}
+                                                        seasonId={rating.season}
                                                         comment={rating.comment}
-                                                        status={rating.status}
+                                                        episodes={rating.episodes}
                                                     />
                                                 );
                                             } else {

@@ -78,7 +78,8 @@ const seasonRatingSchema = new mongoose.Schema({
   season: Number,
   rating: Number,
   comment: String,
-  status: String
+  status: String,
+  episodes: String
 });
 
 const SeasonRating = mongoose.model('SeasonRating', seasonRatingSchema);
@@ -344,7 +345,7 @@ app.get('/followers/:userId', async (req, res) => {
 
 app.post('/rateSeason', async (req, res) => {
   try {
-      const { userId, showId, seasonNumber, rating, comment, status } = req.body;
+      const { userId, showId, seasonNumber, rating, comment, status, episodes } = req.body;
       const user = await User.findById(userId);
 
       if (!user) {
@@ -359,7 +360,7 @@ app.post('/rateSeason', async (req, res) => {
 
       const seasonRating = await SeasonRating.findOneAndUpdate(
           { user: userId, show: showId, season: seasonNumber },
-          { $set: { rating: rating, comment: comment, status: status } },
+          { $set: { rating: rating, comment: comment, status: status, episodes: episodes } },
           { new: true, upsert: true }
       );
 
