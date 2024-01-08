@@ -24,10 +24,10 @@ function MyShows () {
 
     const fetchRatings = async (userId) => {
         try {
-            const response = await axios.get(`${apiUrl}/api/ratings/${userId}`);
+            const response = await axios.get(`${apiUrl}/api/seasonRatings/${userId}`);
             setRatings(response.data);
         } catch (error) {
-            console.error('Error fetching ratings', error);
+            console.error('Error fetching season ratings', error);
         }
     };
 
@@ -42,7 +42,12 @@ function MyShows () {
     return (
         <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
             {ratings.map(rating => (
-                <MyShowCard key={rating.show} rating={rating.rating} showId={rating.show} />
+                <MyShowCard
+                    key={`${rating.show}-${rating.season}`}
+                    rating={rating.rating}
+                    showId={rating.show}
+                    seasonNumber={rating.season}
+                />
             ))}
         </div>
     );

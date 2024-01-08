@@ -22,7 +22,8 @@ function Shows() {
                 const newShows = response.data.results.map(show => ({
                     id: show.id,
                     name: show.name,
-                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage
+                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
+                    series_id: show.id
                 }));
                 setShows(prevShows => [...prevShows, ...newShows]);
             })
@@ -42,7 +43,8 @@ function Shows() {
                     const fetchedShows = response.data.results.map(show => ({
                         id: show.id,
                         name: show.name,
-                        image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage
+                        image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
+                        series_id: show.id
                     }));
                     setShows(fetchedShows);
                 })
@@ -58,7 +60,8 @@ function Shows() {
                 const searchedShows = response.data.results.map(show => ({
                     id: show.id,
                     name: show.name,
-                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage
+                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
+                    series_id: show.id
                 }));
                 setShows(searchedShows);
             })
@@ -85,7 +88,7 @@ function Shows() {
 
                             <div className="row">
                                 {shows.map((show, index) => (
-                                    <ShowCard key={index} id={show.id} name={show.name} image={show.image} />
+                                    <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
                                 ))}
                             </div>
                             {searchTerm === '' && (

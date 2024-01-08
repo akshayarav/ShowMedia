@@ -69,6 +69,17 @@ const userSchema = new mongoose.Schema({
   }]
 });
 
+const seasonRatingSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  show: Number,
+  season: Number,
+  rating: Number,
+});
+
+const SeasonRating = mongoose.model('SeasonRating', seasonRatingSchema);
 
 const User = mongoose.model('User', userSchema);
 
@@ -317,6 +328,47 @@ app.get('/followers/:userId', async (req, res) => {
   }
 });
 
+app.post('/rateSeason', async (req, res) => {
+  try {
+    const { userId, showId, seasonNumber, rating } = req.body;
+    const user = await User.findById(userId);
 
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
+    const seasonRating = await SeasonRating.findOneAndUpdate(
+      {
+        user: userId,
+        show: showId,
+        season: seasonNumber
+      },
+      {
+        $set: { rating: rating }
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    );
 
+    res.status(200).json({ message: 'Season rating updated successfully', seasonRating });
+  } catch (error) {
+    console.error('Error updating season rating:', error);
+    res.status(500).json({ message: 'Error updating season rating' });
+  }
+});
+
+app.get('/api/seasonRatings/:userId', async (req, res) => {
+  try {
+      const userId = req.params.userId;
+      const seasonRatings = await SeasonRating.find({ user: userId }).lean();
+      if (!seasonRatings) {
+          return res.status(404).json({ message: 'Season ratings not found' });
+      }
+      res.status(200).json(seasonRatings);
+  } catch (error) {
+      console.error('Error fetching season ratings:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
