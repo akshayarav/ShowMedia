@@ -6,6 +6,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 const saltRounds = 10;
 
 const app = express();
@@ -69,6 +70,8 @@ const userSchema = new mongoose.Schema({
   }]
 });
 
+const User = mongoose.model('User', userSchema);
+
 const seasonRatingSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   show: Number,
@@ -79,7 +82,19 @@ const seasonRatingSchema = new mongoose.Schema({
 
 const SeasonRating = mongoose.model('SeasonRating', seasonRatingSchema);
 
-const User = mongoose.model('User', userSchema);
+const activitySchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  type: String,
+  showId: Number,
+  showName: String,
+  showImage: String,
+  seasonNumber: Number,
+  rating: Number,
+  comment: String,
+  timestamp: { type: Date, default: Date.now }
+});
+
+const Activity = mongoose.model('Activity', activitySchema);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
@@ -328,36 +343,72 @@ app.get('/followers/:userId', async (req, res) => {
 
 app.post('/rateSeason', async (req, res) => {
   try {
-    const { userId, showId, seasonNumber, rating, comment } = req.body;
-    const user = await User.findById(userId);
+      const { userId, showId, seasonNumber, rating, comment } = req.body;
+      const user = await User.findById(userId);
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
 
-    const seasonRating = await SeasonRating.findOneAndUpdate(
-      { user: userId, show: showId, season: seasonNumber },
-      { $set: { rating: rating, comment: comment } },
-      { new: true, upsert: true }
-    );
+      const tmdbResponse = await axios.get(`https://api.themoviedb.org/3/tv/${showId}?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`);
+      const showDetails = tmdbResponse.data;
 
-    res.status(200).json({ message: 'Season rating updated successfully', seasonRating });
+      const showName = showDetails.name;
+      const showImage = showDetails.poster_path ? `https://image.tmdb.org/t/p/w500${showDetails.poster_path}` : './Shows/ShowCard/error.jpg';
+
+      const seasonRating = await SeasonRating.findOneAndUpdate(
+          { user: userId, show: showId, season: seasonNumber },
+          { $set: { rating: rating, comment: comment } },
+          { new: true, upsert: true }
+      );
+
+      const newActivity = new Activity({
+          user: userId,
+          type: 'rated',
+          showId: showId,
+          showName: showName,
+          showImage: showImage,
+          seasonNumber: seasonNumber,
+          rating: rating,
+          comment: comment,
+          timestamp: new Date()
+      });
+
+      await newActivity.save();
+
+      res.status(200).json({ message: 'Season rating and activity recorded successfully', seasonRating });
   } catch (error) {
-    console.error('Error updating season rating:', error);
-    res.status(500).json({ message: 'Error updating season rating' });
+      console.error('Error updating season rating and saving activity:', error);
+      res.status(500).json({ message: 'Error updating season rating and saving activity' });
+  }
+});
+
+app.get('/api/activities/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const activities = await Activity.find({ user: userId })
+      .sort({ timestamp: -1 })
+      .limit(20)
+      .populate('user', 'username')
+      .lean();
+
+    res.json(activities);
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
 app.get('/api/seasonRatings/:userId', async (req, res) => {
   try {
-      const userId = req.params.userId;
-      const seasonRatings = await SeasonRating.find({ user: userId }).lean();
-      if (!seasonRatings) {
-          return res.status(404).json({ message: 'Season ratings not found' });
-      }
-      res.status(200).json(seasonRatings);
+    const userId = req.params.userId;
+    const seasonRatings = await SeasonRating.find({ user: userId }).lean();
+    if (!seasonRatings) {
+      return res.status(404).json({ message: 'Season ratings not found' });
+    }
+    res.status(200).json(seasonRatings);
   } catch (error) {
-      console.error('Error fetching season ratings:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error fetching season ratings:', error);
+    res.status(500).send('Internal Server Error');
   }
 });

@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import MobileBar from '../MobileBar/MobileBar';
 import SearchBar from '../SearchBar/SearchBar';
 import Overview from './Overview/Overview';
-
+import Feed from './Feed/Feed';
 
 function Profile() {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -14,7 +14,6 @@ function Profile() {
     const [userData, setUserData] = useState(null);
     const { username } = useParams();
     const [error, setError] = useState(null);
-
 
     useEffect(() => {
         Axios.get(`${apiUrl}/api/user/${username}`)
@@ -25,7 +24,7 @@ function Profile() {
                 console.error('Error fetching user data:', error);
                 setError(error.message || 'Error fetching user data');
             });
-    }, [username]);
+    }, [username, apiUrl]);
 
     if (error) {
         return <div className="error-message">Error: {error}</div>;
@@ -55,7 +54,7 @@ function Profile() {
                                         <Overview />
                                     </div>
                                     <div className="tab-pane fade" id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
-                                        {/* Content for Activity tab */}
+                                        {userData && <Feed userId={userData._id} />}
                                     </div>
                                     <div className="tab-pane fade" id="pills-shows" role="tabpanel" aria-labelledby="pills-shows-tab">
                                         <MyShows />
@@ -71,4 +70,5 @@ function Profile() {
         </div>
     )
 }
-export default Profile
+
+export default Profile;
