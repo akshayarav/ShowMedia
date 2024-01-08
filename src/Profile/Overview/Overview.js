@@ -25,32 +25,36 @@ function Overview() {
     const toggleFollowingModal = () => setShowFollowingModal(!showFollowingModal);
 
     const { followerUpdate } = useContext(FollowerUpdateContext);
+    const [isLoading, setIsLoading] = useState(false)
+
 
     useEffect(() => {
         console.log("REACHED");
-    
+        setIsLoading(true)
+
         const fetchData = async () => {
             try {
-                // Fetch profile user data
                 const profileResponse = await axios.get(`${apiUrl}/api/user/${username}`);
                 setProfileUser(profileResponse.data);
-    
-                // Once profile user data is fetched, fetch following and followers
+
                 const followingResponse = await axios.get(`${apiUrl}/following/${profileResponse.data._id}`);
                 setFollowing(followingResponse.data);
-    
+
                 const followersResponse = await axios.get(`${apiUrl}/followers/${profileResponse.data._id}`);
                 setFollowers(followersResponse.data);
-    
+
             } catch (error) {
                 console.error('Error fetching user data:', error);
                 setError(error.message || 'Error fetching user data');
+            } finally {
+                setIsLoading(false)
             }
         };
-    
+
+
         fetchData();
     }, [username, followerUpdate]);
-    
+
 
 
     useEffect(() => {
@@ -70,7 +74,7 @@ function Overview() {
         return <div>Error: {error}</div>;
     }
 
-    if (!profileUser) {
+    if (!profileUser || isLoading) {
         return <div>Loading...</div>;
     }
 
