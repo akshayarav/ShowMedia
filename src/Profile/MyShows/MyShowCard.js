@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function MyShowCard({ rating, showId, seasonNumber, comment }) {
+function MyShowCard({ rating, showId, seasonNumber, comment, status }) {
     const [show, setShow] = useState(null);
 
     useEffect(() => {

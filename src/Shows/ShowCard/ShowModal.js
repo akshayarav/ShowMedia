@@ -7,6 +7,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
     const [comment, setComment] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [status, setStatus] = useState('')
     const apiUrl = process.env.REACT_APP_API_URL;
 
     const handleSubmit = async (e) => {
@@ -21,8 +22,8 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
             return;
         }
 
-        if (!selectedSeason || !comment || !rating) {
-            setError('Please select a season, enter a rating, and write a comment.');
+        if (!selectedSeason || !comment || !rating || !status) {
+            setError('Please select a status, a season, enter a rating, and write a comment.');
             return;
         }
 
@@ -37,7 +38,8 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
                     showId: series_id,
                     seasonNumber: selectedSeason,
                     rating: parseInt(rating),
-                    comment
+                    comment: comment,
+                    status: status
                 }),
             });
 
@@ -59,38 +61,52 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
     };
 
     return (
-        <Modal show={true} onHide={closeModal} centered>
+        <Modal show={true} onHide={closeModal} centered className="custom-modal">
             <Modal.Header closeButton>
                 <Modal.Title>Rate Seasons of {showName}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {error && <Alert variant="danger">{error}</Alert>}
                 {success && <Alert variant="success">{success}</Alert>}
-                <div className="image-container">
-                    <img src={showImg} className="img-fluid" alt={showName} />
+                <div className="d-flex">
+                    <div className="image-container">
+                        <img src={showImg} className="img-fluid" alt={showName} />
+                    </div>
+                    <div className="flex-grow-1 ms-3">
+                        <form onSubmit={handleSubmit}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Status</Form.Label>
+                                <Form.Control as="select" value={status} onChange={e => setStatus(e.target.value)}>
+                                    <option value="">Select Status</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Watching">Watching</option>
+                                    <option value="Planning">Planning</option>
+                                    <option value="Dropped">Dropped</option>
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Season</Form.Label>
+                                <Form.Control as="select" value={selectedSeason} onChange={e => setSelectedSeason(e.target.value)}>
+                                    <option value="">Select Season</option>
+                                    {seasons.map(season => (
+                                        <option key={season.season_number} value={season.season_number}>
+                                            Season {season.season_number}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Rating</Form.Label>
+                                <Form.Control type="number" min="1" max="10" placeholder="Enter rating" value={rating} onChange={e => setRating(e.target.value)} />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Comment</Form.Label>
+                                <Form.Control as="textarea" rows={3} value={comment} onChange={e => setComment(e.target.value)} />
+                            </Form.Group>
+                            <Button variant="primary" type="submit">Submit</Button>
+                        </form>
+                    </div>
                 </div>
-                <form onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Select Season</Form.Label>
-                        <Form.Control as="select" value={selectedSeason} onChange={e => setSelectedSeason(e.target.value)}>
-                            <option value="">Select a Season</option>
-                            {seasons.map(season => (
-                                <option key={season.season_number} value={season.season_number}>
-                                    Season {season.season_number}
-                                </option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Rating</Form.Label>
-                        <Form.Control type="number" min="1" max="10" placeholder="Enter rating" value={rating} onChange={e => setRating(e.target.value)} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Comment</Form.Label>
-                        <Form.Control as="textarea" rows={3} value={comment} onChange={e => setComment(e.target.value)} />
-                    </Form.Group>
-                    <Button variant="primary" type="submit">Submit</Button>
-                </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={closeModal}>Close</Button>
