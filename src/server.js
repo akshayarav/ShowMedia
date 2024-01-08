@@ -70,13 +70,11 @@ const userSchema = new mongoose.Schema({
 });
 
 const seasonRatingSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   show: Number,
   season: Number,
   rating: Number,
+  comment: String
 });
 
 const SeasonRating = mongoose.model('SeasonRating', seasonRatingSchema);
@@ -330,7 +328,7 @@ app.get('/followers/:userId', async (req, res) => {
 
 app.post('/rateSeason', async (req, res) => {
   try {
-    const { userId, showId, seasonNumber, rating } = req.body;
+    const { userId, showId, seasonNumber, rating, comment } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -338,18 +336,9 @@ app.post('/rateSeason', async (req, res) => {
     }
 
     const seasonRating = await SeasonRating.findOneAndUpdate(
-      {
-        user: userId,
-        show: showId,
-        season: seasonNumber
-      },
-      {
-        $set: { rating: rating }
-      },
-      {
-        new: true,
-        upsert: true
-      }
+      { user: userId, show: showId, season: seasonNumber },
+      { $set: { rating: rating, comment: comment } },
+      { new: true, upsert: true }
     );
 
     res.status(200).json({ message: 'Season rating updated successfully', seasonRating });

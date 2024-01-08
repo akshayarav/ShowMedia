@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function MyShowCard({ rating, showId, seasonNumber }) {
+function MyShowCard({ rating, showId, seasonNumber, comment }) {
     const [show, setShow] = useState(null);
 
     useEffect(() => {
@@ -29,9 +29,9 @@ function MyShowCard({ rating, showId, seasonNumber }) {
                 </p>
                 <div className="text-muted fw-light">
                     <p className="mb-1 small">Rating: {rating}</p>
+                    {comment && <p className="mb-1 small">"{comment}"</p>}
                 </div>
             </div>
-            {}
         </div>
     );
 }

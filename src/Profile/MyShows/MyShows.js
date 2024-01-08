@@ -47,6 +47,7 @@ function MyShows () {
                     rating={rating.rating}
                     showId={rating.show}
                     seasonNumber={rating.season}
+                    comment={rating.comment}
                 />
             ))}
         </div>
