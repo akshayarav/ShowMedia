@@ -7,12 +7,15 @@ import ShowSearch from './ShowSearch';
 import MobileBar from '../MobileBar/MobileBar';
 import defaultImage from './ShowCard/error.jpg';
 import SearchBar from "../SearchBar/SearchBar"
+import UserCard from '../SearchBar/UserCard';
 
 function Shows() {
     const [shows, setShows] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchScreenOn, setSearchScreenOn] = useState(false)
+    const [searchResults, setSearchResults] = useState([]);
 
     const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${currentPage}`;
     const searchApiUrl = query => `https://api.themoviedb.org/3/search/tv?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&query=${query}`;
@@ -76,7 +79,7 @@ function Shows() {
     const debounceSearch = debounce(handleSearch, 500);
 
     const handleShowMore = (event) => {
-        if (event) event.preventDefault(); 
+        if (event) event.preventDefault();
         setCurrentPage(prevPage => prevPage + 1);
     };
 
@@ -88,9 +91,20 @@ function Shows() {
 
     const debouncedCheckScrollBottom = useCallback(debounce(checkScrollBottom, 100), []);
 
+    if (searchScreenOn) {
+        return (<div>
+            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults = {(e) => setSearchResults(e)}/>
+            <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
+                {searchResults.map(user => (
+                    <UserCard key={user._id} other_user={user} />
+                ))}
+            </div>
+        </div>)
+    }
+
     return (
         <div className="bg-light">
-            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
+            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults = {(e) => setSearchResults(e)}/>
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
