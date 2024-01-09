@@ -65,6 +65,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
 
 
         try {
+            console.log(newEpisodes)
             const response = await fetch(`${apiUrl}/rateSeason`, {
                 method: 'POST',
                 headers: {
@@ -77,7 +78,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                     rating: parseInt(rating),
                     comment: comment,
                     status: status,
-                    episodes: episodeUpdate
+                    episodes: newEpisodes
                 }),
             });
 
@@ -119,7 +120,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                         <ul className="dropdown-menu fs-13 dropdown-menu-end" aria-labelledby="dropdownMenuButton6">
                             <li>
                                 <button onClick={toggleShowModal} className="dropdown-item text-muted" htmlFor="btncheck1">
-                                    <span className="material-icons md-13 me-1">sentiment_very_dissatisfied</span>
+                                    <span className="material-icons md-13 me-1">edit</span>
                                     Edit Show
                                 </button>
                                 {showModal && <ShowModal closeModal={toggleShowModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show.poster_path}`} series_id={showId} seasons={seasons} updateStatus = {updateStatus}/>}
