@@ -360,8 +360,8 @@ app.post('/rateSeason', async (req, res) => {
 
       const showName = showDetails.name;
 
-      const showImage = showDetails.poster_path ? `https://image.tmdb.org/t/p/w500${showDetails.poster_path}` : '/static/Shows/ShowCard/error.jpg?nocache=123456';
-
+      const showImage = showDetails.poster_path
+      
       const seasonRating = await SeasonRating.findOneAndUpdate(
           { user: userId, show: showId, season: seasonNumber },
           { $set: { rating: rating, comment: comment, status: status, episodes: episodes } },

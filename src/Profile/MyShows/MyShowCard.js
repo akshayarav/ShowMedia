@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ShowModal from '../../Shows/ShowCard/ShowModal';
+import error from './error.jpg'
 
 function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, updateStatus }) {
-    const [show, setShow] = useState(null);
+    const [show, setShow] = useState('');
     const [episodeUpdate, setEpisodeUpdate] = useState(episodes)
     const { username } = useParams();
     const [showModal, setShowModal] = useState(false);
@@ -65,7 +66,6 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
 
 
         try {
-            console.log(newEpisodes)
             const response = await fetch(`${apiUrl}/rateSeason`, {
                 method: 'POST',
                 headers: {
@@ -98,7 +98,6 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
 
     const handleShowDel = async (e) => {
         e.preventDefault()
-        console.log('del')
         try {
             const response = await fetch(`${apiUrl}/delSeason`, {
                 method: 'POST',
@@ -128,11 +127,14 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
     const toggleShowModal = () => { setShowModal(!showModal); };
 
     if (!show) return <div>Loading...</div>;
+
+    const image = show && show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : error;
+
     return (
         <div className="p-3 border-bottom d-flex flex-column text-dark text-decoration-none account-item">
             <div className="d-flex align-items-start justify-content-between">
                 <div className="d-flex align-items-center">
-                    <img src={`https://image.tmdb.org/t/p/w500${show.poster_path}`} className="img-fluid rounded-circle me-3" alt={show.name} />
+                    <img src={image} className="img-fluid rounded-circle me-3" alt={show.name} />
                     <div>
                         <p className="fw-bold mb-0">
                             <a href="#" className="text-decoration-none text-dark">{show.name} - Season {seasonNumber}</a>
@@ -152,7 +154,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                                     <span className="material-icons md-13 me-1">edit</span>
                                     Edit Show
                                 </button>
-                                {showModal && <ShowModal closeModal={toggleShowModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show.poster_path}`} series_id={showId} seasons={seasons} updateStatus = {updateStatus}/>}
+                                {showModal && <ShowModal closeModal={toggleShowModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show.poster_path}`} series_id={showId} seasons={seasons} updateStatus={updateStatus} />}
                             </li>
                             <li>
                                 <button onClick={handleShowDel} className="dropdown-item text-muted" htmlFor="btncheck2">
@@ -176,7 +178,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                         )}
 
                         {status === "Watching" && (
-                            <div className="align-self-end"> 
+                            <div className="align-self-end">
                                 <p className="mb-1 fw-bold">Progress: {episodeUpdate}</p>
                             </div>
                         )}
