@@ -239,10 +239,10 @@ app.get('/api/search/users', async (req, res) => {
 
 app.post('/edit/:username', async (req, res) => {
   const { username } = req.params;
-  const { bio } = req.body;
+  const { bio, first, last } = req.body;
 
   try {
-    const updatedUser = await User.findOneAndUpdate({ username }, { bio }, { new: true });
+    const updatedUser = await User.findOneAndUpdate({ username }, { bio, first: first, last: last }, { new: true });
 
     if (!updatedUser) {
       return res.status(404).send('User not found');
@@ -348,69 +348,69 @@ app.get('/followers/:userId', async (req, res) => {
 
 app.post('/rateSeason', async (req, res) => {
   try {
-      const { userId, showId, seasonNumber, rating, comment, status, episodes } = req.body;
-      const user = await User.findById(userId);
+    const { userId, showId, seasonNumber, rating, comment, status, episodes } = req.body;
+    const user = await User.findById(userId);
 
-      if (!user) {
-          console.log('User not found with ID:', userId);
-          return res.status(404).json({ message: 'User not found' });
-      }
+    if (!user) {
+      console.log('User not found with ID:', userId);
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-      const tmdbResponse = await axios.get(`https://api.themoviedb.org/3/tv/${showId}?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`);
-      const showDetails = tmdbResponse.data;
+    const tmdbResponse = await axios.get(`https://api.themoviedb.org/3/tv/${showId}?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`);
+    const showDetails = tmdbResponse.data;
 
-      const showName = showDetails.name;
+    const showName = showDetails.name;
 
-      const showImage = showDetails.poster_path
-      
-      const seasonRating = await SeasonRating.findOneAndUpdate(
-          { user: userId, show: showId, season: seasonNumber },
-          { $set: { rating: rating, comment: comment, status: status, episodes: episodes } },
-          { new: true, upsert: true }
-      );
+    const showImage = showDetails.poster_path
 
-      const newActivity = new Activity({
-          user: userId,
-          type: 'rated',
-          showId: showId,
-          showName: showName,
-          showImage: showImage,
-          seasonNumber: seasonNumber,
-          rating: rating,
-          comment: comment,
-          status: status,
-          timestamp: new Date()
-      });
+    const seasonRating = await SeasonRating.findOneAndUpdate(
+      { user: userId, show: showId, season: seasonNumber },
+      { $set: { rating: rating, comment: comment, status: status, episodes: episodes } },
+      { new: true, upsert: true }
+    );
 
-      await newActivity.save();
+    const newActivity = new Activity({
+      user: userId,
+      type: 'rated',
+      showId: showId,
+      showName: showName,
+      showImage: showImage,
+      seasonNumber: seasonNumber,
+      rating: rating,
+      comment: comment,
+      status: status,
+      timestamp: new Date()
+    });
 
-      res.status(200).json({ message: 'Season rating and activity recorded successfully', seasonRating });
+    await newActivity.save();
+
+    res.status(200).json({ message: 'Season rating and activity recorded successfully', seasonRating });
   } catch (error) {
-      console.error('Error updating season rating and saving activity:', error);
-      res.status(500).json({ message: 'Error updating season rating and saving activity' });
+    console.error('Error updating season rating and saving activity:', error);
+    res.status(500).json({ message: 'Error updating season rating and saving activity' });
   }
 });
 
 app.post('/delSeason', async (req, res) => {
   try {
-      const { userId, showId } = req.body;
+    const { userId, showId } = req.body;
 
-      const user = await User.findById(userId);
-      if (!user) {
-          console.log('User not found with ID:', userId);
-          return res.status(404).json({ message: 'User not found' });
-      }
+    const user = await User.findById(userId);
+    if (!user) {
+      console.log('User not found with ID:', userId);
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-      const deletionResult = await SeasonRating.deleteOne({ user: userId, show: showId });
+    const deletionResult = await SeasonRating.deleteOne({ user: userId, show: showId });
 
-      if (deletionResult.deletedCount === 0) {
-          return res.status(404).json({ message: 'Season rating not found for the given user and show' });
-      }
+    if (deletionResult.deletedCount === 0) {
+      return res.status(404).json({ message: 'Season rating not found for the given user and show' });
+    }
 
-      res.status(200).json({ message: 'Season rating removed successfully' });
+    res.status(200).json({ message: 'Season rating removed successfully' });
   } catch (error) {
-      console.error('Error removing season rating:', error);
-      res.status(500).json({ message: 'Error removing season rating' });
+    console.error('Error removing season rating:', error);
+    res.status(500).json({ message: 'Error removing season rating' });
   }
 });
 

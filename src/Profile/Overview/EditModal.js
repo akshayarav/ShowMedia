@@ -4,7 +4,11 @@ import axios from 'axios';
 
 
 function EditModal({ closeModal }) {
-    const [tempBio, setTempBio] = useState('')
+    const user = localStorage.getItem('user')
+    
+    const [tempBio, setTempBio] = useState(user.bio)
+    const [first, setFirst] = useState(user.first)
+    const [last, setLast] = useState(user.last)
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const username = localStorage.getItem('username')
@@ -13,7 +17,7 @@ function EditModal({ closeModal }) {
         e.preventDefault();
         const apiUrl = process.env.REACT_APP_API_URL
 
-        axios.post(`${apiUrl}/edit/${username}`, { bio: tempBio })
+        axios.post(`${apiUrl}/edit/${username}`, { bio: tempBio, first: first, last: last })
             .then(response => {
                 setSuccess('Bio updated successfully!');
                 setTimeout(() => {
@@ -53,6 +57,37 @@ function EditModal({ closeModal }) {
                                                     placeholder="Enter Username"
                                                 />
                                                 <label htmlFor="floatingBio">Enter Bio</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6 className="fw-bold mx-1 mb-2 text-dark">Name</h6>
+                                    <div className="row mx-0 mb-3">
+                                        <div className="col-9 p-1">
+                                            <div className="form-floating d-flex align-items-end">
+                                                <input
+                                                    type="text"
+                                                    className="form-control rounded-5"
+                                                    id="floatingEditFirst"
+                                                    value={first}
+                                                    onChange={(e) => setFirst(e.target.value)}
+                                                    placeholder="First Name"
+                                                />
+                                                <label htmlFor="floatingEditFirst">First Name</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row mx-0 mb-3">
+                                        <div className="col-9 p-1">
+                                            <div className="form-floating d-flex align-items-end">
+                                                <input
+                                                    type="text"
+                                                    className="form-control rounded-5"
+                                                    id="floatingEditLast"
+                                                    value={last}
+                                                    onChange={(e) => setLast(e.target.value)}
+                                                    placeholder="Last Name"
+                                                />
+                                                <label htmlFor="floatingEditLast">Last Name</label>
                                             </div>
                                         </div>
                                     </div>
