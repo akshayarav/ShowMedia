@@ -107,6 +107,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                 body: JSON.stringify({
                     userId: userId,
                     showId: showId,
+                    seasonNumber: seasonNumber
                 }),
             });
 

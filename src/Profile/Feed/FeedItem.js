@@ -5,7 +5,7 @@ function FeedItem({ activity }) {
     const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
     const image = activity.showImage ? `https://image.tmdb.org/t/p/w500${activity.showImage}` : error
 
-    const status = activity.status === "Watching" ? "started watching" : 
+    const status = activity.status === "Watching" ? `just watched the ${activity.episodes} episode of` : 
         activity.status === "Planning" ? "is planning to watch" : 
             activity.status === "Completed" ? "completed" : 
                 activity.status === "Dropped" ? "dropped" : console.error("Activity has invalid status")
@@ -32,7 +32,7 @@ function FeedItem({ activity }) {
                 </div>
 
                 <div className="mb-2">
-                    <h6 className="mb-1 fw-bold">Rating: {activity.rating}/10</h6>
+                    <h6 className="mb-1 fw-bold">Season Rating: {activity.rating}/10</h6>
                     <br></br>
                     <p className="mb-1"> "{activity.comment}"</p> 
                 </div>

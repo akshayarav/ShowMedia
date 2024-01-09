@@ -14,6 +14,11 @@ function Profile() {
     const [userData, setUserData] = useState(null);
     const { username } = useParams();
     const [error, setError] = useState(null);
+    const [feedKey, setFeedKey] = useState(0);
+
+    const handleFeedTabClick = () => {
+        setFeedKey(prevKey => prevKey + 1);
+    };
 
     useEffect(() => {
         Axios.get(`${apiUrl}/api/user/${username}`)
@@ -43,7 +48,7 @@ function Profile() {
                                         <button className="p-3 nav-link text-muted active" id="pills-overview-tab" data-bs-toggle="pill" data-bs-target="#pills-overview" type="button" role="tab" aria-controls="pills-overview" aria-selected="true">Overview</button>
                                     </li>
                                     <li className="nav-item" role="presentation">
-                                        <button className="p-3 nav-link text-muted" id="pills-feed-tab" data-bs-toggle="pill" data-bs-target="#pills-feed" type="button" role="tab" aria-controls="pills-feed" aria-selected="false">Activity</button>
+                                        <button className="p-3 nav-link text-muted" id="pills-feed-tab" data-bs-toggle="pill" data-bs-target="#pills-feed" type="button" role="tab" aria-controls="pills-feed" aria-selected="false" onClick={handleFeedTabClick}>Activity</button>
                                     </li>
                                     <li className="nav-item" role="presentation">
                                         <button className="p-3 nav-link text-muted" id="pills-shows-tab" data-bs-toggle="pill" data-bs-target="#pills-shows" type="button" role="tab" aria-controls="pills-shows" aria-selected="false">Show List</button>
@@ -54,7 +59,7 @@ function Profile() {
                                         <Overview />
                                     </div>
                                     <div className="tab-pane fade" id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
-                                        {userData && <Feed userId={userData._id} />}
+                                        {userData && <Feed userId={userData._id} refresh = {feedKey}/>}
                                     </div>
                                     <div className="tab-pane fade" id="pills-shows" role="tabpanel" aria-labelledby="pills-shows-tab">
                                         <MyShows />

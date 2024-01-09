@@ -95,6 +95,7 @@ const activitySchema = new mongoose.Schema({
   seasonNumber: Number,
   rating: Number,
   status: String,
+  episodes: String,
   comment: String,
   timestamp: { type: Date, default: Date.now }
 });
@@ -379,6 +380,7 @@ app.post('/rateSeason', async (req, res) => {
       rating: rating,
       comment: comment,
       status: status,
+      episodes: episodes,
       timestamp: new Date()
     });
 
@@ -393,7 +395,7 @@ app.post('/rateSeason', async (req, res) => {
 
 app.post('/delSeason', async (req, res) => {
   try {
-    const { userId, showId } = req.body;
+    const { userId, showId, seasonNumber } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -401,10 +403,16 @@ app.post('/delSeason', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const deletionResult = await SeasonRating.deleteOne({ user: userId, show: showId });
+    const deletionResultSeason = await SeasonRating.deleteOne({ user: userId, show: showId, season: seasonNumber });
 
-    if (deletionResult.deletedCount === 0) {
+    if (deletionResultSeason.deletedCount === 0) {
       return res.status(404).json({ message: 'Season rating not found for the given user and show' });
+    }
+
+    const deletionResultActivity = await Activity.deleteMany({ user: userId, showId: showId, seasonNumber: seasonNumber });
+
+    if (deletionResultActivity.deletedCount === 0) {
+      return res.status(404).json({ message: 'Activity not found for the given user and show' });
     }
 
     res.status(200).json({ message: 'Season rating removed successfully' });

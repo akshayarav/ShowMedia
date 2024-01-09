@@ -14,6 +14,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
     const [episodes, setEpisodes] = useState('');
     const [episodeProgress, setEpisodeProgress] = useState(null);
 
+
     useEffect(() => {
         const seasonObj = seasons.find(season => season.id === parseInt(selectedSeason));
         setSelectedSeasonObject(seasonObj);

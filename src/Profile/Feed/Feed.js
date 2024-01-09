@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FeedItem from './FeedItem';
 
-function Feed({ userId }) {
+function Feed({ userId, refresh }) {
     const [activities, setActivities] = useState([]);
     const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -17,7 +17,7 @@ function Feed({ userId }) {
         };
 
         fetchActivities();
-    }, [userId]);
+    }, [userId, refresh]);
 
     return (
         <div>
