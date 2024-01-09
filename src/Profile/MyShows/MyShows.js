@@ -9,6 +9,7 @@ function MyShows() {
     const [ratings, setRatings] = useState([]);
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState(null);
+    const [reload, toggleReload] = useState(false)
 
     useEffect(() => {
         axios.get(`${apiUrl}/api/user/${username}`)
@@ -20,7 +21,7 @@ function MyShows() {
                 console.error('Error fetching user data:', error);
                 setError(error.message || 'Error fetching user data');
             });
-    }, [username, apiUrl]);
+    }, [username, apiUrl, reload]);
 
     const fetchRatings = async (userId) => {
         try {
@@ -41,15 +42,8 @@ function MyShows() {
 
     const sortedRatings = [...ratings].sort((a, b) => b.rating - a.rating);
 
-    const updateRatingStatus = (showId, seasonNumber, newStatus) => {
-        setRatings(currentRatings => 
-            currentRatings.map(rating => {
-                if (rating.show === showId && rating.season === seasonNumber) {
-                    return { ...rating, status: newStatus };
-                }
-                return rating;
-            })
-        );
+    const updateStatus = () => {
+        toggleReload(prevReload => !prevReload);
     };
     
 
@@ -74,7 +68,7 @@ function MyShows() {
                                                         comment={rating.comment}
                                                         episodes={rating.episodes}
                                                         status={rating.status}
-                                                        updateRatingStatus={updateRatingStatus}
+                                                        updateStatus={updateStatus}
                                                     />
                                                 );
                                             } else {
@@ -98,6 +92,8 @@ function MyShows() {
                                                         seasonNumber={rating.season}
                                                         comment={rating.comment}
                                                         status={rating.status}
+                                                        updateStatus={updateStatus}
+
                                                     />
                                                 );
                                             } else {
@@ -122,6 +118,8 @@ function MyShows() {
                                                         seasonNumber={rating.season}
                                                         comment={rating.comment}
                                                         status={rating.status}
+                                                        updateStatus={updateStatus}
+
                                                     />
                                                 );
                                             } else {
@@ -146,6 +144,7 @@ function MyShows() {
                                                         seasonNumber={rating.season}
                                                         comment={rating.comment}
                                                         status={rating.status}
+                                                        updateStatus={updateStatus}
                                                     />
                                                 );
                                             } else {

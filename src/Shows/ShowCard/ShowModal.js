@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Alert, Form } from 'react-bootstrap';
 
-function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
+function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateStatus }) {
     const [selectedSeason, setSelectedSeason] = useState('');
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');
@@ -21,8 +21,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
         if (seasonObj) {
             const newEpisodesTotal = seasonObj.episodes.length;
             setEpisodesTotal(newEpisodesTotal);
-            console.log(seasonObj); 
-            console.log(newEpisodesTotal);
         }
 
         if (episodes && episodesTotal) {
@@ -49,7 +47,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
             setError('Please select a status, a season, enter a rating, and write a comment.');
             return;
         }
-        console.log("PROGRESS:  " + episodeProgress)
 
         try {
             const response = await fetch(`${apiUrl}/rateSeason`, {
@@ -82,9 +79,10 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
 
         } catch (err) {
             setError('Server error');
+        } finally {
+            if(updateStatus) {updateStatus()}
         }
     };
-
     return (
         <Modal show={true} onHide={closeModal} centered className="custom-modal">
             <Modal.Header closeButton>

@@ -20,7 +20,6 @@ function FollowButton({ other_user }) {
     const handleFollow = () => {
         if (isFollowing) {
             user.following = user.following.filter(userData => userData.username !== other_user.username);
-            console.log(user.following)
         }
         else {
             user.following.push({ username: other_user.username, _id: other_user._id });

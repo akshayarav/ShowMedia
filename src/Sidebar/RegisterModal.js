@@ -16,7 +16,6 @@ function RegisterModal({ closeModal }) {
     const { isAuthenticated, login, logout } = useContext(AuthContext);
 
     const handleSubmit = async (e) => {
-        console.log(`${apiUrl}/register`)
         e.preventDefault();
         setError('');
         setSuccess('');

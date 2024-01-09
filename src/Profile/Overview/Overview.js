@@ -29,7 +29,6 @@ function Overview() {
 
 
     useEffect(() => {
-        console.log("REACHED");
         setIsLoading(true)
 
         const fetchData = async () => {
