@@ -84,7 +84,7 @@ function Shows() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <div className="col col-xl-6 order-lg-2 col-lg-8 col-md-8 col-sm-8">
+                        <div className="col col-xl-6 order-lg-2 col-lg-8 col-md-8 col-sm-12">
                             <ShowSearch onSearch={setSearchTerm} />
                                 <h2 class="fw-bold text-black mb-1">Popular Shows</h2>
                             <div className="row">

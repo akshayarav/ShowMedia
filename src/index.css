@@ -76,6 +76,12 @@
     max-width: 100%;
 }
 
+@media (max-width: 1200px) {
+    .search-bar-container {
+        display: none;
+    }
+}
+
 
 /* Body */
 body {
