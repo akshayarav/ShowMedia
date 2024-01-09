@@ -3,9 +3,6 @@ import MobileSearch from './MobileSearch';
 import { set } from 'mongoose';
 
 function MobileBar({ toggleOffcanvas, toggleSearchScreen, setSearchResults }) {
-
-    console.log("SEARCH" + toggleSearchScreen)
-
     if(!toggleSearchScreen || !setSearchResults) {return (<div> Loading...</div>)}
 
     return (
