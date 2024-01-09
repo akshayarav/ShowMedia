@@ -389,6 +389,30 @@ app.post('/rateSeason', async (req, res) => {
   }
 });
 
+app.post('/delSeason', async (req, res) => {
+  try {
+      const { userId, showId } = req.body;
+
+      const user = await User.findById(userId);
+      if (!user) {
+          console.log('User not found with ID:', userId);
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      const deletionResult = await SeasonRating.deleteOne({ user: userId, show: showId });
+
+      if (deletionResult.deletedCount === 0) {
+          return res.status(404).json({ message: 'Season rating not found for the given user and show' });
+      }
+
+      res.status(200).json({ message: 'Season rating removed successfully' });
+  } catch (error) {
+      console.error('Error removing season rating:', error);
+      res.status(500).json({ message: 'Error removing season rating' });
+  }
+});
+
+
 app.get('/api/activities/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;

@@ -96,6 +96,35 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
         }
     }
 
+    const handleShowDel = async (e) => {
+        e.preventDefault()
+        console.log('del')
+        try {
+            const response = await fetch(`${apiUrl}/delSeason`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    showId: showId,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data.message);
+                return;
+            }
+
+        } catch (err) {
+            console.error(err)
+        } finally {
+            updateStatus();
+        }
+    }
+
     const toggleShowModal = () => { setShowModal(!showModal); };
 
     if (!show) return <div>Loading...</div>;
@@ -124,6 +153,12 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                                     Edit Show
                                 </button>
                                 {showModal && <ShowModal closeModal={toggleShowModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show.poster_path}`} series_id={showId} seasons={seasons} updateStatus = {updateStatus}/>}
+                            </li>
+                            <li>
+                                <button onClick={handleShowDel} className="dropdown-item text-muted" htmlFor="btncheck2">
+                                    <span className="material-icons md-13 me-1">delete</span>
+                                    Remove Show
+                                </button>
                             </li>
                         </ul>
                     </div>}
