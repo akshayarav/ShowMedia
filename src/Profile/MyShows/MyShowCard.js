@@ -154,7 +154,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                                     <span className="material-icons md-13 me-1">edit</span>
                                     Edit Show
                                 </button>
-                                {showModal && <ShowModal closeModal={toggleShowModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show.poster_path}`} series_id={showId} seasons={seasons} updateStatus={updateStatus} />}
+                                {showModal && <ShowModal closeModal={toggleShowModal} showName={show.name} showImg={show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : error} series_id={showId} seasons={seasons} updateStatus={updateStatus} />}
                             </li>
                             <li>
                                 <button onClick={handleShowDel} className="dropdown-item text-muted" htmlFor="btncheck2">

@@ -94,6 +94,7 @@ const activitySchema = new mongoose.Schema({
   showImage: String,
   seasonNumber: Number,
   rating: Number,
+  status: String,
   comment: String,
   timestamp: { type: Date, default: Date.now }
 });
@@ -377,6 +378,7 @@ app.post('/rateSeason', async (req, res) => {
           seasonNumber: seasonNumber,
           rating: rating,
           comment: comment,
+          status: status,
           timestamp: new Date()
       });
 
@@ -419,11 +421,12 @@ app.get('/api/activities/:userId', async (req, res) => {
     const activities = await Activity.find({ user: userId })
       .sort({ timestamp: -1 })
       .limit(20)
-      .populate('user', 'username')
+      .populate('user', 'username first')
       .lean();
 
     activities.forEach(activity => {
       activity.username = activity.user.username;
+      activity.first = activity.user.first;
     });
 
     res.json(activities);
@@ -432,6 +435,7 @@ app.get('/api/activities/:userId', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 app.get('/api/seasonRatings/:userId', async (req, res) => {
   try {
