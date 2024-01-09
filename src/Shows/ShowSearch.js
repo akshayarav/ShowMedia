@@ -1,6 +1,6 @@
 import React from 'react';
 
-function SearchBar({ onSearch }) {
+function ShowSearch({ onSearch }) {
     return (
         <div className="col">
             <div className="input-group mb-4 shadow-sm rounded-4 overflow-hidden py-2 bg-white">
@@ -16,4 +16,4 @@ function SearchBar({ onSearch }) {
     );
 }
 
-export default SearchBar;
+export default ShowSearch;

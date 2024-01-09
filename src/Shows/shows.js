@@ -3,9 +3,10 @@ import Axios from 'axios';
 import debounce from 'lodash.debounce';
 import Sidebar from "../Sidebar/sidebar";
 import ShowCard from "./ShowCard/ShowCard";
-import SearchBar from './SearchBar';
+import ShowSearch from './ShowSearch';
 import MobileBar from '../MobileBar/MobileBar';
 import defaultImage from './ShowCard/error.jpg';
+import SearchBar from "../SearchBar/SearchBar"
 
 function Shows() {
     const [shows, setShows] = useState([]);
@@ -83,9 +84,9 @@ function Shows() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <div className="col col-xl-9 order-lg-2 col-lg-9 col-md-9 col-sm-9">
-                            <SearchBar onSearch={setSearchTerm} />
-
+                        <div className="col col-xl-6 order-lg-2 col-lg-8 col-md-8 col-sm-8">
+                            <ShowSearch onSearch={setSearchTerm} />
+                                <h2 class="fw-bold text-black mb-1">Popular Shows</h2>
                             <div className="row">
                                 {shows.map((show, index) => (
                                     <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
@@ -97,6 +98,7 @@ function Shows() {
                                 </a>
                             )}
                         </div>
+                        <SearchBar />
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>
                 </div>

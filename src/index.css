@@ -70,15 +70,10 @@
 
 .details-container {
     padding: 15px;
-    /* Or your desired padding */
-}
-
-/* Ensure that the border radius is applied to the container, not the image */
-.profile {
-    overflow: hidden;
-    /* Clip the contents to the padding box */
-    border-radius: .375rem;
-    /* Rounded corners */
+    white-space: nowrap; /* Keeps the text on a single line */
+    overflow: hidden !important; /* Ensures the overflow is not visible */
+    text-overflow: ellipsis; /* Adds an ellipsis to the end of the text */
+    max-width: 100%;
 }
 
 

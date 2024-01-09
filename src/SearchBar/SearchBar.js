@@ -24,7 +24,7 @@ function SearchBar() {
     }, [searchTerm]);
 
     return (
-        <aside className="col col-xl-3 order-xl-3 col-lg-6 order-lg-3 col-md-6 col-sm-6 col-12">
+        <aside className="col col-xl-3 order-xl-3 col-lg-6 order-lg-3 col-md-6 col-sm-1">
             <div className="fix-sidebar">
                 <div className="side-trend lg-none">
                     <div className="sticky-sidebar2 mb-3">
