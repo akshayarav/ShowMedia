@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Axios from 'axios';
 import debounce from 'lodash.debounce';
 import Sidebar from "../Sidebar/sidebar";
@@ -31,6 +31,8 @@ function Shows() {
             .catch(error => {
                 console.error('Error fetching data: ', error);
             });
+        window.addEventListener('scroll', debouncedCheckScrollBottom);
+        return () => window.removeEventListener('scroll', debouncedCheckScrollBottom);
     }, [currentPage]);
 
     useEffect(() => {
@@ -74,9 +76,17 @@ function Shows() {
     const debounceSearch = debounce(handleSearch, 500);
 
     const handleShowMore = (event) => {
-        event.preventDefault();
+        if (event) event.preventDefault(); 
         setCurrentPage(prevPage => prevPage + 1);
     };
+
+    const checkScrollBottom = () => {
+        if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
+            handleShowMore();
+        }
+    };
+
+    const debouncedCheckScrollBottom = useCallback(debounce(checkScrollBottom, 100), []);
 
     return (
         <div className="bg-light">
@@ -86,7 +96,7 @@ function Shows() {
                     <div className="row position-relative">
                         <div className="col col-xl-6 order-lg-2 col-lg-8 col-md-8 col-sm-12">
                             <ShowSearch onSearch={setSearchTerm} />
-                                <h2 class="fw-bold text-black mb-1">Popular Shows</h2>
+                            <h2 class="fw-bold text-black mb-1">Popular Shows</h2>
                             <div className="row">
                                 {shows.map((show, index) => (
                                     <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
