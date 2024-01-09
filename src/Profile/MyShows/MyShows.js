@@ -41,16 +41,28 @@ function MyShows() {
 
     const sortedRatings = [...ratings].sort((a, b) => b.rating - a.rating);
 
+    const updateRatingStatus = (showId, seasonNumber, newStatus) => {
+        setRatings(currentRatings => 
+            currentRatings.map(rating => {
+                if (rating.show === showId && rating.season === seasonNumber) {
+                    return { ...rating, status: newStatus };
+                }
+                return rating;
+            })
+        );
+    };
+    
+
     return (
         <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
-            <div class="rounded-3">
-                <div class="row justify-content-center">
-                    <div class="col-lg-12">
-                        <div class="accordion overflow-hidden bg-white" id="accordionExample">
-                            <div class="accordion-item">
-                                <h3 class="accordion-header" id="headingOne"><button class="accordion-button fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Watching</button></h3>
-                                <div class="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" >
-                                    <div class="accordion-body">
+            <div className="rounded-3">
+                <div className="row justify-content-center">
+                    <div className="col-lg-12">
+                        <div className="accordion overflow-hidden bg-white" id="accordionExample">
+                            <div className="accordion-item">
+                                <h3 className="accordion-header" id="headingOne"><button className="accordion-button fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Watching</button></h3>
+                                <div className="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" >
+                                    <div className="accordion-body">
                                         {sortedRatings.map(rating => {
                                             if (rating.status === "Watching") {
                                                 return (
@@ -58,9 +70,11 @@ function MyShows() {
                                                         key={`${rating.show}-${rating.season}`}
                                                         rating={rating.rating}
                                                         showId={rating.show}
-                                                        seasonId={rating.season}
+                                                        seasonNumber={rating.season}
                                                         comment={rating.comment}
                                                         episodes={rating.episodes}
+                                                        status={rating.status}
+                                                        updateRatingStatus={updateRatingStatus}
                                                     />
                                                 );
                                             } else {
@@ -70,10 +84,10 @@ function MyShows() {
                                     </div>
                                 </div>
                             </div>
-                            <div class="accordion-item">
-                                <h3 class="accordion-header" id="headingTwo"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">Completed</button></h3>
-                                <div class="accordion-collapse collapse show" id="collapseTwo" aria-labelledby="headingOne" >
-                                    <div class="accordion-body">
+                            <div className="accordion-item">
+                                <h3 className="accordion-header" id="headingTwo"><button className="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">Completed</button></h3>
+                                <div className="accordion-collapse collapse show" id="collapseTwo" aria-labelledby="headingOne" >
+                                    <div className="accordion-body">
                                         {sortedRatings.map(rating => {
                                             if (rating.status === "Completed") {
                                                 return (
@@ -94,10 +108,10 @@ function MyShows() {
                                 </div>
                             </div>
 
-                            <div class="accordion-item">
-                                <h3 class="accordion-header" id="headingThree"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Planning</button></h3>
-                                <div class="accordion-collapse collapse show" id="collapseThree" aria-labelledby="headingThree" >
-                                    <div class="accordion-body">
+                            <div className="accordion-item">
+                                <h3 className="accordion-header" id="headingThree"><button className="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Planning</button></h3>
+                                <div className="accordion-collapse collapse show" id="collapseThree" aria-labelledby="headingThree" >
+                                    <div className="accordion-body">
                                         {sortedRatings.map(rating => {
                                             if (rating.status === "Planning") {
                                                 return (
@@ -118,10 +132,10 @@ function MyShows() {
                                 </div>
                             </div>
 
-                            <div class="accordion-item">
-                                <h3 class="accordion-header" id="headingFour"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">Dropped</button></h3>
-                                <div class="accordion-collapse collapse show" id="collapseFour" aria-labelledby="headingOne" >
-                                    <div class="accordion-body">
+                            <div className="accordion-item">
+                                <h3 className="accordion-header" id="headingFour"><button className="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">Dropped</button></h3>
+                                <div className="accordion-collapse collapse show" id="collapseFour" aria-labelledby="headingOne" >
+                                    <div className="accordion-body">
                                         {sortedRatings.map(rating => {
                                             if (rating.status === "Dropped") {
                                                 return (

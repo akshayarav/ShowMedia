@@ -22,7 +22,7 @@ function Feed({ userId }) {
     return (
         <div>
             {activities.length > 0 ? activities.map((activity, index) => (
-                <FeedItem activity={activity} index = {index} />
+                <FeedItem key = {index} activity={activity} index = {index} />
             )) : <p>No recent activities.</p>}
         </div>
     );

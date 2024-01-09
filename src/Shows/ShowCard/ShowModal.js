@@ -11,7 +11,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [selectedSeasonObject, setSelectedSeasonObject] = useState(null);
     const [episodesTotal, setEpisodesTotal] = useState(null);
-    const [episodes, setEpisodes] = useState(null);
+    const [episodes, setEpisodes] = useState('');
     const [episodeProgress, setEpisodeProgress] = useState(null);
 
     useEffect(() => {

@@ -46,7 +46,7 @@ function Profile() {
                                         <button className="p-3 nav-link text-muted" id="pills-feed-tab" data-bs-toggle="pill" data-bs-target="#pills-feed" type="button" role="tab" aria-controls="pills-feed" aria-selected="false">Feed</button>
                                     </li>
                                     <li className="nav-item" role="presentation">
-                                        <button className="p-3 nav-link text-muted" id="pills-shows-tab" data-bs-toggle="pill" data-bs-target="#pills-shows" type="button" role="tab" aria-controls="pills-shows" aria-selected="false">Shows</button>
+                                        <button className="p-3 nav-link text-muted" id="pills-shows-tab" data-bs-toggle="pill" data-bs-target="#pills-shows" type="button" role="tab" aria-controls="pills-shows" aria-selected="false">Show List</button>
                                     </li>
                                 </ul>
                                 <div className="tab-content" id="pills-tabContent">
