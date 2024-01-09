@@ -93,7 +93,7 @@ function Shows() {
 
     if (searchScreenOn) {
         return (<div>
-            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults = {(e) => setSearchResults(e)}/>
+            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
                 {searchResults.map(user => (
                     <UserCard key={user._id} other_user={user} />
@@ -104,11 +104,11 @@ function Shows() {
 
     return (
         <div className="bg-light">
-            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults = {(e) => setSearchResults(e)}/>
+            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <div className="col col-xl-6 order-lg-2 col-lg-8 col-md-8 col-sm-12">
+                        <div className="col col-xl-6 order-lg-2 col-lg-12 col-md-12 col-sm-12">
                             <ShowSearch onSearch={setSearchTerm} />
                             <h2 class="fw-bold text-black mb-1">Popular Shows</h2>
                             <div className="row">

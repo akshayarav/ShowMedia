@@ -56,7 +56,7 @@ function Profile() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <main className="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
+                        <main className="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12 align-content" >
                             <div className="main-content">
                                 <ul className="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-white sticky-sidebar2" id="pills-tab" role="tablist">
                                     <li className="nav-item" role="presentation">

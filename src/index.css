@@ -19,6 +19,8 @@
 
 
 
+
+
 .custom-modal .modal-dialog {
     max-width: 800px;
     /* Adjust the width as needed */
@@ -607,6 +609,8 @@ h6 {
     }
 }
 
+
+
 @media (max-width: 1200px) {
     .m-none {
         display: none !important;
@@ -637,6 +641,13 @@ h6 {
 
     .col-md-2.ps-0.offcanvas.offcanvas-start.show {
         padding: 0px !important;
+    }
+
+    .align-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 }
 
