@@ -8,10 +8,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 const saltRounds = 10;
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/static', express.static(path.join(__dirname, 'src')));
 
 console.log("CORS CONNECT")
 console.log(process.env.ALLOWED_ORIGIN)
@@ -349,6 +351,7 @@ app.post('/rateSeason', async (req, res) => {
       const user = await User.findById(userId);
 
       if (!user) {
+          console.log('User not found with ID:', userId);
           return res.status(404).json({ message: 'User not found' });
       }
 
@@ -356,7 +359,8 @@ app.post('/rateSeason', async (req, res) => {
       const showDetails = tmdbResponse.data;
 
       const showName = showDetails.name;
-      const showImage = showDetails.poster_path ? `https://image.tmdb.org/t/p/w500${showDetails.poster_path}` : './Shows/ShowCard/error.jpg';
+
+      const showImage = showDetails.poster_path ? `https://image.tmdb.org/t/p/w500${showDetails.poster_path}` : '/static/Shows/ShowCard/error.jpg?nocache=123456';
 
       const seasonRating = await SeasonRating.findOneAndUpdate(
           { user: userId, show: showId, season: seasonNumber },
@@ -393,6 +397,10 @@ app.get('/api/activities/:userId', async (req, res) => {
       .limit(20)
       .populate('user', 'username')
       .lean();
+
+    activities.forEach(activity => {
+      activity.username = activity.user.username;
+    });
 
     res.json(activities);
   } catch (error) {
