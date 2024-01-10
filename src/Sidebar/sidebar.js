@@ -2,12 +2,13 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import './sidebar.css';
 import SignModal from './SignModal';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import RegisterModal from './RegisterModal';
 import AuthContext from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [showSignInModal, setShowSignInModal] = useState(false);
@@ -85,17 +86,17 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
           </div>
           <ul className="navbar-nav justify-content-end flex-grow-1">
             <li className="nav-item">
-              <Link to="/feed" className="nav-link"> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
+              <Link to="/feed" className={`nav-link ${location.pathname === '/feed' ? 'active' : ''}`}> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
             {isAuthenticated && (
             <li className="nav-item">
-              <Link to={`/profile/${currentUser}`} className="nav-link">
+              <Link to={`/profile/${currentUser}`} className={`nav-link ${location.pathname === `/profile/${currentUser}` ? 'active' : ''}`}>
                 <span className="material-icons me-3">account_circle</span> <span>Profile</span>
               </Link>
             </li>
           )}
             <li className="nav-item">
-              <Link to="/shows" className="nav-link"> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
+              <Link to="/shows" className={`nav-link ${location.pathname === '/shows' ? 'active' : ''}`}> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>
           </ul>
         </div>
@@ -110,17 +111,17 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
           </div>
           <ul className="navbar-nav justify-content-end flex-grow-1">
             <li className="nav-item">
-              <Link to="/feed" className="nav-link"> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
+              <Link to="/feed" className={`nav-link ${location.pathname === '/feed' ? 'active' : ''}`}> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
             {isAuthenticated && (
             <li className="nav-item">
-              <Link to={`/profile/${currentUser}`} className="nav-link">
+              <Link to={`/profile/${currentUser}`} className={`nav-link ${location.pathname === `/profile/${currentUser}` ? 'active' : ''}`}>
                 <span className="material-icons me-3">account_circle</span> <span>Profile</span>
               </Link>
             </li>
           )}
             <li className="nav-item">
-              <Link to="/shows" className="nav-link"> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
+              <Link to="/shows" className={`nav-link ${location.pathname === '/shows' ? 'active' : ''}`}> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>
           </ul>
         </div>
