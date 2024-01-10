@@ -108,7 +108,7 @@ function Shows() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <div className="col col-xl-6 order-lg-2 col-lg-12 col-md-12 col-sm-12">
+                        <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12">
                             <ShowSearch onSearch={setSearchTerm} />
                             <h2 class="fw-bold text-white mb-1">Popular Shows</h2>
                             <div className="row">
@@ -122,7 +122,6 @@ function Shows() {
                                 </a>
                             )}
                         </div>
-                        <SearchBar />
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>
                 </div>
