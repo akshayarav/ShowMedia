@@ -45,7 +45,7 @@ function ShowCard({ name, image, series_id }) {
                     <div className="image-container">
                         <img src={image} className="img-fluid rounded-top" alt={name} />
                     </div>
-                    <div className="details-container p-3">
+                    <div className="details-container p-3 text-black">
                         {name}
                     </div>
                 </div>

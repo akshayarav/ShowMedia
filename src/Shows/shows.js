@@ -103,14 +103,14 @@ function Shows() {
     }
 
     return (
-        <div className="bg-light">
+        <div className="">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
                         <div className="col col-xl-6 order-lg-2 col-lg-12 col-md-12 col-sm-12">
                             <ShowSearch onSearch={setSearchTerm} />
-                            <h2 class="fw-bold text-black mb-1">Popular Shows</h2>
+                            <h2 class="fw-bold text-white mb-1">Popular Shows</h2>
                             <div className="row">
                                 {shows.map((show, index) => (
                                     <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />

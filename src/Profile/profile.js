@@ -51,7 +51,7 @@ function Profile() {
     }
 
     return (
-        <div className="bg-light">
+        <div className="">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="py-4">
                 <div className="container">
