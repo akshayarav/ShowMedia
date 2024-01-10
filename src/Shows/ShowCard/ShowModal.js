@@ -84,6 +84,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
             if(updateStatus) {updateStatus()}
         }
     };
+
     return (
         <Modal show={true} onHide={closeModal} centered className="custom-modal">
             <Modal.Header closeButton>

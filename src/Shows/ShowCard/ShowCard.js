@@ -5,10 +5,12 @@ import ShowModal from "./ShowModal";
 function ShowCard({ name, image, series_id }) {
     const [showModal, setShowModal] = useState(false);
     const [seasons, setSeasons] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchSeasons = async () => {
             try {
+                setIsLoading(true);
                 const seriesResponse = await Axios.get(`https://api.themoviedb.org/3/tv/${series_id}?api_key=${process.env.REACT_APP_API_KEY}`);
                 const totalSeasons = seriesResponse.data.number_of_seasons;
 
@@ -20,6 +22,8 @@ function ShowCard({ name, image, series_id }) {
                 setSeasons(seasonsDetails);
             } catch (error) {
                 console.error('Error fetching season details: ', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -31,7 +35,7 @@ function ShowCard({ name, image, series_id }) {
     };
 
     return (
-        <main className="col col-xl-3 col-lg-6 col-md-3 col-sm-6 col-6" style = {{padding: "15px"}}>
+        <main className="col col-xl-3 col-lg-6 col-md-3 col-sm-6 col-6" style={{ padding: "15px" }}>
             <div className="bg-white rounded-4 shadow-sm" >
                 <div
                     role="button"
@@ -42,10 +46,10 @@ function ShowCard({ name, image, series_id }) {
                         <img src={image} className="img-fluid rounded-top" alt={name} />
                     </div>
                     <div className="details-container p-3">
-                    {name}
+                        {name}
                     </div>
                 </div>
-                {showModal && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} />}
+                {showModal && !isLoading && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} />}
             </div>
         </main>
     )
