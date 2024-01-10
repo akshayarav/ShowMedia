@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import AuthContext from '../AuthContext';
 import FollowingFeed from './FollowingFeed/FollowingFeed';
 import Sidebar from "../Sidebar/sidebar";
 import MobileBar from '../MobileBar/MobileBar';
@@ -13,6 +14,8 @@ function Feed() {
     const [error, setError] = useState(null);
     const { username } = useParams();
     const [feedKey, setFeedKey] = useState(0);
+
+    const {isAuthenticated} = useContext(AuthContext)
 
     useEffect(() => {
         if (username) {
@@ -42,7 +45,7 @@ function Feed() {
                             <div className="main-content">
                                 {error && <div className="error-message">Error: {error}</div>}
                                 {userData && <FollowingFeed activities={userData.activities} refresh={feedKey} />}
-                                {!username && <p>Please log in to see the feed.</p>}
+                                {!isAuthenticated && <p>Please log in to see the feed.</p>}
                                 {username && !userData && !error && <p>Loading user activities...</p>}
                             </div>
                         </main>
