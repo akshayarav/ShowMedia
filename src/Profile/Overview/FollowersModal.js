@@ -18,7 +18,7 @@ function FollowersModal({ closeModal, title, following, followers }) {
                 {error && <Alert variant="danger">{error}</Alert>}
                 {success && <Alert variant="success">{success}</Alert>}
                 <div className="modal-content rounded-4 p-4 border-0">
-                    <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
+                    <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
                         {users.map(user => (
                             <UserCard key={user._id} other_user={user} />
                         ))}

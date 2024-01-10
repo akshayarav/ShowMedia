@@ -27,8 +27,8 @@ function MobileSearch({toggleSearchScreen, setSearchResults}) {
 
     return (
         <div  className="ms-auto web-none d-flex justify-content-center">
-            <div className="input-group shadow-sm rounded-4 overflow-hidden py-2 bg-white">
-                <span className="input-group-text material-icons border-0 bg-white text-primary">search</span>
+            <div className="input-group shadow-sm rounded-4 overflow-hidden py-2 bg-glass">
+                <span className="input-group-text material-icons border-0 bg-glass text-primary">search</span>
                 <input
                     type="text"
                     className="form-control border-0 fw-light ps-1"

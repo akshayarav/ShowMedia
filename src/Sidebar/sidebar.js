@@ -22,7 +22,7 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
 
   const currentUser = localStorage.getItem('username');
 
-  const offcanvasClasses = `p-2 bg-light offcanvas offcanvas-start ${isOffcanvasOpen ? 'show' : ''}`;
+  const offcanvasClasses = `p-2 bg-brown-gradient offcanvas offcanvas-start ${isOffcanvasOpen ? 'show' : ''}`;
 
   const handleLogOut = () => {
     logout();
