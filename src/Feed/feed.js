@@ -3,50 +3,49 @@ import axios from 'axios';
 import AuthContext from '../AuthContext';
 import FollowingFeed from './FollowingFeed/FollowingFeed';
 import Sidebar from "../Sidebar/sidebar";
-import MobileBar from '../MobileBar/MobileBar';
 import SearchBar from '../SearchBar/SearchBar';
-import { useParams } from 'react-router-dom';
 
 function Feed() {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
-    const [userData, setUserData] = useState(null);
-    const [error, setError] = useState(null);
-    const { username } = useParams();
+    const [activities, setActivities] = useState(null);
     const [feedKey, setFeedKey] = useState(0);
-
-    const {isAuthenticated} = useContext(AuthContext)
+    const { isAuthenticated } = useContext(AuthContext);
 
     useEffect(() => {
-        if (username) {
-            axios.get(`${apiUrl}/api/user/${username}`)
+        const userId = localStorage.getItem('userId');
+        if (isAuthenticated && userId) {
+            // Fetch following feed using the user ID
+            axios.get(`${apiUrl}/api/followingFeed/${userId}`)
                 .then(response => {
-                    setUserData(response.data);
-                    setError(null);
+                    setActivities(response.data);
                 })
                 .catch(error => {
-                    console.error('Error fetching user data:', error);
-                    setError(error.message || 'Error fetching user data');
+                    console.error('Error fetching following feed:', error);
                 });
         }
-    }, [username, apiUrl]);
+    }, [isAuthenticated, apiUrl, feedKey]);
 
     const handleFeedTabClick = () => {
         setFeedKey(prevKey => prevKey + 1);
     };
 
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("Activities:", activities ? activities : "No activities");
+
     return (
         <div className="bg-light">
-            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
                         <main className="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
                             <div className="main-content">
-                                {error && <div className="error-message">Error: {error}</div>}
-                                {userData && <FollowingFeed activities={userData.activities} refresh={feedKey} />}
+                                {isAuthenticated && activities && activities.length > 0 ? (
+                                    <FollowingFeed activities={activities} />
+                                ) : (
+                                    <p>No following activity to display.</p>
+                                )}
                                 {!isAuthenticated && <p>Please log in to see the feed.</p>}
-                                {username && !userData && !error && <p>Loading user activities...</p>}
                             </div>
                         </main>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={handleFeedTabClick} />
