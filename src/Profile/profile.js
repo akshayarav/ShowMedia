@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import MobileBar from '../MobileBar/MobileBar';
 import SearchBar from '../SearchBar/SearchBar';
 import Overview from './Overview/Overview';
-import Feed from './Feed/Feed';
+import Feed from './Activity/Activity';
 import UserCard from '../SearchBar/UserCard';
 
 function Profile() {
@@ -51,7 +51,7 @@ function Profile() {
     }
 
     return (
-        <div className="">
+        <div className="bg-brown-gradient">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="py-4">
                 <div className="container">

@@ -1,5 +1,5 @@
 import React from 'react';
-import FeedItem from '../../Profile/Feed/FeedItem';
+import FeedItem from '../../Profile/Activity/FeedItem';
 
 function FollowingFeed({ activities }) {
     return (

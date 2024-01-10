@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FeedItem from './FeedItem';
 
-function Feed({ userId, refresh }) {
+function Activity({ userId, refresh }) {
     const [activities, setActivities] = useState([]);
     const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -28,4 +28,4 @@ function Feed({ userId, refresh }) {
     );
 }
 
-export default Feed;
+export default Activity;

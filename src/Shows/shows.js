@@ -103,7 +103,7 @@ function Shows() {
     }
 
     return (
-        <div className="">
+        <div className="bg-brown-gradient">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="py-4">
                 <div className="container">

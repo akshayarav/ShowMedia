@@ -34,7 +34,7 @@ function Feed() {
     console.log("Activities:", activities ? activities : "No activities");
 
     return (
-        <div className="bg-light">
+        <div className="bg-brown-gradient">
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">

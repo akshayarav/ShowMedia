@@ -474,13 +474,11 @@ app.get('/api/followingFeed/:userId', async (req, res) => {
     }
 
     const following = user.following;
-    console.log(`User's following for userId ${userId}:`, following); // Detailed logging for the user's following
 
     const activities = await Activity.find({
       user: { $in: following }
     }).sort({ timestamp: -1 }).populate('user', 'username first').lean();
 
-    console.log(`Activities fetched for user ${userId}:`, activities); // Logging fetched activities
     res.status(200).json(activities);
   } catch (error) {
     console.error(`Error fetching following feed for userId ${userId}:`, error);

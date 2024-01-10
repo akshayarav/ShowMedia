@@ -15,7 +15,7 @@ function FeedItem({ activity }) {
     const first = activity.first ? activity.first : activity.user.first
 
     return (
-        <div key={activity._id} className="p-3 border-bottom d-flex align-items-start text-dark text-decoration-none">
+        <div key={activity._id} className="p-3 border-bottom d-flex align-items-start text-white text-decoration-none">
             <div className="flex-grow-1">
                 <div className="mb-2 d-flex align-items-center">
                     <small className="text-muted">@{username}</small>
@@ -31,7 +31,7 @@ function FeedItem({ activity }) {
 
                 <div className="mb-2">
                     <h5 className="mb-0">
-                        {activity.showName} - <span className="text-muted">Season {activity.seasonNumber}</span>
+                        {activity.showName} - <span >Season {activity.seasonNumber}</span>
                     </h5>
                 </div>
 
