@@ -132,13 +132,13 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
     const image = show && show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : error;
 
     return (
-        <div className="p-3 border-bottom d-flex flex-column text-dark text-decoration-none account-item">
+        <div className="p-3 border-bottom border-top d-flex flex-column text-light text-decoration-none account-item">
             <div className="d-flex align-items-start justify-content-between">
                 <div className="d-flex align-items-center">
                     <img src={image} className="img-fluid rounded-circle me-3" alt={show.name} />
                     <div>
                         <p className="fw-bold mb-0">
-                            <a href="#" className="text-decoration-none text-dark">{show.name} - Season {seasonNumber}</a>
+                            <a href="#" className="text-decoration-none text-light">{show.name} - Season {seasonNumber}</a>
                         </p>
                         <div className="text-muted fw-light">
                             <p className="mb-1 small">Rating: {rating}</p>
@@ -148,8 +148,8 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                 </div>
                 <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
                     {isAuthenticated && <div className="ms-auto">
-                        <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-20 rounded-circle bg-glass p-1" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false">more_vert</a>
-                        <ul className="dropdown-menu fs-13 dropdown-menu-end" aria-labelledby="dropdownMenuButton6">
+                        <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-20 bg-glass rounded-circle p-1" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false">more_vert</a>
+                        <ul className="dropdown-menu fs-13 dropdown-menu-end bg-glass" aria-labelledby="dropdownMenuButton6">
                             <li>
                                 <button onClick={toggleShowModal} className="dropdown-item text-muted" htmlFor="btncheck1">
                                     <span className="material-icons md-13 me-1">edit</span>

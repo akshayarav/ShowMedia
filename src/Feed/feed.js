@@ -53,6 +53,7 @@ function Feed() {
                     <div className="row position-relative">
                         <main className="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
                             <div className="main-content">
+                                <h2 class="fw-bold text-white mt-4">Your Feed</h2>
                                 {isAuthenticated && activities && activities.length > 0 ? (
                                     <FollowingFeed activities={activities} />
                                 ) : (

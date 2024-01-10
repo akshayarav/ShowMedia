@@ -15,7 +15,6 @@
 
 .modal-content {
     background: transparent !important;
-    width: 800px !important;
 }
 
 .showmodal-img {
@@ -23,7 +22,7 @@
 }
 
 /* Media query for mobile screens */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .showmodal-img {
         max-width: 150px; /* Smaller size for mobile screens */
     }
@@ -1025,6 +1024,10 @@ h6 {
     min-height: 100vh;
 }
 
+.bg-brown-gradient-color{
+    background: linear-gradient(180deg, #3e2627, #13151f) !important;
+}
+
 .bg-glass {
     background: rgba(65, 65, 65, 0.25);
     backdrop-filter: blur(4px);
@@ -1044,7 +1047,7 @@ h6 {
 .border-top,
 .border-start,
 .border-end {
-    border-color: #443131 !important;
+    border-color: #4b4141 !important;
 }
 
 .text-body {
