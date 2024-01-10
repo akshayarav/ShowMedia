@@ -4,6 +4,8 @@ import AuthContext from '../AuthContext';
 import FollowingFeed from './FollowingFeed/FollowingFeed';
 import Sidebar from "../Sidebar/sidebar";
 import SearchBar from '../SearchBar/SearchBar';
+import MobileBar from '../MobileBar/MobileBar';
+import UserCard from '../SearchBar/UserCard';
 
 function Feed() {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -11,6 +13,8 @@ function Feed() {
     const [activities, setActivities] = useState(null);
     const [feedKey, setFeedKey] = useState(0);
     const { isAuthenticated } = useContext(AuthContext);
+    const [searchScreenOn, setSearchScreenOn] = useState(false)
+    const [searchResults, setSearchResults] = useState([]);
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
@@ -30,11 +34,20 @@ function Feed() {
         setFeedKey(prevKey => prevKey + 1);
     };
 
-    console.log("isAuthenticated:", isAuthenticated);
-    console.log("Activities:", activities ? activities : "No activities");
+    if (searchScreenOn) {
+        return (<div>
+            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
+            <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
+                {searchResults.map(user => (
+                    <UserCard key={user._id} other_user={user} />
+                ))}
+            </div>
+        </div>)
+    }
 
     return (
         <div className="bg-brown-gradient">
+            <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
