@@ -422,7 +422,6 @@ app.post('/delSeason', async (req, res) => {
   }
 });
 
-
 app.get('/api/activities/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -455,6 +454,32 @@ app.get('/api/seasonRatings/:userId', async (req, res) => {
     res.status(200).json(seasonRatings);
   } catch (error) {
     console.error('Error fetching season ratings:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/api/followingFeed/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: 'Invalid or missing userId' });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const following = user.following;
+
+    const activities = await Activity.find({
+      user: { $in: following }
+    }).sort({ timestamp: -1 }).populate('user', 'username first').lean();
+
+    res.status(200).json(activities);
+  } catch (error) {
+    console.error('Error fetching following feed:', error);
     res.status(500).send('Internal Server Error');
   }
 });
