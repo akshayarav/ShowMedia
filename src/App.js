@@ -1,9 +1,16 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useContext } from 'react';
 import Feed from "./Feed/feed";
 import Shows from "./Shows/shows";
 import Profile from './Profile/profile';
+import AuthContext from './AuthContext';
+import LandingPage from './LandingPage/LandingPage';
 
 function App() {
+  const { isAuthenticated, logout } = useContext(AuthContext);
+
+  if (!isAuthenticated) {return (<LandingPage/>)}
+
   return (
     <Router>
         <Routes>
