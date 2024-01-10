@@ -36,7 +36,7 @@ function ShowCard({ name, image, series_id }) {
 
     return (
         <main className="col col-xl-3 col-lg-6 col-md-3 col-sm-6 col-6" style={{ padding: "15px" }}>
-            <div className="bg-white rounded-4 shadow-sm" >
+            <div className="bg-glass rounded-4 shadow-sm" >
                 <div
                     role="button"
                     tabIndex="0"
@@ -45,7 +45,7 @@ function ShowCard({ name, image, series_id }) {
                     <div className="image-container">
                         <img src={image} className="img-fluid rounded-top" alt={name} />
                     </div>
-                    <div className="details-container p-3 text-black">
+                    <div className="details-container p-3 text-white">
                         {name}
                     </div>
                 </div>

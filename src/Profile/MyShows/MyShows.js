@@ -48,11 +48,11 @@ function MyShows() {
     
 
     return (
-        <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
+        <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
             <div className="rounded-3">
                 <div className="row justify-content-center">
                     <div className="col-lg-12">
-                        <div className="accordion overflow-hidden bg-white" id="accordionExample">
+                        <div className="accordion overflow-hidden bg-glass" id="accordionExample">
                             <div className="accordion-item">
                                 <h3 className="accordion-header" id="headingOne"><button className="accordion-button fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Watching</button></h3>
                                 <div className="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" >

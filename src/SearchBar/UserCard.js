@@ -11,7 +11,7 @@ function UserCard({ other_user }) {
             </Link>
             <Link to={`/profile/${other_user.username}`} className="text-decoration-none"  onClick={() => window.location.href = `/profile/${other_user.username}`}>
                 <div>
-                    <p className="fw-bold mb-0 pe-3 d-flex align-items-center text-decoration-none text-dark">{other_user.username} </p>
+                    <p className="fw-bold mb-0 pe-3 d-flex align-items-center text-decoration-none text-light">{other_user.username} </p>
                 </div>
             </Link>
             <FollowButton other_user={other_user} />

@@ -148,7 +148,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
                 </div>
                 <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
                     {isAuthenticated && <div className="ms-auto">
-                        <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-20 rounded-circle bg-light p-1" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false">more_vert</a>
+                        <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-20 rounded-circle bg-glass p-1" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false">more_vert</a>
                         <ul className="dropdown-menu fs-13 dropdown-menu-end" aria-labelledby="dropdownMenuButton6">
                             <li>
                                 <button onClick={toggleShowModal} className="dropdown-item text-muted" htmlFor="btncheck1">

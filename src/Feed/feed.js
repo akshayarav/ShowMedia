@@ -37,7 +37,7 @@ function Feed() {
     if (searchScreenOn) {
         return (<div>
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
-            <div className="bg-white rounded-4 overflow-hidden shadow-sm account-follow mb-4">
+            <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
                 {searchResults.map(user => (
                     <UserCard key={user._id} other_user={user} />
                 ))}
