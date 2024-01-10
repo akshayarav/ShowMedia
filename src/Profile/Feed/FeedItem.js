@@ -2,6 +2,7 @@ import React from 'react';
 import error from './error.jpg'
 
 function FeedItem({ activity }) {
+    console.log(activity)
     const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
     const image = activity.showImage ? `https://image.tmdb.org/t/p/w500${activity.showImage}` : error
 
@@ -10,18 +11,21 @@ function FeedItem({ activity }) {
             activity.status === "Completed" ? "completed" : 
                 activity.status === "Dropped" ? "dropped" : console.error("Activity has invalid status")
 
+    const username = activity.username ? activity.username : activity.user.username
+    const first = activity.first ? activity.first : activity.user.first
+
     return (
         <div key={activity._id} className="p-3 border-bottom d-flex align-items-start text-dark text-decoration-none">
             <div className="flex-grow-1">
                 <div className="mb-2 d-flex align-items-center">
-                    <small className="text-muted">@{activity.username}</small>
+                    <small className="text-muted">@{username}</small>
                     <span className="mx-2 material-icons md-3">circle</span>
                     <small className="text-muted">{formattedTimestamp}</small>
                 </div>
 
                 <div className="mb-2">
                     <h6 className="mb-0">
-                        {activity.first} {status}
+                        {first} {status}
                     </h6>
                 </div>
 
