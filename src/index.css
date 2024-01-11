@@ -13,6 +13,25 @@
 -- Dark
 */
 
+.user-card {
+    position: relative;
+}
+
+.stretched-link {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.follow-button-position {
+    position: relative;
+    z-index: 2;
+}
+
+
 .modal-content {
     background: transparent !important;
 }

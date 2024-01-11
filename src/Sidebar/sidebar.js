@@ -1,9 +1,6 @@
 
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import './sidebar.css';
-import SignModal from './SignModal';
 import { Link, useLocation } from 'react-router-dom';
-import RegisterModal from './RegisterModal';
 import AuthContext from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 

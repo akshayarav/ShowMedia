@@ -17,7 +17,8 @@ function FollowButton({ other_user }) {
         setIsFollowing(isCurrentlyFollowing);
     }, [apiUrl, userId, followerUpdate, other_user]);
 
-    const handleFollow = () => {
+    const handleFollow = (e) => {
+        e.stopPropagation();
         if (isFollowing) {
             user.following = user.following.filter(userData => userData.username !== other_user.username);
         }
@@ -29,7 +30,7 @@ function FollowButton({ other_user }) {
 
 
         const newFollowingStatus = !isFollowing;
-        setIsFollowing(newFollowingStatus); 
+        setIsFollowing(newFollowingStatus);
 
         const endpoint = newFollowingStatus ? `${apiUrl}/follow/${other_user.username}` : `${apiUrl}/unfollow/${other_user.username}`;
 
@@ -39,7 +40,7 @@ function FollowButton({ other_user }) {
             })
             .catch(error => {
                 console.error('Error following/unfollowing user:', error);
-                setIsFollowing(!newFollowingStatus); 
+                setIsFollowing(!newFollowingStatus);
             })
     };
 
@@ -49,12 +50,10 @@ function FollowButton({ other_user }) {
     }
 
     return (
-        <div className="ms-auto">
-            <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                <button type="button" className="btn btn-outline-primary btn-sm px-3 rounded-pill" onClick={handleFollow}>
-                    {isLoading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow')}
-                </button>
-            </div>
+        <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+            <button type="button" className="btn btn-outline-primary btn-sm px-3 rounded-pill" onClick={handleFollow}>
+                {isLoading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow')}
+            </button>
         </div>
     )
 }
