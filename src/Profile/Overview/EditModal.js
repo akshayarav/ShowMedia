@@ -1,13 +1,14 @@
-import { Modal, Button, Alert } from 'react-bootstrap';
-import React, { useState, useContext } from 'react';
+import { Modal, Alert } from 'react-bootstrap';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 
 function EditModal({ closeModal }) {
-    const user = localStorage.getItem('user')
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const [tempBio, setTempBio] = useState(user.bio)
     const [first, setFirst] = useState(user.first)
+    console.log(user)
     const [last, setLast] = useState(user.last)
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -45,7 +46,7 @@ function EditModal({ closeModal }) {
                         <form onSubmit={handleSubmit}>
                             <div className="modal-body p-0">
                                 <div className="row py-3 gy-3 m-0">
-                                    <div className="mt-5 login-register" id="number">
+                                    <div className="mt-0 login-register" id="number">
                                         <h6 className="fw-bold mx-1 mb-2 text-white">Add Bio</h6>
                                         <div className="row mx-0 mb-3">
                                             <div className="col-9 p-1">
@@ -56,9 +57,9 @@ function EditModal({ closeModal }) {
                                                         id="floatingBio"
                                                         value={tempBio}
                                                         onChange={(e) => setTempBio(e.target.value)}
-                                                        placeholder="Enter Username"
+                                                        placeholder="Bio"
                                                     />
-                                                    <label htmlFor="floatingBio">Enter Bio</label>
+                                                    <label htmlFor="floatingBio" className="text-muted">Enter Bio</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -74,7 +75,7 @@ function EditModal({ closeModal }) {
                                                         onChange={(e) => setFirst(e.target.value)}
                                                         placeholder="First Name"
                                                     />
-                                                    <label htmlFor="floatingEditFirst">First Name</label>
+                                                    <label htmlFor="floatingEditFirst" className="text-muted">First Name</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -89,7 +90,7 @@ function EditModal({ closeModal }) {
                                                         onChange={(e) => setLast(e.target.value)}
                                                         placeholder="Last Name"
                                                     />
-                                                    <label htmlFor="floatingEditLast">Last Name</label>
+                                                    <label htmlFor="floatingEditLast" className="text-muted">Last Name</label>
                                                 </div>
                                             </div>
                                         </div>
