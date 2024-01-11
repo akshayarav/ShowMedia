@@ -21,6 +21,7 @@ function Profile() {
     const [searchResults, setSearchResults] = useState([]);
 
     const [activeTab, setActiveTab] = useState('overview');
+    const [refresh, setRefresh] = useState(false)
 
     const handleFeedTabClick = () => {
         setFeedKey(prevKey => prevKey + 1);
@@ -36,7 +37,7 @@ function Profile() {
                 setError(error.message || 'Error fetching user data');
             });
         setActiveTab('overview');
-    }, [username, apiUrl]);
+    }, [username, apiUrl, refresh]);
 
     if (error) {
         return <div className="error-message">Error: {error}</div>;
@@ -47,7 +48,7 @@ function Profile() {
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
                 {searchResults.map(user => (
-                    <UserCard key={user._id} other_user={user} />
+                    <UserCard key={user._id} other_user={user} toggleRefresh={() => setRefresh(!refresh)}/>
                 ))}
             </div>
         </div>)
