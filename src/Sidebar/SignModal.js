@@ -12,8 +12,8 @@ function SignModal({ closeModal }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(''); 
-        setSuccess(''); 
+        setError('');
+        setSuccess('');
         try {
             const response = await fetch(`${apiUrl}/login`, {
                 method: 'POST',
@@ -31,11 +31,11 @@ function SignModal({ closeModal }) {
             if (response.status === 200) {
                 setSuccess('Successfully Logged In!');
                 setTimeout(() => {
-                    login(data.token, data.userId, data.username); 
+                    login(data.token, data.userId, data.username);
                     closeModal()
                 }, 1000);
             } else {
-                setError(data.error); 
+                setError(data.error);
             }
         } catch (error) {
             setError('There was an error submitting the form.');
@@ -44,68 +44,63 @@ function SignModal({ closeModal }) {
     };
 
     return (
-        <Modal show={true} onHide={closeModal} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Sign In</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {error && <Alert variant="danger">{error}</Alert>}
-                {success && <Alert variant="success">{success}</Alert>}
-                <div className="modal-content rounded-4 p-4 border-0">
-                    <div className="modal-header border-0 p-1">
-                        <h6 className="modal-title fw-bold text-body fs-6" id="exampleModalLabel">Login to Account</h6>
-                    </div>
-                    <form onSubmit={handleSubmit}>
-                        <div className="modal-body p-0">
-                            <div className="row py-3 gy-3 m-0">
-                                <div className="mt-5 login-register" id="number">
-                                    <h6 className="fw-bold mx-1 mb-2 text-dark">Email</h6>
-                                    <div className="row mx-0 mb-3">
-                                        <div className="col-9 p-1">
-                                            <div className="form-floating d-flex align-items-end">
-                                                <input
-                                                    type="text"
-                                                    className="form-control rounded-5"
-                                                    id="floatingEmail"
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
-                                                    placeholder="Enter Email"
-                                                />
-                                                <label htmlFor="floatingEmail">Enter Email</label>
+        <Modal show={true} onHide={closeModal} centered className="modal fade bg-glass">
+            <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
+                <div className="modal-header border-0 p-1 mb-4">
+                    <h6 className="modal-title fw-bold text-body fs-6">Sign In</h6>
+                    <a href="#" class="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
+                </div>
+                <div class="modal-body p-0">
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    {success && <Alert variant="success">{success}</Alert>}
+                    <div className="modal-content rounded-4 p-4 border-0">
+                        <form onSubmit={handleSubmit}>
+                            <div className="modal-body p-0">
+                                <div className="row py-3 gy-3 m-0">
+                                    <div className="mt-5 login-register" id="number">
+                                     <h6 class="fw-bold mx-1 mb-2 text-white">Email</h6>
+                                        <div className="row mx-0 mb-3">
+                                            <div className="col-9 p-1">
+                                                <div className="form-floating d-flex align-items-end">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control rounded-5"
+                                                        id="floatingEmail"
+                                                        value={email}
+                                                        onChange={(e) => setEmail(e.target.value)}
+                                                        placeholder="Enter Email"
+                                                    />
+                                                    <label htmlFor="floatingEmail">Enter Email</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <h6 className="fw-bold mx-1 mb-2 text-dark">Password</h6>
-                                    <div className="row mx-0 mb-3">
-                                        <div className="col-9 p-1">
-                                            <div className="form-floating d-flex align-items-end">
-                                                <input
-                                                    type="password"
-                                                    className="form-control rounded-5"
-                                                    id="floatingPass"
-                                                    value={pass}
-                                                    onChange={(e) => setPass(e.target.value)}
-                                                    placeholder="Enter Password"
-                                                />
-                                                <label htmlFor="floatingPass">Enter Password</label>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Password</h6>
+                                        <div className="row mx-0 mb-3">
+                                            <div className="col-9 p-1">
+                                                <div className="form-floating d-flex align-items-end">
+                                                    <input
+                                                        type="password"
+                                                        className="form-control rounded-5"
+                                                        id="floatingPass"
+                                                        value={pass}
+                                                        onChange={(e) => setPass(e.target.value)}
+                                                        placeholder="Enter Password"
+                                                    />
+                                                    <label htmlFor="floatingPass">Enter Password</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="p-1">
-                                        <button type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase m-0">Sign In</button>
+                                        <div className="p-1">
+                                            <button type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase m-0">Sign In</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={closeModal}>
-                    Close
-                </Button>
-            </Modal.Footer>
-        </Modal>
+            </div>
+        </Modal >
     );
 }
 

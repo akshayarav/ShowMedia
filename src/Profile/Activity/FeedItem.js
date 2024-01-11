@@ -2,7 +2,6 @@ import React from 'react';
 import error from './error.jpg'
 
 function FeedItem({ activity }) {
-    console.log(activity)
     const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
     const image = activity.showImage ? `https://image.tmdb.org/t/p/w500${activity.showImage}` : error
 

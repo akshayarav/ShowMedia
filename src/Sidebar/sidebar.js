@@ -45,32 +45,14 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
     };
   }, [isOffcanvasOpen, toggleOffcanvas]);
 
-  const authButtons = isAuthenticated ? (
+  const authButtons = (
     <button
       className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0 button-top-padding"
       onClick={handleLogOut}
     >
       Log Out
     </button>
-  ) : (
-    <>
-      <button
-        className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0"
-        onClick={toggleSignInModal}
-      >
-        Sign In
-      </button>
-      {showSignInModal && <SignModal closeModal={toggleSignInModal} />}
-
-      <button
-        className="btn btn-primary w-100 text-decoration-none rounded-4 py-3 fw-bold text-uppercase m-0 button-top-padding"
-        onClick={toggleRegisterModal}
-      >
-        Register
-      </button>
-      {showRegisterModal && <RegisterModal closeModal={toggleRegisterModal} />}
-    </>
-  );
+  ) 
 
 
 

@@ -6,12 +6,15 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const apiUrl = process.env.REACT_APP_API_URL;
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        setIsLoading(true);
         const token = localStorage.getItem('token');
         if (token) {
             setIsAuthenticated(true);
         }
+        setIsLoading(false);
     }, []);
 
     const login = (token, userId, username) => {
@@ -43,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout , isLoading}}>
             {children}
         </AuthContext.Provider>
     );

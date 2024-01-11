@@ -14,7 +14,7 @@ function LandingPage() {
             <div className="py-4">
                 <div className="container">
                     <div class="row position-relative">
-                        <div className="landing-container-logo col-xl-6 col-lg-6 col-sm-12 col-md-6">
+                        <div className="landing-container-logo image-container col-xl-6 col-lg-6 col-sm-12 col-md-6">
                             <img src={'./logo.png'} />
                         </div>
                         <div className="landing-container col-xl-6 col-lg-6 col-sm-12 col-md-6">

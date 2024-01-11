@@ -55,8 +55,8 @@ function Profile() {
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="py-4">
                 <div className="container">
-                    <div className="row position-relative">
-                        <main className="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12 align-content" >
+                    <div className="row justify-content-center ">
+                        <main className="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12 " >
                             <div className="main-content">
                                 <ul className="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-glass my-3 mx-lg-3" id="pills-tab" role="tablist">
                                     <li className="nav-item" role="presentation">
@@ -74,12 +74,13 @@ function Profile() {
                                         <Overview />
                                     </div>
                                     <div className="tab-pane fade" id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
-                                        {userData && <Feed userId={userData._id} refresh = {feedKey}/>}
+                                        {userData && <Feed userId={userData._id} refresh={feedKey} />}
                                     </div>
                                     <div className="tab-pane fade" id="pills-shows" role="tabpanel" aria-labelledby="pills-shows-tab">
                                         <MyShows />
                                     </div>
                                 </div>
+
                             </div>
                         </main>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
