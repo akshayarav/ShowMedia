@@ -57,8 +57,11 @@ function SearchBar() {
                         <div class="bg-glass rounded-4 overflow-hidden account-follow shadow-sm mb-4">
                             <h6 class="fw-bold text-body p-3 mb-0 border-bottom">Other Show Lovers!</h6>
                             {recProfiles.map(user => (
-                            <UserCard key={user._id} other_user={user} />
-                        ))}
+                                <UserCard key={user._id} other_user={user} />
+                            ))}
+                            {recProfiles.length===0 &&
+                                <p class="text-muted p-3 mb-0">Follow your first account so we can find you more friends...</p>
+                            }
                         </div>
                     }
                     <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
