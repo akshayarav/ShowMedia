@@ -13,15 +13,15 @@
 -- Dark
 */
 
-
+.main-center {
+    min-height: 100vh;
+}
 
 @media (max-width: 1200px) {
     .main-center {
         display: flex;
         justify-content: center;
-        align-items: center;
         height: 100%;
-        /* This ensures that the flex container takes full height */
     }
 }
 
