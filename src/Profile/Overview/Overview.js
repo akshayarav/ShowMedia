@@ -30,7 +30,8 @@ function Overview() {
 
     useEffect(() => {
         setIsLoading(true)
-
+        setShowFollowersModal(false)
+        setShowFollowingModal(false)
         const fetchData = async () => {
             try {
                 const profileResponse = await axios.get(`${apiUrl}/api/user/${username}`);
