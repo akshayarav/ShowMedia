@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import UserCard from "./UserCard";
+import { FollowerUpdateContext } from '../FollowerUpdateContext';
 
 function SearchBar() {
     const apiUrl = process.env.REACT_APP_API_URL
@@ -9,6 +10,8 @@ function SearchBar() {
     const [searchResults, setSearchResults] = useState([]);
     const [recProfiles, setRecProfiles] = useState([])
     const username = localStorage.getItem('username')
+
+    const { followerUpdate } = useContext(FollowerUpdateContext);
 
     useEffect(() => {
         if (searchTerm) {
@@ -33,9 +36,7 @@ function SearchBar() {
             .catch(error => {
                 console.error('Error fetching search results:', error);
             });
-    }, []);
-
-    console.log(recProfiles)
+    }, [followerUpdate]);
 
     return (
         <aside className="col col-xl-3 order-xl-3 col-lg-3 order-lg-3 col-md-0 col-sm-0 search-bar-container">
