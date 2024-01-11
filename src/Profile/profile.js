@@ -20,6 +20,8 @@ function Profile() {
     const [searchScreenOn, setSearchScreenOn] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
 
+    const [activeTab, setActiveTab] = useState('overview');
+
     const handleFeedTabClick = () => {
         setFeedKey(prevKey => prevKey + 1);
     };
@@ -33,6 +35,7 @@ function Profile() {
                 console.error('Error fetching user data:', error);
                 setError(error.message || 'Error fetching user data');
             });
+        setActiveTab('overview');
     }, [username, apiUrl]);
 
     if (error) {
@@ -60,23 +63,44 @@ function Profile() {
                             <div className="main-content">
                                 <ul className="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-glass my-3 mx-lg-3" id="pills-tab" role="tablist">
                                     <li className="nav-item" role="presentation">
-                                        <button className="p-3 nav-link text-muted active" id="pills-overview-tab" data-bs-toggle="pill" data-bs-target="#pills-overview" type="button" role="tab" aria-controls="pills-overview" aria-selected="true">Overview</button>
+                                        <button
+                                            className={`p-3 nav-link text-muted ${activeTab === 'overview' ? 'active' : ''}`}
+                                            id="pills-overview-tab"
+                                            type="button"
+                                            onClick={() => setActiveTab('overview')}>
+                                            Overview
+                                        </button>
                                     </li>
                                     <li className="nav-item" role="presentation">
-                                        <button className="p-3 nav-link text-muted" id="pills-feed-tab" data-bs-toggle="pill" data-bs-target="#pills-feed" type="button" role="tab" aria-controls="pills-feed" aria-selected="false" onClick={handleFeedTabClick}>Activity</button>
+                                        <button
+                                            className={`p-3 nav-link text-muted ${activeTab === 'feed' ? 'active' : ''}`}
+                                            id="pills-feed-tab"
+                                            type="button"
+                                            onClick={() => {
+                                                handleFeedTabClick();
+                                                setActiveTab('feed');
+                                            }}>
+                                            Activity
+                                        </button>
                                     </li>
                                     <li className="nav-item" role="presentation">
-                                        <button className="p-3 nav-link text-muted" id="pills-shows-tab" data-bs-toggle="pill" data-bs-target="#pills-shows" type="button" role="tab" aria-controls="pills-shows" aria-selected="false">Show List</button>
+                                        <button
+                                            className={`p-3 nav-link text-muted ${activeTab === 'shows' ? 'active' : ''}`}
+                                            id="pills-shows-tab"
+                                            type="button"
+                                            onClick={() => setActiveTab('shows')}>
+                                            Show List
+                                        </button>
                                     </li>
                                 </ul>
                                 <div className="tab-content" id="pills-tabContent">
-                                    <div className="tab-pane fade show active" id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
+                                    <div className={`tab-pane fade ${activeTab === 'overview' ? 'show active' : ''}`} id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
                                         <Overview />
                                     </div>
-                                    <div className="tab-pane fade" id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
+                                    <div className={`tab-pane fade ${activeTab === 'feed' ? 'show active' : ''}`} id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
                                         {userData && <Feed userId={userData._id} refresh={feedKey} />}
                                     </div>
-                                    <div className="tab-pane fade" id="pills-shows" role="tabpanel" aria-labelledby="pills-shows-tab">
+                                    <div className={`tab-pane fade ${activeTab === 'shows' ? 'show active' : ''}`} id="pills-shows" role="tabpanel" aria-labelledby="pills-shows-tab">
                                         <MyShows />
                                     </div>
                                 </div>
