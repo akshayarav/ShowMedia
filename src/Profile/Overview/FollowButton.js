@@ -8,7 +8,6 @@ function FollowButton({ other_user }) {
     const [error, setError] = useState(null);
     const userId = localStorage.getItem('userId')
     const { followerUpdate, setFollowerUpdate } = useContext(FollowerUpdateContext);
-    const [isLoading, setIsLoading] = useState(false);
 
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -52,7 +51,7 @@ function FollowButton({ other_user }) {
     return (
         <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
             <button type="button" className="btn btn-outline-primary btn-sm px-3 rounded-pill" onClick={handleFollow}>
-                {isLoading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow')}
+                {isFollowing ? 'Following' : 'Follow'}
             </button>
         </div>
     )

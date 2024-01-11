@@ -8,10 +8,9 @@ import LandingPage from './LandingPage/LandingPage';
 
 function App() {
   const { isAuthenticated, isLoading } = useContext(AuthContext);
-  console.log(isLoading)
 
   if (isLoading) {
-    return <div></div>; // Or return null, or any loading indicator
+    return <div></div>; 
 }
 
   if (isAuthenticated) {

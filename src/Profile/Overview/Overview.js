@@ -75,7 +75,13 @@ function Overview() {
     }
 
     if (!profileUser || isLoading) {
-        return <div>Loading...</div>;
+        return (
+            <div class="text-center" style={{ marginTop: '70px' }}>
+                <div class="spinner-border" role="status" style={{ width: '3rem', height: '3rem' }}>
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        )
     }
 
     const isAuthenticated = (username === auth_username);
