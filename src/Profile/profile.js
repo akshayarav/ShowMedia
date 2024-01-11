@@ -59,7 +59,7 @@ function Profile() {
             <div className="py-4">
                 <div className="container">
                     <div className="row justify-content-center ">
-                        <main className="col col-xl-6 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12 " >
+                        <main className="col col-xl-6 order-xl-2 col-lg-9 col-md-12 col-sm-12 col-12 main-center" >
                             <div className="main-content">
                                 <ul className="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-glass my-3 mx-lg-3" id="pills-tab" role="tablist">
                                     <li className="nav-item" role="presentation">
