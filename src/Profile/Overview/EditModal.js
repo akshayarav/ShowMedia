@@ -5,7 +5,7 @@ import axios from 'axios';
 
 function EditModal({ closeModal }) {
     const user = localStorage.getItem('user')
-    
+
     const [tempBio, setTempBio] = useState(user.bio)
     const [first, setFirst] = useState(user.first)
     const [last, setLast] = useState(user.last)
@@ -32,79 +32,77 @@ function EditModal({ closeModal }) {
     }
 
     return (
-        <Modal show={true} onHide={closeModal} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Edit Profile</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {error && <Alert variant="danger">{error}</Alert>}
-                {success && <Alert variant="success">{success}</Alert>}
-                <div className="modal-content rounded-4 p-4 border-0">
-                    <form onSubmit={handleSubmit}>
-                        <div className="modal-body p-0">
-                            <div className="row py-3 gy-3 m-0">
-                                <div className="mt-5 login-register" id="number">
-                                    <h6 className="fw-bold mx-1 mb-2 text-dark">Add Bio</h6>
-                                    <div className="row mx-0 mb-3">
-                                        <div className="col-9 p-1">
-                                            <div className="form-floating d-flex align-items-end">
-                                                <input
-                                                    type="text"
-                                                    className="form-control rounded-5"
-                                                    id="floatingBio"
-                                                    value={tempBio}
-                                                    onChange={(e) => setTempBio(e.target.value)}
-                                                    placeholder="Enter Username"
-                                                />
-                                                <label htmlFor="floatingBio">Enter Bio</label>
+        <Modal show={true} onHide={closeModal} centered className="modal fade bg-glass">
+            <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
+                <div className="modal-header border-0 p-1 mb-4">
+                    <h6 className="modal-title fw-bold text-body fs-6">Edit Profile</h6>
+                    <a href="#" class="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
+                </div>
+                <div class="modal-body p-0">
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    {success && <Alert variant="success">{success}</Alert>}
+                    <div className="modal-content rounded-4 p-4 border-0">
+                        <form onSubmit={handleSubmit}>
+                            <div className="modal-body p-0">
+                                <div className="row py-3 gy-3 m-0">
+                                    <div className="mt-5 login-register" id="number">
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Add Bio</h6>
+                                        <div className="row mx-0 mb-3">
+                                            <div className="col-9 p-1">
+                                                <div className="form-floating d-flex align-items-end">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control rounded-5"
+                                                        id="floatingBio"
+                                                        value={tempBio}
+                                                        onChange={(e) => setTempBio(e.target.value)}
+                                                        placeholder="Enter Username"
+                                                    />
+                                                    <label htmlFor="floatingBio">Enter Bio</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <h6 className="fw-bold mx-1 mb-2 text-dark">Name</h6>
-                                    <div className="row mx-0 mb-3">
-                                        <div className="col-9 p-1">
-                                            <div className="form-floating d-flex align-items-end">
-                                                <input
-                                                    type="text"
-                                                    className="form-control rounded-5"
-                                                    id="floatingEditFirst"
-                                                    value={first}
-                                                    onChange={(e) => setFirst(e.target.value)}
-                                                    placeholder="First Name"
-                                                />
-                                                <label htmlFor="floatingEditFirst">First Name</label>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white\">Name</h6>
+                                        <div className="row mx-0 mb-3">
+                                            <div className="col-9 p-1">
+                                                <div className="form-floating d-flex align-items-end">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control rounded-5"
+                                                        id="floatingEditFirst"
+                                                        value={first}
+                                                        onChange={(e) => setFirst(e.target.value)}
+                                                        placeholder="First Name"
+                                                    />
+                                                    <label htmlFor="floatingEditFirst">First Name</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="row mx-0 mb-3">
-                                        <div className="col-9 p-1">
-                                            <div className="form-floating d-flex align-items-end">
-                                                <input
-                                                    type="text"
-                                                    className="form-control rounded-5"
-                                                    id="floatingEditLast"
-                                                    value={last}
-                                                    onChange={(e) => setLast(e.target.value)}
-                                                    placeholder="Last Name"
-                                                />
-                                                <label htmlFor="floatingEditLast">Last Name</label>
+                                        <div className="row mx-0 mb-3">
+                                            <div className="col-9 p-1">
+                                                <div className="form-floating d-flex align-items-end">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control rounded-5"
+                                                        id="floatingEditLast"
+                                                        value={last}
+                                                        onChange={(e) => setLast(e.target.value)}
+                                                        placeholder="Last Name"
+                                                    />
+                                                    <label htmlFor="floatingEditLast">Last Name</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="p-1">
-                                        <button type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase m-0">Make Changes</button>
+                                        <div className="p-1">
+                                            <button type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase m-0">Make Changes</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={closeModal}>
-                    Close
-                </Button>
-            </Modal.Footer>
+            </div>
         </Modal>
     )
 }
