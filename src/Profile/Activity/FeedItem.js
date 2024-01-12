@@ -118,7 +118,7 @@ function FeedItem({ activity }) {
                         <img src={activity.user.profilePicture} className="img-fluid rounded-circle user-img"
                             alt="profile-img" style={{ maxWidth: '50px', height: 'auto' }} />
                     </div>
-                    <div>
+                    <div className = "flex-grow-1">
                         <div key={activity._id} className="d-flex justify-content-between align-items-start text-white text-decoration-none">
                             <div className="flex-grow-1">
                                 <div className="mb-3">
@@ -140,7 +140,8 @@ function FeedItem({ activity }) {
 
                                 <div className="mb-4">
                                     <h6 className="mb-0 ">{renderStars(activity.rating)}</h6>
-                                    <p className="mb-3 mt-1">"{activity.comment}"</p>
+                                    ({activity.rating}/10)
+                                    <p className="mb-3 mt-3">Comment: "{activity.comment}"</p>
                                 </div>
 
                                 <div class="d-flex align-items-center justify-content-between mb-2">
