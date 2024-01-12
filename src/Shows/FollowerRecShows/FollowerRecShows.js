@@ -12,8 +12,6 @@ function FollowerRecShows() {
 
     const tmdbApiKey = process.env.REACT_APP_API_KEY
 
-
-
     useEffect(() => {
         axios.get(`${apiUrl}/api/following/shows/${userId}`)
             .then(response => {
@@ -27,15 +25,19 @@ function FollowerRecShows() {
     async function fetchShowDetails(showId) {
         try {
             const response = await axios.get(`https://api.themoviedb.org/3/tv/${showId}?api_key=${tmdbApiKey}`);
-            return response.data; // Return the show details
+            response.data.users = showId[1].users
+            return response.data; 
         } catch (error) {
             console.error(`Error fetching data for show ID ${showId}:`, error);
-            return null; // Return null or handle error as needed
+            return null; 
         }
     }
 
     async function getAllShowDetails(showIds) {
-        const showDetailsPromises = showIds.map(showId => fetchShowDetails(showId));
+        const showDetailsPromises = showIds.map(showId => {
+            return fetchShowDetails(showId);
+        });
+        
         const showsDetails = await Promise.all(showDetailsPromises);
 
         const uniqueShows = new Set(showsDetails.filter(show => show !== null));
@@ -59,7 +61,7 @@ function FollowerRecShows() {
         <h2 class="fw-bold text-white mb-1">Shows Watched by Friends</h2>
         <div className="d-flex flex-row overflow-auto mb-5">
             {shows.map((show, index) => {
-                return <ShowCard key={index} series_id={show.id} name={show.name} image={show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage} />;
+                return <ShowCard key={index} series_id={show.id} name={show.name} image={show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage} users = {show.users}/>;
             })}
         </div>
     </div>)

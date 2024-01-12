@@ -2,10 +2,20 @@ import { useState, useEffect } from "react";
 import Axios from "axios";
 import ShowModal from "./ShowModal";
 
-function ShowCard({ name, image, series_id }) {
+function ShowCard({ name, image, series_id, users }) {
     const [showModal, setShowModal] = useState(false);
     const [seasons, setSeasons] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [userSet, setUserSet] = useState(null)
+
+    useEffect(() => {
+        if (users) {
+            const uniqueUsers = users.filter((value, index, array) => {
+                return array.indexOf(value) === index;
+            });
+            setUserSet(uniqueUsers);
+        }
+    }, [users]);
 
     useEffect(() => {
         const fetchSeasons = async () => {
@@ -46,11 +56,22 @@ function ShowCard({ name, image, series_id }) {
                     <div className="image-container">
                         <img src={image} className="img-fluid rounded-top" alt={name} />
                     </div>
-                    <div className="details-container p-3 text-white">
+                    <div className="details-container p-3 pb-1 text-white">
                         {name}
                     </div>
                 </div>
                 {showModal && !isLoading && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} />}
+
+
+                {users && <div>
+                    <small className="text-muted ms-3">Watched by:</small>
+                    {userSet && userSet.slice(0, 3).map((user, index, array) => (
+                        <span key={user}>
+                            <small className="text-muted">@{user}</small>
+                            {index < array.length - 1 && <small className="text-muted">, </small>}
+                        </span>
+                    ))}
+                </div>}
             </div>
         </main>
     )
