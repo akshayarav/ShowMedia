@@ -20,6 +20,7 @@ function FeedItem({ activity }) {
     const [newComment, setNewComment] = useState('');
     const [showCommentBox, setShowCommentBox] = useState(false);
     const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+    const [visibleComments, setVisibleComments] = useState(1);
 
     const handleLike = async () => {
         const userId = localStorage.getItem('userId');
@@ -96,6 +97,9 @@ function FeedItem({ activity }) {
         }
     };
 
+    const handleShowMore = () => {
+        setVisibleComments(prev => prev + 3);
+    };
 
     return (
         <div key={activity._id} className="p-3 border-bottom d-flex justify-content-between align-items-start text-white text-decoration-none">
@@ -125,10 +129,14 @@ function FeedItem({ activity }) {
                 </div>
 
                 <div className="d-flex align-items-center mb-3">
-                    <a href="#" className="text-muted text-decoration-none d-flex align-items-start fw-light me-2" onClick={(e) => { e.preventDefault(); handleLike(); }}>
+                    <button
+                        className="text-muted text-decoration-none d-flex align-items-start fw-light me-2"
+                        onClick={(e) => { e.preventDefault(); handleLike(); }}
+                        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                    >
                         <span className="material-icons md-20">{isLiked ? 'thumb_up' : 'thumb_up_off_alt'}</span>
                         <span>{likeCount}</span>
-                    </a>
+                    </button>
                     <span className="material-icons md-20" onClick={toggleCommentBox}>chat_bubble_outline</span>
                 </div>
 
@@ -136,27 +144,42 @@ function FeedItem({ activity }) {
                     <div className="d-flex align-items-center mt-3 mb-3">
                         <input
                             type="text"
-                            className="form-control form-control-sm rounded-3 fw-light me-2 flex-grow-1"
-                            placeholder="Write Your comment"
+                            className="test-primary form-control form-control-sm rounded-3 fw-light me-2 flex-grow-1"
+                            placeholder=""
                             value={newComment}
                             onChange={handleNewCommentChange}
                             style={{ marginRight: '5px' }}
                         />
-                        <a href="#" className="text-primary ps-2 text-decoration-none" onClick={(e) => { e.preventDefault(); submitComment(); }}>Post</a>
+                        <button
+                            className="text-primary ps-2 text-decoration-none"
+                            onClick={(e) => { e.preventDefault(); submitComment(); }}
+                            style={{ background: 'none', border: 'none' }}
+                        >
+                            Post
+                        </button>
                     </div>
                 )}
 
-                <div>
-                    {comments.map(comment => (
-                        <div key={comment._id} className="mb-3">
-                            <div className="bg-light px-3 py-2 rounded-4 chat-text" style={{ color: 'black' }}>
-                                <p className="fw-500 mb-0">{comment.user.username}</p>
-                                <span>{comment.comment}</span>
-                            </div>
-                            <span className="small text-muted d-block" style={{ fontSize: '0.8em' }}>{formatTimestamp(comment.timestamp)}</span>
+            <div>
+                {comments.slice(0, visibleComments).map(comment => (
+                    <div key={comment._id} className="mb-3">
+                        <div className="bg-light px-3 py-2 rounded-4 chat-text" style={{ color: 'black' }}>
+                            <p className="fw-500 mb-0">{comment.user.username}</p>
+                            <span>{comment.comment}</span>
                         </div>
-                    ))}
-                </div>
+                        <span className="small text-muted d-block" style={{ fontSize: '0.8em' }}>{formatTimestamp(comment.timestamp)}</span>
+                    </div>
+                ))}
+                {comments.length > visibleComments && (
+                    <button
+                        onClick={handleShowMore}
+                        className="text-primary text-decoration-none"
+                        style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
+                    >
+                        Show More
+                    </button>
+                )}
+            </div>
 
                 {isCommentModalOpen && (
                     <div className="modal">
