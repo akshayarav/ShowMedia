@@ -21,8 +21,19 @@ function Overview() {
     const toggleEditModal = () => setShowEditModal(!showEditModal);
     const [showFollowersModal, setShowFollowersModal] = useState(false);
     const [showFollowingModal, setShowFollowingModal] = useState(false);
-    const toggleFollowersModal = () => setShowFollowersModal(!showFollowersModal);
-    const toggleFollowingModal = () => setShowFollowingModal(!showFollowingModal);
+    const [refresh, setRefresh] = useState(false)
+    const toggleFollowersModal = () => {
+        if (showFollowersModal === true) {
+            setRefresh(!refresh)
+        }
+        setShowFollowersModal(!showFollowersModal);
+    }
+    const toggleFollowingModal = () => {
+        if (showFollowingModal === true) {
+            setRefresh(!refresh)
+        }
+        setShowFollowingModal(!showFollowingModal);
+    }
 
     const { followerUpdate } = useContext(FollowerUpdateContext);
     const [isLoading, setIsLoading] = useState(false)
@@ -53,7 +64,7 @@ function Overview() {
 
 
         fetchData();
-    }, [username, followerUpdate]);
+    }, [username, refresh]);
 
 
 
@@ -90,7 +101,7 @@ function Overview() {
     const numFollowers = profileUser.followers ? profileUser.followers.length : 0;
 
     return (
-        <div className = "border-bottom pb-3">
+        <div className="border-bottom pb-3">
             <div className="bg-glass rounded-4 shadow-sm profile ">
                 <div className="d-flex align-items-center px-3 pt-3">
                     <img src={profileUser.profilePicture} className="img-fluid rounded-circle" alt="profile-img"></img>
