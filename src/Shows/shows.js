@@ -33,8 +33,6 @@ function Shows() {
             .catch(error => {
                 console.error('Error fetching data: ', error);
             });
-        window.addEventListener('scroll', debouncedCheckScrollBottom);
-        return () => window.removeEventListener('scroll', debouncedCheckScrollBottom);
     }, [currentPage]);
 
     useEffect(() => {
@@ -77,19 +75,6 @@ function Shows() {
 
     const debounceSearch = debounce(handleSearch, 500);
 
-    const handleShowMore = (event) => {
-        if (event) event.preventDefault();
-        setCurrentPage(prevPage => prevPage + 1);
-    };
-
-    const checkScrollBottom = () => {
-        if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
-            handleShowMore();
-        }
-    };
-
-    const debouncedCheckScrollBottom = useCallback(debounce(checkScrollBottom, 100), []);
-
     if (searchScreenOn) {
         return (<div>
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
@@ -107,19 +92,20 @@ function Shows() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 main-center border-start">
+                        <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
                             <ShowSearch onSearch={setSearchTerm} />
                             <h2 class="fw-bold text-white mb-1">Popular Shows</h2>
-                            <div className="row">
+                            <div className="d-flex flex-row overflow-auto mb-5">
                                 {shows.map((show, index) => (
                                     <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
                                 ))}
                             </div>
-                            {searchTerm === '' && (
-                                <a onClick={handleShowMore} className="text-decoration-none">
-                                    <div className="p-3">Show More</div>
-                                </a>
-                            )}
+                            <h2 class="fw-bold text-white mb-1">Shows Watched by Friends</h2>
+                            <div className="d-flex flex-row overflow-auto mb-5">
+                                {shows.map((show, index) => (
+                                    <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
+                                ))}
+                            </div>
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>

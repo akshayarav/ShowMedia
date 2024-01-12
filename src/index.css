@@ -13,6 +13,11 @@
 -- Dark
 */
 
+.show-card-size {
+    padding: 15px;
+    min-width: 240px 
+}
+
 .main-center {
     min-height: 100vh;
 }
@@ -22,6 +27,10 @@
         display: flex;
         justify-content: center;
         height: 100%;
+    }
+    .show-card-size {
+        padding: 10px;
+        min-width: 60px 
     }
 }
 
@@ -322,7 +331,7 @@ h6 {
 
 ::-webkit-scrollbar {
     width: 4px;
-    background-color: #ffffff;
+    background: rgba(65, 65, 65, 0.25);
 }
 
 ::-webkit-scrollbar-thumb {

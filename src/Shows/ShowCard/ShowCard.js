@@ -34,18 +34,9 @@ function ShowCard({ name, image, series_id }) {
         setShowModal(!showModal);
     };
 
-    // if (isLoading) {
-    //     return (
-    //         <div class="text-center" style={{ marginTop: '70px' }}>
-    //             <div class="spinner-border" role="status" style={{ width: '3rem', height: '3rem' }}>
-    //                 <span class="visually-hidden">Loading...</span>
-    //             </div>
-    //         </div>
-    //     )
-    // }
 
     return (
-        <main className="col col-xl-3 col-lg-6 col-md-3 col-sm-6 col-6" style={{ padding: "15px" }}>
+        <main className="flex-shrink-0 col col-xl-3 col-lg-6 col-md-3 col-sm-6 col-6 show-card-size">
             <div className="bg-glass rounded-4 shadow-sm" >
                 <div
                     role="button"
