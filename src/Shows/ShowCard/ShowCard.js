@@ -63,8 +63,8 @@ function ShowCard({ name, image, series_id, users }) {
                 {showModal && !isLoading && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} />}
 
 
-                {users && <div>
-                    <small className="text-muted ms-3">Watched by:</small>
+                {users && <div className = "pb-2">
+                    <small className="text-muted ms-3">Seen by: </small>
                     {userSet && userSet.slice(0, 3).map((user, index, array) => (
                         <span key={user}>
                             <small className="text-muted">@{user}</small>

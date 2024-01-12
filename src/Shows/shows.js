@@ -1,40 +1,28 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import debounce from 'lodash.debounce';
 import Sidebar from "../Sidebar/sidebar";
 import ShowCard from "./ShowCard/ShowCard";
-import ShowSearch from './ShowSearch';
+import ShowSearch from './ShowSearchBar/ShowSearch';
 import MobileBar from '../MobileBar/MobileBar';
-import defaultImage from './ShowCard/error.jpg';
 import UserCard from '../SearchBar/UserCard';
 import FollowerRecShows from './FollowerRecShows/FollowerRecShows';
+import PopularShows from './PopularShows/PopularShows';
+import defaultImage from './ShowCard/error.jpg';
+
 
 function Shows() {
     const [shows, setShows] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchScreenOn, setSearchScreenOn] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
-    
-    const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${currentPage}`;
     const searchApiUrl = query => `https://api.themoviedb.org/3/search/tv?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&query=${query}`;
 
-    useEffect(() => {
-        Axios.get(popularApiUrl)
-            .then(response => {
-                const newShows = response.data.results.map(show => ({
-                    id: show.id,
-                    name: show.name,
-                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
-                    series_id: show.id
-                }));
-                setShows(prevShows => [...prevShows, ...newShows]);
-            })
-            .catch(error => {
-                console.error('Error fetching data: ', error);
-            });
-    }, [currentPage]);
+    const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${currentPage}`;
+
 
     useEffect(() => {
         if (searchTerm) {
@@ -87,6 +75,29 @@ function Shows() {
         </div>)
     }
 
+    if (searchTerm) {
+        return (
+            <div className="bg-brown-gradient">
+                <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
+                <div className="py-4">
+                    <div className="container">
+                        <div className="row position-relative">
+                            <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
+                                <ShowSearch onSearch={setSearchTerm} />
+                                <div className="row">
+                                    {shows.map((show, index) => (
+                                        <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
+                                    ))}
+                                </div>
+                            </div>
+                            <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="bg-brown-gradient">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
@@ -95,13 +106,8 @@ function Shows() {
                     <div className="row position-relative">
                         <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
                             <ShowSearch onSearch={setSearchTerm} />
-                            <h2 class="fw-bold text-white mb-1">Popular Shows</h2>
-                            <div className="d-flex flex-row overflow-auto mb-5">
-                                {shows.map((show, index) => (
-                                    <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
-                                ))}
-                            </div>
                             <FollowerRecShows />
+                            <PopularShows />
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>
