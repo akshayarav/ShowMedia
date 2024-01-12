@@ -1,0 +1,68 @@
+
+import { useEffect, useState } from "react"
+import axios from "axios"
+import ShowCard from "../ShowCard/ShowCard"
+import defaultImage from '../ShowCard/error.jpg';
+
+function FollowerRecShows() {
+    const apiUrl = process.env.REACT_APP_API_URL
+    const [recShows, setRecShows] = useState([])
+    const [shows, setShows] = useState([])
+    const userId = localStorage.getItem('userId')
+
+    const tmdbApiKey = process.env.REACT_APP_API_KEY
+
+
+
+    useEffect(() => {
+        axios.get(`${apiUrl}/api/following/shows/${userId}`)
+            .then(response => {
+                setRecShows(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching data: ', error);
+            });
+    }, []);
+
+    async function fetchShowDetails(showId) {
+        try {
+            const response = await axios.get(`https://api.themoviedb.org/3/tv/${showId}?api_key=${tmdbApiKey}`);
+            return response.data; // Return the show details
+        } catch (error) {
+            console.error(`Error fetching data for show ID ${showId}:`, error);
+            return null; // Return null or handle error as needed
+        }
+    }
+
+    async function getAllShowDetails(showIds) {
+        const showDetailsPromises = showIds.map(showId => fetchShowDetails(showId));
+        const showsDetails = await Promise.all(showDetailsPromises);
+
+        const uniqueShows = new Set(showsDetails.filter(show => show !== null));
+
+        return uniqueShows;
+    }
+
+    useEffect(() => {
+        async function updateShows() {
+            const detailedShows = await getAllShowDetails(recShows);
+            setShows(Array.from(detailedShows));
+        }
+
+        if (recShows.length > 0) {
+            updateShows();
+        }
+    }, [recShows]);
+
+
+    return (<div>
+        <h2 class="fw-bold text-white mb-1">Shows Watched by Friends</h2>
+        <div className="d-flex flex-row overflow-auto mb-5">
+            {shows.map((show, index) => {
+                return <ShowCard key={index} series_id={show.id} name={show.name} image={show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage} />;
+            })}
+        </div>
+    </div>)
+}
+
+export default FollowerRecShows

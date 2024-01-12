@@ -7,6 +7,7 @@ import ShowSearch from './ShowSearch';
 import MobileBar from '../MobileBar/MobileBar';
 import defaultImage from './ShowCard/error.jpg';
 import UserCard from '../SearchBar/UserCard';
+import FollowerRecShows from './FollowerRecShows/FollowerRecShows';
 
 function Shows() {
     const [shows, setShows] = useState([]);
@@ -15,7 +16,7 @@ function Shows() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchScreenOn, setSearchScreenOn] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
-
+    
     const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${currentPage}`;
     const searchApiUrl = query => `https://api.themoviedb.org/3/search/tv?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&query=${query}`;
 
@@ -100,12 +101,7 @@ function Shows() {
                                     <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
                                 ))}
                             </div>
-                            <h2 class="fw-bold text-white mb-1">Shows Watched by Friends</h2>
-                            <div className="d-flex flex-row overflow-auto mb-5">
-                                {shows.map((show, index) => (
-                                    <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
-                                ))}
-                            </div>
+                            <FollowerRecShows />
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>
