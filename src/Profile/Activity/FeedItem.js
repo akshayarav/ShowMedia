@@ -71,27 +71,31 @@ function FeedItem({ activity }) {
     };
 
     const formatTimestamp = (timestamp) => {
-        const now = new Date();
-        const commentDate = new Date(timestamp);
-        const diffInSeconds = Math.floor((now - commentDate) / 1000);
-        const diffInMinutes = Math.floor(diffInSeconds / 60);
-        const diffInHours = Math.floor(diffInMinutes / 60);
-        const diffInDays = Math.floor(diffInHours / 24);
-        const diffInWeeks = Math.floor(diffInDays / 7);
+        console.log('TIMESTAMP' + timestamp)
+        if (timestamp) {
+            const now = new Date();
+            const commentDate = new Date(timestamp);
+            const diffInSeconds = Math.floor((now - commentDate) / 1000);
+            const diffInMinutes = Math.floor(diffInSeconds / 60);
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            const diffInDays = Math.floor(diffInHours / 24);
+            const diffInWeeks = Math.floor(diffInDays / 7);
 
-        if (diffInSeconds < 60) {
-            return `${diffInSeconds}s`;
-        } else if (diffInMinutes < 60) {
-            return `${diffInMinutes}m`;
-        } else if (diffInHours < 24) {
-            return `${diffInHours}h`;
-        } else if (diffInDays < 7) {
-            return `${diffInDays}d`;
-        } else if (diffInWeeks < 52) {
-            return `${diffInWeeks}w`;
-        } else {
-            return commentDate.toLocaleDateString();
+            if (diffInSeconds < 60) {
+                return `${diffInSeconds}s`;
+            } else if (diffInMinutes < 60) {
+                return `${diffInMinutes}m`;
+            } else if (diffInHours < 24) {
+                return `${diffInHours}h`;
+            } else if (diffInDays < 7) {
+                return `${diffInDays}d`;
+            } else if (diffInWeeks < 52) {
+                return `${diffInWeeks}w`;
+            } else {
+                return commentDate.toLocaleDateString();
+            }
         }
+        return "0s"
     };
 
     const handleShowMore = () => {
@@ -118,7 +122,7 @@ function FeedItem({ activity }) {
                         <img src={activity.user.profilePicture} className="img-fluid rounded-circle user-img"
                             alt="profile-img" style={{ maxWidth: '50px', height: 'auto' }} />
                     </div>
-                    <div className = "flex-grow-1">
+                    <div className="flex-grow-1">
                         <div key={activity._id} className="d-flex justify-content-between align-items-start text-white text-decoration-none">
                             <div className="flex-grow-1">
                                 <div className="mb-3">
@@ -204,43 +208,43 @@ function FeedItem({ activity }) {
                         )}
 
                         <div className="comments mt-3 ">
-                                {comments.slice(0, visibleComments).map(comment => (
-                                    <div key={comment._id} className="mb-2 d-flex">
-                                        <a href="#" class="text-white text-decoration-none">
-                                            <img src={comment.profilePicture} class="img-fluid rounded-circle"
-                                                alt="commenters-img" />
-                                        </a>
-                                        <div class="ms-2 small">
-                                            <a href="#" class="text-white text-decoration-none"
-                                                data-bs-toggle="modal" data-bs-target="#commentModal">
-                                                <div class="bg-glass px-3 py-2 rounded-4 mb-1 chat-text">
-                                                    <p class="fw-500 mb-0">{comment.username}</p>
-                                                    <span class="text-muted">{comment.comment}</span>
-                                                </div>
-                                            </a>
-                                            <div class="d-flex align-items-center ms-2">
-                                                <a href="#"
-                                                    class="small text-muted text-decoration-none">Like</a>
-                                                <span
-                                                    class="fs-3 text-muted material-icons mx-1">circle</span>
-                                                <a href="#"
-                                                    class="small text-muted text-decoration-none">Reply</a>
-                                                <span
-                                                    class="fs-3 text-muted material-icons mx-1">circle</span>
-                                                <span class="small text-muted">{formatTimestamp(comment.timestamp)}</span>
+                            {comments.slice(0, visibleComments).map(comment => (
+                                <div key={comment._id} className="mb-2 d-flex">
+                                    <a href="#" class="text-white text-decoration-none">
+                                        <img src={comment.profilePicture} class="img-fluid rounded-circle"
+                                            alt="commenters-img" />
+                                    </a>
+                                    <div class="ms-2 small">
+                                        <a href="#" class="text-white text-decoration-none"
+                                            data-bs-toggle="modal" data-bs-target="#commentModal">
+                                            <div class="bg-glass px-3 py-2 rounded-4 mb-1 chat-text">
+                                                <p class="fw-500 mb-0">{comment.username}</p>
+                                                <span class="text-muted">{comment.comment}</span>
                                             </div>
+                                        </a>
+                                        <div class="d-flex align-items-center ms-2">
+                                            <a href="#"
+                                                class="small text-muted text-decoration-none">Like</a>
+                                            <span
+                                                class="fs-3 text-muted material-icons mx-1">circle</span>
+                                            <a href="#"
+                                                class="small text-muted text-decoration-none">Reply</a>
+                                            <span
+                                                class="fs-3 text-muted material-icons mx-1">circle</span>
+                                            <span class="small text-muted">{formatTimestamp(comment.timestamp)}</span>
                                         </div>
                                     </div>
-                                ))}
-                                {comments.length > visibleComments && (
-                                    <button
-                                        onClick={handleShowMore}
-                                        className="text-primary text-decoration-none"
-                                        style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
-                                    >
-                                        Show More
-                                    </button>
-                                )}
+                                </div>
+                            ))}
+                            {comments.length > visibleComments && (
+                                <button
+                                    onClick={handleShowMore}
+                                    className="text-primary text-decoration-none"
+                                    style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
+                                >
+                                    Show More
+                                </button>
+                            )}
                         </div>
 
 
