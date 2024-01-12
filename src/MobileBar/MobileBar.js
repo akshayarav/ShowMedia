@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import MobileSearch from './MobileSearch';
-import { set } from 'mongoose';
 
 function MobileBar({ toggleOffcanvas, toggleSearchScreen, setSearchResults }) {
     if(!toggleSearchScreen || !setSearchResults) {return (<div> Loading...</div>)}

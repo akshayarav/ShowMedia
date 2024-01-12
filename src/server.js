@@ -597,3 +597,52 @@ app.delete('/api/activities/:activityId/comment/:commentId', async (req, res) =>
     res.status(500).send('Internal Server Error');
   }
 });
+
+app.get('/api/recommendations/:username', async (req, res) => {
+  try {
+    const username = req.params.username;
+    const user = await User.findOne({ username }).populate('following');
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let recommendations = {};
+    let commonFollowersMap = {}; // Map to store common followers for each recommended user
+
+    for (const followedUser of user.following) {
+      const followedUserData = await User.findById(followedUser._id).populate('following');
+
+      for (const potentialRecommendation of followedUserData.following) {
+        if (!user.following.includes(potentialRecommendation._id) && potentialRecommendation._id.toString() !== user._id.toString()) {
+          const recommendationId = potentialRecommendation._id.toString();
+          recommendations[recommendationId] = (recommendations[recommendationId] || 0) + 1;
+
+          if (!commonFollowersMap[recommendationId]) {
+            commonFollowersMap[recommendationId] = [];
+          }
+          commonFollowersMap[recommendationId].push(followedUser.username);
+        }
+      }
+    }
+
+    const sortedRecommendations = Object.keys(recommendations)
+      .sort((a, b) => recommendations[b] - recommendations[a])
+      .slice(0, 3);
+
+    let topRecommendations = await User.find({ '_id': { $in: sortedRecommendations }}).select('-passwordHash');
+
+    // Append the common_followers data
+    topRecommendations = topRecommendations.map(user => {
+      return {
+        ...user.toObject(),
+        common_followers: commonFollowersMap[user._id.toString()] || []
+      };
+    });
+
+    res.json(topRecommendations);
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});

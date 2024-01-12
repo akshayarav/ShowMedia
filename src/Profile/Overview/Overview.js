@@ -90,43 +90,45 @@ function Overview() {
     const numFollowers = profileUser.followers ? profileUser.followers.length : 0;
 
     return (
-        <div className="bg-glass rounded-4 shadow-sm profile">
-            <div className="d-flex align-items-center px-3 pt-3">
-                <img src={profileUser.profilePicture} className="img-fluid rounded-circle" alt="profile-img"></img>
-                <div className="ms-3">
-                    <h6 className="mb-0 d-flex align-items-start text-body fs-6 fw-bold">{profileUser.first} {profileUser.last} </h6>
-                    <p className="text-muted mb-0">@{profileUser.username}</p>
-                </div>
-                {isAuthenticated ? (
-                    <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                        <button onClick={toggleEditModal} className="btn btn-outline-primary btn-sm px-3 rounded-pill" htmlFor="btncheck1">Edit Profile</button>
-                        {showEditModal && <EditModal closeModal={toggleEditModal} />}
+        <div className = "border-bottom pb-3">
+            <div className="bg-glass rounded-4 shadow-sm profile ">
+                <div className="d-flex align-items-center px-3 pt-3">
+                    <img src={profileUser.profilePicture} className="img-fluid rounded-circle" alt="profile-img"></img>
+                    <div className="ms-3">
+                        <h6 className="mb-0 d-flex align-items-start text-body fs-6 fw-bold">{profileUser.first} {profileUser.last} </h6>
+                        <p className="text-muted mb-0">@{profileUser.username}</p>
                     </div>
-                ) : <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group"><FollowButton other_user={profileUser} /></div>}
-            </div>
-            <div className="p-3">
-                <p className="mb-2 fs-6">{profileUser.bio}</p>
-                <div className="d-flex followers">
-                    <div onClick={toggleFollowersModal} role="button" tabIndex="0">
-                        <p className="mb-0">{numFollowers} <span className="text-muted">Followers</span></p>
-                        <div className="d-flex">
-                            {followers.map(user => (
-                                <img src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
-                            ))}
+                    {isAuthenticated ? (
+                        <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                            <button onClick={toggleEditModal} className="btn btn-outline-primary btn-sm px-3 rounded-pill" htmlFor="btncheck1">Edit Profile</button>
+                            {showEditModal && <EditModal closeModal={toggleEditModal} />}
                         </div>
-                    </div>
-                    {showFollowersModal && <FollowersModal closeModal={toggleFollowersModal} title={"Followers"} followers={followers} />}
-                    <div onClick={toggleFollowingModal} role="button" tabIndex="0">
-                        <div className="ms-5 ps-5">
-                            <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
+                    ) : <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group"><FollowButton other_user={profileUser} /></div>}
+                </div>
+                <div className="p-3">
+                    <p className="mb-2 fs-6">{profileUser.bio}</p>
+                    <div className="d-flex followers">
+                        <div onClick={toggleFollowersModal} role="button" tabIndex="0">
+                            <p className="mb-0">{numFollowers} <span className="text-muted">Followers</span></p>
                             <div className="d-flex">
-                                {following.map(user => (
+                                {followers.map(user => (
                                     <img src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
                                 ))}
                             </div>
                         </div>
+                        {showFollowersModal && <FollowersModal closeModal={toggleFollowersModal} title={"Followers"} followers={followers} />}
+                        <div onClick={toggleFollowingModal} role="button" tabIndex="0">
+                            <div className="ms-5 ps-5">
+                                <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
+                                <div className="d-flex">
+                                    {following.map(user => (
+                                        <img src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        {showFollowingModal && <FollowersModal closeModal={toggleFollowingModal} title={"Following"} following={following} />}
                     </div>
-                    {showFollowingModal && <FollowersModal closeModal={toggleFollowingModal} title={"Following"} following={following} />}
                 </div>
             </div>
         </div>
