@@ -6,7 +6,6 @@ import ShowCard from "./ShowCard/ShowCard";
 import ShowSearch from './ShowSearch';
 import MobileBar from '../MobileBar/MobileBar';
 import defaultImage from './ShowCard/error.jpg';
-import SearchBar from "../SearchBar/SearchBar"
 import UserCard from '../SearchBar/UserCard';
 
 function Shows() {

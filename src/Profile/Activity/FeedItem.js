@@ -6,20 +6,21 @@ function FeedItem({ activity }) {
     const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
     const image = activity.showImage ? `https://image.tmdb.org/t/p/w500${activity.showImage}` : 'error.jpg';
 
-    const status = activity.status === "Watching" ? `just watched the ${activity.episodes} episode of` :
+    console.log(activity)
+
+    const status = activity.status === "Watching" ? `watched episode ${activity.episodes} of` :
         activity.status === "Planning" ? "is planning to watch" :
             activity.status === "Completed" ? "completed" :
                 activity.status === "Dropped" ? "dropped" : "unknown";
 
-    const username = activity.username ? activity.username : activity.user.username;
-    const first = activity.first ? activity.first : activity.user.first;
+    const username = activity.user.username;
+    const first = activity.user.first;
 
     const [isLiked, setIsLiked] = useState(activity.likes.includes(localStorage.getItem('userId')));
     const [likeCount, setLikeCount] = useState(activity.likes.length);
     const [comments, setComments] = useState(activity.comments);
     const [newComment, setNewComment] = useState('');
     const [showCommentBox, setShowCommentBox] = useState(false);
-    const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
     const [visibleComments, setVisibleComments] = useState(1);
 
     const handleLike = async () => {
@@ -69,10 +70,6 @@ function FeedItem({ activity }) {
         setShowCommentBox(!showCommentBox);
     };
 
-    const closeCommentModal = () => {
-        setIsCommentModalOpen(false);
-    };
-
     const formatTimestamp = (timestamp) => {
         const now = new Date();
         const commentDate = new Date(timestamp);
@@ -102,116 +99,142 @@ function FeedItem({ activity }) {
     };
 
     return (
-        <div key={activity._id} className="p-3 border-bottom d-flex justify-content-between align-items-start text-white text-decoration-none">
-            <div className="flex-grow-1">
-                <div className="mb-2 d-flex align-items-center">
-                    <small className="text-muted">@{username}</small>
-                    <span className="mx-2 material-icons md-18">circle</span>
-                    <small className="text-muted">{formattedTimestamp}</small>
-                </div>
-
-                <div className="mb-2">
-                    <h6 className="mb-0">
-                        {first} {status}
-                    </h6>
-                </div>
-
-                <div className="mb-2">
-                    <h5 className="mb-0">
-                        {activity.showName} - <span>Season {activity.seasonNumber}</span>
-                    </h5>
-                </div>
-
-                <div className="mb-2">
-                    <h6 className="mb-1 fw-bold">Season Rating: {activity.rating}/10</h6>
-                    <br />
-                    <p className="mb-1">"{activity.comment}"</p>
-                </div>
-
-                <div className="d-flex align-items-center mb-3">
-                    <button
-                        className="text-muted text-decoration-none d-flex align-items-start fw-light me-2"
-                        onClick={(e) => { e.preventDefault(); handleLike(); }}
-                        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-                    >
-                        <span className="material-icons md-20">{isLiked ? 'thumb_up' : 'thumb_up_off_alt'}</span>
-                        <span>{likeCount}</span>
-                    </button>
-                    <span className="material-icons md-20" onClick={toggleCommentBox}>chat_bubble_outline</span>
-                </div>
-
-                {showCommentBox && (
-                    <div className="d-flex align-items-center mt-3 mb-3">
-                        <input
-                            type="text"
-                            className="test-primary form-control form-control-sm rounded-3 fw-light me-2 flex-grow-1"
-                            placeholder=""
-                            value={newComment}
-                            onChange={handleNewCommentChange}
-                            style={{ marginRight: '5px' }}
-                        />
-                        <button
-                            className="text-primary ps-2 text-decoration-none"
-                            onClick={(e) => { e.preventDefault(); submitComment(); }}
-                            style={{ background: 'none', border: 'none' }}
-                        >
-                            Post
-                        </button>
+        <div class="border-bottom py-3 px-lg-3">
+            <div class="bg-glass p-3 feed-item rounded-4 shadow-sm">
+                <div className="d-flex">
+                    <div className="me-3 image-container">
+                        <img src={activity.user.profilePicture} class="img-fluid rounded-circle user-img"
+                            alt="profile-img" style={{ maxWidth: '50px', height: 'auto' }} />
                     </div>
-                )}
+                    <div>
 
-            <div>
-                {comments.slice(0, visibleComments).map(comment => (
-                    <div key={comment._id} className="mb-3">
-                        <div className="bg-light px-3 py-2 rounded-4 chat-text" style={{ color: 'black' }}>
-                            <p className="fw-500 mb-0">{comment.user.username}</p>
-                            <span>{comment.comment}</span>
-                        </div>
-                        <span className="small text-muted d-block" style={{ fontSize: '0.8em' }}>{formatTimestamp(comment.timestamp)}</span>
-                    </div>
-                ))}
-                {comments.length > visibleComments && (
-                    <button
-                        onClick={handleShowMore}
-                        className="text-primary text-decoration-none"
-                        style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
-                    >
-                        Show More
-                    </button>
-                )}
-            </div>
+                        <div key={activity._id} className="d-flex justify-content-between align-items-start text-white text-decoration-none">
+                            <div className="flex-grow-1">
+                                <div className="mb-3">
+                                    <div className="d-flex align-items-center">
+                                        <p className="text-white mb-0">{first}</p>
+                                        <p className="ms-1 text-muted mb-0">@{username}</p>
+                                        <p className="text-muted ms-2 mb-0">{formattedTimestamp}</p>
+                                    </div>
+                                    <h6 className="text-primary">
+                                        {status}
+                                    </h6>
+                                </div>
 
-                {isCommentModalOpen && (
-                    <div className="modal">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Add a Comment</h5>
-                                    <button type="button" className="close" onClick={closeCommentModal}>&times;</button>
+                                <div className="mb-2">
+                                    <h5 className="mb-0">
+                                        {activity.showName} - <span>Season {activity.seasonNumber}</span>
+                                    </h5>
                                 </div>
-                                <div className="modal-body">
-                                    <textarea
-                                        className="form-control"
-                                        placeholder="Your comment"
-                                        value={newComment}
-                                        onChange={handleNewCommentChange}>
-                                    </textarea>
+
+                                <div className="mb-4">
+                                    <h6 className="mb-0 ">{activity.rating}/10</h6>
+                                    <p className="mb-3 mt-1">"{activity.comment}"</p>
                                 </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-primary" onClick={submitComment}>Post Comment</button>
+
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div>
+                                        <button
+                                            className="text-muted text-decoration-none d-flex align-items-start fw-light "
+                                            onClick={(e) => { e.preventDefault(); handleLike(); }}
+                                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                                        >
+                                            <span className="material-icons md-20 me-1">{isLiked ? 'thumb_up' : 'thumb_up_off_alt'}</span>
+                                            <span>{likeCount}</span>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <div onClick={toggleCommentBox}
+                                            class="text-muted text-decoration-none d-flex align-items-start fw-light"><span
+                                                class="material-icons md-20 me-2">chat_bubble_outline</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#"
+                                            class="text-muted text-decoration-none d-flex align-items-start fw-light"><span
+                                                class="material-icons md-20 me-2">repeat</span><span>617</span></a>
+                                    </div>
+                                    <div>
+                                        <a href="#"
+                                            class="text-muted text-decoration-none d-flex align-items-start fw-light"><span
+                                                class="material-icons md-18 me-2">share</span><span>Share</span></a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                )}
-            </div>
 
-            <img
-                src={image}
-                className="img-fluid rounded-4 ms-3"
-                alt={activity.showName}
-                style={{ maxWidth: '100px', height: 'auto' }}
-            />
+                            <img
+                                src={image}
+                                className="img-fluid rounded-4 ms-3"
+                                alt={activity.showName}
+                                style={{ maxWidth: '100px', height: 'auto' }}
+                            />
+                        </div>
+
+                        {showCommentBox && (
+                            <div class="d-flex align-items-center mb-3" >
+                                <span
+                                    class="material-icons bg-transparent border-0 text-primary pe-2 md-36">account_circle</span>
+                                <input
+                                    type="text"
+                                    className="form-control form-control-sm rounded-3 fw-light bg-glass form-control-text"
+                                    placeholder="Write your comment"
+                                    value={newComment}
+                                    onChange={handleNewCommentChange}
+                                />
+                                <button
+                                    className="text-primary ps-2 text-decoration-none"
+                                    onClick={(e) => { e.preventDefault(); submitComment(); }}
+                                    style={{ background: 'none', border: 'none' }}
+                                >
+                                    Post
+                                </button>
+                            </div>
+                        )}
+
+                        <div className="comments mt-3 ">
+                                {comments.slice(0, visibleComments).map(comment => (
+                                    <div key={comment._id} className="mb-2 d-flex">
+                                        <a href="#" class="text-white text-decoration-none">
+                                            <img src={comment.profilePicture} class="img-fluid rounded-circle"
+                                                alt="commenters-img" />
+                                        </a>
+                                        <div class="ms-2 small">
+                                            <a href="#" class="text-white text-decoration-none"
+                                                data-bs-toggle="modal" data-bs-target="#commentModal">
+                                                <div class="bg-glass px-3 py-2 rounded-4 mb-1 chat-text">
+                                                    <p class="fw-500 mb-0">{comment.username}</p>
+                                                    <span class="text-muted">{comment.comment}</span>
+                                                </div>
+                                            </a>
+                                            <div class="d-flex align-items-center ms-2">
+                                                <a href="#"
+                                                    class="small text-muted text-decoration-none">Like</a>
+                                                <span
+                                                    class="fs-3 text-muted material-icons mx-1">circle</span>
+                                                <a href="#"
+                                                    class="small text-muted text-decoration-none">Reply</a>
+                                                <span
+                                                    class="fs-3 text-muted material-icons mx-1">circle</span>
+                                                <span class="small text-muted">{formatTimestamp(comment.timestamp)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {comments.length > visibleComments && (
+                                    <button
+                                        onClick={handleShowMore}
+                                        className="text-primary text-decoration-none"
+                                        style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
+                                    >
+                                        Show More
+                                    </button>
+                                )}
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
         </div>
     );
 

@@ -105,7 +105,9 @@ const activitySchema = new mongoose.Schema({
   comment: String,
   timestamp: { type: Date, default: Date.now },
   comments: [{
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    username: String,
+    profilePicture: String,
+    first: String,
     comment: String,
     timestamp: { type: Date, default: Date.now }
   }],
@@ -440,14 +442,8 @@ app.get('/api/activities/:userId', async (req, res) => {
     const activities = await Activity.find({ user: userId })
       .sort({ timestamp: -1 })
       .limit(20)
-      .populate('user', 'username first')
-      .populate('comments.user', 'username first')
+      .populate('user', 'username first profilePicture')
       .lean();
-
-    activities.forEach(activity => {
-      activity.username = activity.user.username;
-      activity.first = activity.user.first;
-    });
 
     res.json(activities);
   } catch (error) {
@@ -490,7 +486,7 @@ app.get('/api/followingFeed/:userId', async (req, res) => {
 
     const activities = await Activity.find({
       user: { $in: following }
-    }).sort({ timestamp: -1 }).populate('user', 'username first').lean();
+    }).sort({ timestamp: -1 }).populate('user', 'username first profilePicture').lean();
 
     res.status(200).json(activities);
   } catch (error) {
@@ -552,21 +548,21 @@ app.post('/api/activities/:activityId/comment', async (req, res) => {
     const activityId = req.params.activityId;
     const { userId, comment } = req.body;
 
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
     const activity = await Activity.findById(activityId);
     if (!activity) {
       return res.status(404).send('Activity not found');
     }
 
-    const newComment = { user: userId, comment: comment };
+    const newComment = { username: user.username, profilePicture: user.profilePicture, first: user.first, comment: comment };
     activity.comments.push(newComment);
     await activity.save();
 
-    const populatedActivity = await Activity.findById(activityId)
-      .populate('comments.user', 'username');
-
-    const addedComment = populatedActivity.comments[populatedActivity.comments.length - 1];
-
-    res.status(200).json({ message: 'Comment added successfully', newComment: addedComment });
+    res.status(200).json({ message: 'Comment added successfully', newComment: newComment });
   } catch (error) {
     console.error('Error adding comment:', error);
     res.status(500).send('Internal Server Error');
