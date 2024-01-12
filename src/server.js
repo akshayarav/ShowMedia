@@ -81,7 +81,13 @@ const seasonRatingSchema = new mongoose.Schema({
   rating: Number,
   comment: String,
   status: String,
-  episodes: String
+  episodes: String,
+  comments: [{
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    comment: String,
+    timestamp: { type: Date, default: Date.now }
+  }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 const SeasonRating = mongoose.model('SeasonRating', seasonRatingSchema);
@@ -97,7 +103,13 @@ const activitySchema = new mongoose.Schema({
   status: String,
   episodes: String,
   comment: String,
-  timestamp: { type: Date, default: Date.now }
+  timestamp: { type: Date, default: Date.now },
+  comments: [{
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    comment: String,
+    timestamp: { type: Date, default: Date.now }
+  }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 const Activity = mongoose.model('Activity', activitySchema);
@@ -429,6 +441,7 @@ app.get('/api/activities/:userId', async (req, res) => {
       .sort({ timestamp: -1 })
       .limit(20)
       .populate('user', 'username first')
+      .populate('comments.user', 'username first')
       .lean();
 
     activities.forEach(activity => {
@@ -482,6 +495,105 @@ app.get('/api/followingFeed/:userId', async (req, res) => {
     res.status(200).json(activities);
   } catch (error) {
     console.error(`Error fetching following feed for userId ${userId}:`, error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/api/activities/:activityId/like', async (req, res) => {
+  try {
+    const activityId = req.params.activityId;
+    const userId = req.body.userId;
+
+    const activity = await Activity.findById(activityId);
+    if (!activity) {
+      return res.status(404).send('Activity not found');
+    }
+
+    if (activity.likes.includes(userId)) {
+      return res.status(400).send('You have already liked this activity');
+    }
+
+    activity.likes.push(userId);
+    await activity.save();
+
+    res.status(200).json({ message: 'Like added successfully' });
+  } catch (error) {
+    console.error('Error liking activity:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/api/activities/:activityId/unlike', async (req, res) => {
+  try {
+    const activityId = req.params.activityId;
+    const userId = req.body.userId;
+
+    const activity = await Activity.findById(activityId);
+    if (!activity) {
+      return res.status(404).send('Activity not found');
+    }
+
+    if (!activity.likes.includes(userId)) {
+      return res.status(400).send('You have not liked this activity');
+    }
+
+    activity.likes.pull(userId);
+    await activity.save();
+
+    res.status(200).json({ message: 'Like removed successfully' });
+  } catch (error) {
+    console.error('Error unliking activity:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/api/activities/:activityId/comment', async (req, res) => {
+  try {
+    const activityId = req.params.activityId;
+    const { userId, comment } = req.body;
+
+    const activity = await Activity.findById(activityId);
+    if (!activity) {
+      return res.status(404).send('Activity not found');
+    }
+
+    const newComment = { user: userId, comment: comment };
+    activity.comments.push(newComment);
+    await activity.save();
+
+    const populatedActivity = await Activity.findById(activityId)
+      .populate('comments.user', 'username');
+
+    const addedComment = populatedActivity.comments[populatedActivity.comments.length - 1];
+
+    res.status(200).json({ message: 'Comment added successfully', newComment: addedComment });
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.delete('/api/activities/:activityId/comment/:commentId', async (req, res) => {
+  try {
+    const activityId = req.params.activityId;
+    const commentId = req.params.commentId;
+
+    const activity = await Activity.findById(activityId);
+    if (!activity) {
+      return res.status(404).send('Activity not found');
+    }
+
+    const commentIndex = activity.comments.findIndex(c => c._id.toString() === commentId);
+    if (commentIndex === -1) {
+      return res.status(404).send('Comment not found');
+    }
+
+    activity.comments.splice(commentIndex, 1);
+    await activity.save();
+
+    res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting comment:', error);
     res.status(500).send('Internal Server Error');
   }
 });
