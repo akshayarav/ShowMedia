@@ -13,7 +13,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
     const [episodesTotal, setEpisodesTotal] = useState(null);
     const [episodes, setEpisodes] = useState('');
     const [episodeProgress, setEpisodeProgress] = useState(null);
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         const seasonObj = seasons.find(season => season.id === parseInt(selectedSeason));
@@ -36,6 +36,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
         e.preventDefault();
         setError('');
         setSuccess('');
+        setIsSubmitting(true);
 
         const userId = localStorage.getItem('userId');
 
@@ -76,10 +77,12 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
             setSuccess('Season rating and comment added successfully!');
             setTimeout(() => {
                 closeModal();
+                setIsSubmitting(false);
             }, 1000);
 
         } catch (err) {
             setError('Server error');
+            setIsSubmitting(false);
         } finally {
             if (updateStatus) { updateStatus() }
         }
@@ -144,7 +147,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                 <h6 class="fw-bold mx-1 mt-2 text-white">Comment</h6>
                                 <Form.Control as="textarea" rows={3} value={comment} onChange={e => setComment(e.target.value)} />
                             </Form.Group>
-                            <Button variant="primary" type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase mt-4">Submit</Button>
+                            <Button variant="primary" type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase mt-4" disabled={isSubmitting}>Submit</Button>
                         </form>
                     </div>
                 </div>
