@@ -98,16 +98,27 @@ function FeedItem({ activity }) {
         setVisibleComments(prev => prev + 3);
     };
 
+    const renderStars = (rating) => {
+        let stars = [];
+        for (let i = 1; i <= 10; i++) {
+            stars.push(
+                <span key={i} className="material-icons md-18">
+                    {i <= rating ? 'star' : 'star_border'}
+                </span>
+            );
+        }
+        return stars;
+    };
+
     return (
-        <div class="border-bottom py-3 px-lg-3">
-            <div class="bg-glass p-3 feed-item rounded-4 shadow-sm">
+        <div className="border-bottom py-3 px-lg-3">
+            <div className="bg-glass p-3 feed-item rounded-4 shadow-sm">
                 <div className="d-flex">
                     <div className="me-3 image-container">
-                        <img src={activity.user.profilePicture} class="img-fluid rounded-circle user-img"
+                        <img src={activity.user.profilePicture} className="img-fluid rounded-circle user-img"
                             alt="profile-img" style={{ maxWidth: '50px', height: 'auto' }} />
                     </div>
                     <div>
-
                         <div key={activity._id} className="d-flex justify-content-between align-items-start text-white text-decoration-none">
                             <div className="flex-grow-1">
                                 <div className="mb-3">
@@ -128,7 +139,7 @@ function FeedItem({ activity }) {
                                 </div>
 
                                 <div className="mb-4">
-                                    <h6 className="mb-0 ">{activity.rating}/10</h6>
+                                    <h6 className="mb-0 ">{renderStars(activity.rating)}</h6>
                                     <p className="mb-3 mt-1">"{activity.comment}"</p>
                                 </div>
 
