@@ -6,7 +6,6 @@ function FeedItem({ activity }) {
     const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
     const image = activity.showImage ? `https://image.tmdb.org/t/p/w500${activity.showImage}` : 'error.jpg';
 
-    console.log(activity)
 
     const status = activity.status === "Watching" ? `watched episode ${activity.episodes} of` :
         activity.status === "Planning" ? "is planning to watch" :
@@ -71,7 +70,6 @@ function FeedItem({ activity }) {
     };
 
     const formatTimestamp = (timestamp) => {
-        console.log('TIMESTAMP' + timestamp)
         if (timestamp) {
             const now = new Date();
             const commentDate = new Date(timestamp);
