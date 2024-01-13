@@ -63,7 +63,7 @@ function ShowCard({ name, image, series_id, users }) {
                 {showModal && !isLoading && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} />}
 
 
-                {users && <div className = "pb-2">
+                {users && users.length > 0 ? <div className = "pb-2">
                     <small className="text-muted ms-3">Seen by: </small>
                     {userSet && userSet.slice(0, 3).map((user, index, array) => (
                         <span key={user}>
@@ -71,7 +71,7 @@ function ShowCard({ name, image, series_id, users }) {
                             {index < array.length - 1 && <small className="text-muted">, </small>}
                         </span>
                     ))}
-                </div>}
+                </div> : <div className = "p-3"> </div>}
             </div>
         </main>
     )
