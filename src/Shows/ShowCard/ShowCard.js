@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Axios from "axios";
 import ShowModal from "./ShowModal";
+import { Link } from "react-router-dom";
 
 function ShowCard({ name, image, series_id, users }) {
     const [showModal, setShowModal] = useState(false);
@@ -63,15 +64,17 @@ function ShowCard({ name, image, series_id, users }) {
                 {showModal && !isLoading && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} />}
 
 
-                {users && users.length > 0 ? <div className = "pb-2">
+                {users && users.length > 0 ? <div className="pb-2">
                     <small className="text-muted ms-3">Seen by: </small>
                     {userSet && userSet.slice(0, 3).map((user, index, array) => (
                         <span key={user}>
-                            <small className="text-muted">@{user}</small>
+                            <small className="text-muted">
+                                <Link to={`/profile/${user}`} className="text-muted text-decoration-none showcard-user">@{user}</Link>
+                            </small>
                             {index < array.length - 1 && <small className="text-muted">, </small>}
                         </span>
                     ))}
-                </div> : <div className = "p-3"> </div>}
+                </div> : <div className="p-3"> </div>}
             </div>
         </main>
     )

@@ -13,6 +13,10 @@
 -- Dark
 */
 
+.showcard-user:hover {
+    color: white !important; /* Changes text color to white on hover */
+}
+
 .show-card-size {
     padding: 15px;
     min-width: 240px 
