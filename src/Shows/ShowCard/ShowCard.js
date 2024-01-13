@@ -8,6 +8,18 @@ function ShowCard({ name, image, series_id, users }) {
     const [seasons, setSeasons] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [userSet, setUserSet] = useState(null)
+    const [showCompletedModal, setShowCompletedModal] = useState(false);
+    const [showWatchingModal, setShowWatchingModal] = useState(false);
+    const [showPlanningModal, setShowPlanningModal] = useState(false);
+    const [showDroppedModal, setShowDroppedModal] = useState(false);
+
+
+    // Define toggle functions for each modal
+    const toggleShowCompletedModal = () => setShowCompletedModal(!showCompletedModal);
+    const toggleShowWatchingModal = () => setShowWatchingModal(!showWatchingModal);
+    const toggleShowPlanningModal = () => setShowPlanningModal(!showPlanningModal);
+    const toggleShowDroppedModal = () => setShowDroppedModal(!showDroppedModal);
+
 
     useEffect(() => {
         if (users) {
@@ -41,19 +53,11 @@ function ShowCard({ name, image, series_id, users }) {
         fetchSeasons();
     }, [series_id]);
 
-    const toggleShowModal = () => {
-        setShowModal(!showModal);
-    };
-
 
     return (
         <main className="flex-shrink-0 col col-xl-3 col-lg-6 col-md-3 col-sm-6 col-6 show-card-size">
             <div className="bg-glass rounded-4 shadow-sm" >
-                <div
-                    role="button"
-                    tabIndex="0"
-                    onClick={toggleShowModal}
-                >
+                <div>
                     <div className="image-container">
                         <img src={image} className="img-fluid rounded-top" alt={name} />
                     </div>
@@ -61,8 +65,6 @@ function ShowCard({ name, image, series_id, users }) {
                         {name}
                     </div>
                 </div>
-                {showModal && !isLoading && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users = {users}/>}
-
 
                 {users && users.length > 0 ? <div className="pb-2">
                     <small className="text-muted ms-3">Seen by: </small>
@@ -74,8 +76,64 @@ function ShowCard({ name, image, series_id, users }) {
                             {index < array.length - 1 && <small className="text-muted">, </small>}
                         </span>
                     ))}
-                </div> : <div className="p-3"> </div>}
+                    <div className="p-3 d-flex justify-content-between">
+
+                        <div role="button" onClick={toggleShowCompletedModal}>
+                            <span className="material-icons me-1">add_task</span>
+                        </div>
+                        {showCompletedModal && !isLoading && (
+                            <ShowModal closeModal={toggleShowCompletedModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users={users} status={"Completed"} />
+                        )}
+
+                        <div role="button" onClick={toggleShowWatchingModal}>
+                            <span className="material-icons me-1">theaters</span>
+                        </div>
+                        {showWatchingModal && !isLoading && (
+                            <ShowModal closeModal={toggleShowWatchingModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users={users} status={"Watching"} />
+                        )}
+                        <span role="button" className="material-icons me-1" onClick={toggleShowPlanningModal}>date_range</span>
+                        {showPlanningModal && !isLoading && (
+                            <ShowModal closeModal={toggleShowPlanningModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users={users} status={"Planning"} />
+                        )}
+
+                        <span role="button" className="material-icons me-1" onClick={toggleShowDroppedModal}>close</span>
+                        {showDroppedModal && !isLoading && (
+                            <ShowModal closeModal={toggleShowDroppedModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users={users} status={"Dropped"} />
+                        )}
+
+                    </div>
+                </div> :
+                    <div>
+                        <br></br>
+                        <div className="p-3 d-flex justify-content-between mt-1 mb-1">
+
+                            <div role="button" onClick={toggleShowCompletedModal}>
+                                <span className="material-icons me-1">add_task</span>
+                            </div>
+                            {showCompletedModal && !isLoading && (
+                                <ShowModal closeModal={toggleShowCompletedModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users={users} status={"Completed"} />
+                            )}
+
+                            <div role="button" onClick={toggleShowWatchingModal}>
+                                <span className="material-icons me-1">theaters</span>
+                            </div>
+                            {showWatchingModal && !isLoading && (
+                                <ShowModal closeModal={toggleShowWatchingModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users={users} status={"Watching"} />
+                            )}
+                            <span role="button" className="material-icons me-1" onClick={toggleShowPlanningModal}>date_range</span>
+                            {showPlanningModal && !isLoading && (
+                                <ShowModal closeModal={toggleShowPlanningModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users={users} status={"Planning"} />
+                            )}
+
+                            <span role="button" className="material-icons me-1" onClick={toggleShowDroppedModal}>close</span>
+                            {showDroppedModal && !isLoading && (
+                                <ShowModal closeModal={toggleShowDroppedModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users={users} status={"Dropped"} />
+                            )}
+
+                        </div>
+                    </div>}
             </div>
+
         </main>
     )
 }
