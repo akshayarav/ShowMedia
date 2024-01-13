@@ -7,7 +7,7 @@ function PopularShows({recShows}) {
     const [shows, setShows] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${currentPage}`;
+    const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=1`;
 
     useEffect(() => {
         if (recShows) {
@@ -26,7 +26,8 @@ function PopularShows({recShows}) {
                     console.error('Error fetching data: ', error);
                 });
         }
-    }, [currentPage, popularApiUrl, recShows]);
+    }, [popularApiUrl, recShows]);
+
 
     return (
         <div>

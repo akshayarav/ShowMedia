@@ -110,7 +110,7 @@ function Shows() {
                     <div className="row position-relative">
                         <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
                             <ShowSearch onSearch={setSearchTerm} />
-                            <FollowerRecShows recShows = {recShows}/>
+                            {recShows && recShows.size > 0 && <FollowerRecShows recShows = {recShows}/>}
                             <PopularShows recShows = {recShows}/>
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />

@@ -6,7 +6,7 @@ import defaultImage from '../ShowCard/error.jpg';
 
 function FollowerRecShows({recShows}) {
     const [shows, setShows] = useState([])
-
+    
     const tmdbApiKey = process.env.REACT_APP_API_KEY
 
     async function fetchShowDetails(showId) {
