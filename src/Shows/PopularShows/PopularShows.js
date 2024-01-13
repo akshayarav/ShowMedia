@@ -31,7 +31,7 @@ function PopularShows({recShows}) {
 
     return (
         <div>
-            <h2 class="fw-bold text-white mb-1">Popular Shows</h2>
+            <h2 className="fw-bold text-white mb-1">Popular Shows</h2>
             <div className="d-flex flex-row overflow-auto mb-5">
                 {shows.map((show, index) => (
                     <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} users = {show.users}/>

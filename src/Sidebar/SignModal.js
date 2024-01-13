@@ -48,9 +48,9 @@ function SignModal({ closeModal }) {
             <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
                 <div className="modal-header border-0 p-1 mb-4">
                     <h6 className="modal-title fw-bold text-body fs-6">Sign In</h6>
-                    <a href="#" class="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
+                    <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
                 </div>
-                <div class="modal-body p-0">
+                <div className="modal-body p-0">
                     {error && <Alert variant="danger">{error}</Alert>}
                     {success && <Alert variant="success">{success}</Alert>}
                     <div className="modal-content rounded-4 p-4 border-0">
@@ -58,7 +58,7 @@ function SignModal({ closeModal }) {
                             <div className="modal-body p-0">
                                 <div className="row py-3 gy-3 m-0">
                                     <div className="mt-5 login-register" id="number">
-                                     <h6 class="fw-bold mx-1 mb-2 text-white">Email</h6>
+                                     <h6 className="fw-bold mx-1 mb-2 text-white">Email</h6>
                                         <div className="row mx-0 mb-3">
                                             <div className="col-9 p-1">
                                                 <div className="form-floating d-flex align-items-end">

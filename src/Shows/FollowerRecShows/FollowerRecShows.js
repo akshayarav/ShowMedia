@@ -45,7 +45,7 @@ function FollowerRecShows({recShows}) {
 
 
     return (<div>
-        <h2 class="fw-bold text-white mb-1">Shows Watched by Friends</h2>
+        <h2 className="fw-bold text-white mb-1">Shows Watched by Friends</h2>
         <div className="d-flex flex-row overflow-auto mb-5">
             {shows.map((show, index) => {
                 return <ShowCard key={index} series_id={show.id} name={show.name} image={show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage} users = {show.users}/>;

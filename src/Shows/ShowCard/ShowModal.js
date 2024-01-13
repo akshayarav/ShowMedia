@@ -92,9 +92,9 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
             <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
                 <div className="modal-header border-0 p-1 mb-4">
                     <h6 className="modal-title fw-bold text-body fs-6">{showName}</h6>
-                    <a href="#" class="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
+                    <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
                 </div>
-                <div class="modal-body p-0">
+                <div className="modal-body p-0">
                     {error && <Alert variant="danger">{error}</Alert>}
                     {success && <Alert variant="success">{success}</Alert>}
                     <div className="d-flex justify-content-between">
@@ -109,7 +109,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                 </div>
                                 <div className="flex-grow-1 offset-xl-1 ms-2 col-xl-5">
                                     <Form.Group className="mb-3">
-                                        <h6 class="fw-bold mx-1 mb-2 text-white">Status</h6>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Status</h6>
                                         <Form.Control as="select" value={status} onChange={e => setStatus(e.target.value)}>
                                             <option value="">Select Status</option>
                                             <option value="Completed">Completed</option>
@@ -119,7 +119,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                         </Form.Control>
                                     </Form.Group>
                                     <Form.Group className="mb-3">
-                                        <h6 class="fw-bold mx-1 mb-2 text-white">Season</h6>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Season</h6>
                                         <Form.Control as="select" value={selectedSeason} onChange={e => setSelectedSeason(e.target.value)}>
                                             <option value="">Select Season</option>
                                             {seasons.map(season => (
@@ -130,18 +130,18 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                         </Form.Control>
                                     </Form.Group>
                                     {status === "Watching" && selectedSeason && <Form.Group className="mb-3">
-                                        <h6 class="fw-bold mx-1 mb-2 text-white">Episodes</h6>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Episodes</h6>
 
                                         <Form.Control type="number" min="1" max={episodesTotal} placeholder={`Enter episodes watched (${episodesTotal} Total)`} value={episodes} onChange={e => setEpisodes(e.target.value)} />
                                     </Form.Group>}
                                     <Form.Group className="mb-3">
-                                        <h6 class="fw-bold mx-1 mb-2 text-white">Rating</h6>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Rating</h6>
                                         <Form.Control type="number" min="1" max="10" placeholder="Enter rating" value={rating} onChange={e => setRating(e.target.value)} />
                                     </Form.Group>
                                 </div>
                             </div>
                             <Form.Group className="mb-3">
-                                <h6 class="fw-bold mx-1 mt-2 text-white">Comment</h6>
+                                <h6 className="fw-bold mx-1 mt-2 text-white">Comment</h6>
                                 <Form.Control as="textarea" rows={3} value={comment} onChange={e => setComment(e.target.value)} />
                             </Form.Group>
                             <Button variant="primary" type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase mt-1">Submit</Button>
@@ -149,7 +149,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                     </div>
                     <div className="mt-5 scrollable-div">
                             <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
-                                <h6 class="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>
+                                <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>
                                 {users.map(user => <small key={user}><UserCard username={user} /></small>)}
                             </div>
                         </div>
@@ -164,9 +164,9 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
             <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
                 <div className="modal-header border-0 p-1 mb-4">
                     <h6 className="modal-title fw-bold text-body fs-6">{showName}</h6>
-                    <a href="#" class="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
+                    <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
                 </div>
-                <div class="modal-body p-0">
+                <div className="modal-body p-0">
                     {error && <Alert variant="danger">{error}</Alert>}
                     {success && <Alert variant="success">{success}</Alert>}
                     <div className="d-flex justify-content-between">
@@ -181,7 +181,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                 </div>
                                 <div className="flex-grow-1 offset-xl-1 ms-2 col-xl-5">
                                     <Form.Group className="mb-3">
-                                        <h6 class="fw-bold mx-1 mb-2 text-white">Status</h6>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Status</h6>
                                         <Form.Control as="select" value={status} onChange={e => setStatus(e.target.value)}>
                                             <option value="">Select Status</option>
                                             <option value="Completed">Completed</option>
@@ -191,7 +191,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                         </Form.Control>
                                     </Form.Group>
                                     <Form.Group className="mb-3">
-                                        <h6 class="fw-bold mx-1 mb-2 text-white">Season</h6>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Season</h6>
                                         <Form.Control as="select" value={selectedSeason} onChange={e => setSelectedSeason(e.target.value)}>
                                             <option value="">Select Season</option>
                                             {seasons.map(season => (
@@ -202,25 +202,25 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                         </Form.Control>
                                     </Form.Group>
                                     {status === "Watching" && selectedSeason && <Form.Group className="mb-3">
-                                        <h6 class="fw-bold mx-1 mb-2 text-white">Episodes</h6>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Episodes</h6>
 
                                         <Form.Control type="number" min="1" max={episodesTotal} placeholder={`Enter episodes watched (${episodesTotal} Total)`} value={episodes} onChange={e => setEpisodes(e.target.value)} />
                                     </Form.Group>}
                                     <Form.Group className="mb-3">
-                                        <h6 class="fw-bold mx-1 mb-2 text-white">Rating</h6>
+                                        <h6 className="fw-bold mx-1 mb-2 text-white">Rating</h6>
                                         <Form.Control type="number" min="1" max="10" placeholder="Enter rating" value={rating} onChange={e => setRating(e.target.value)} />
                                     </Form.Group>
                                 </div>
                             </div>
                             <Form.Group className="mb-3">
-                                <h6 class="fw-bold mx-1 mt-2 text-white">Comment</h6>
+                                <h6 className="fw-bold mx-1 mt-2 text-white">Comment</h6>
                                 <Form.Control as="textarea" rows={3} value={comment} onChange={e => setComment(e.target.value)} />
                             </Form.Group>
                             <Button variant="primary" type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase mt-4">Submit</Button>
                         </form>
                         <div className="p-3 scrollable-div">
                             <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
-                                <h6 class="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>
+                                <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>
                                 {users.map(user => <small key={user}><UserCard username={user} /></small>)}
                             </div>
                         </div>
