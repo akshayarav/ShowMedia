@@ -132,9 +132,9 @@ function Overview() {
                             <div className="ms-5 ps-5">
                                 <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
                                 <div className="d-flex">
-                                    {following.map(user => {
+                                    {following.map(user => (
                                        <img key={user._id} src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
-                                    })}
+                                    ))}
                                 </div>
                             </div>
                         </div>
