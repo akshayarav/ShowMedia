@@ -4,28 +4,15 @@ import axios from "axios"
 import ShowCard from "../ShowCard/ShowCard"
 import defaultImage from '../ShowCard/error.jpg';
 
-function FollowerRecShows() {
-    const apiUrl = process.env.REACT_APP_API_URL
-    const [recShows, setRecShows] = useState([])
+function FollowerRecShows({recShows}) {
     const [shows, setShows] = useState([])
-    const userId = localStorage.getItem('userId')
 
     const tmdbApiKey = process.env.REACT_APP_API_KEY
-
-    useEffect(() => {
-        axios.get(`${apiUrl}/api/following/shows/${userId}`)
-            .then(response => {
-                setRecShows(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching data: ', error);
-            });
-    }, []);
 
     async function fetchShowDetails(showId) {
         try {
             const response = await axios.get(`https://api.themoviedb.org/3/tv/${showId}?api_key=${tmdbApiKey}`);
-            response.data.users = showId[1].users
+            response.data.users = recShows.get(showId).users
             return response.data; 
         } catch (error) {
             console.error(`Error fetching data for show ID ${showId}:`, error);
@@ -34,7 +21,7 @@ function FollowerRecShows() {
     }
 
     async function getAllShowDetails(showIds) {
-        const showDetailsPromises = showIds.map(showId => {
+        const showDetailsPromises = Array.from(showIds.keys()).map(showId => {
             return fetchShowDetails(showId);
         });
         
@@ -51,7 +38,7 @@ function FollowerRecShows() {
             setShows(Array.from(detailedShows));
         }
 
-        if (recShows.length > 0) {
+        if (recShows && recShows.size > 0) {
             updateShows();
         }
     }, [recShows]);

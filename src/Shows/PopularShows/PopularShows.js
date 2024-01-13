@@ -3,30 +3,11 @@ import axios from "axios";
 import defaultImage from '../ShowCard/error.jpg';
 import ShowCard from "../ShowCard/ShowCard";
 
-function PopularShows() {
+function PopularShows({recShows}) {
     const [shows, setShows] = useState([]);
-    const [recShows, setRecShows] = useState(null)
     const [currentPage, setCurrentPage] = useState(1);
-    const userId = localStorage.getItem('userId')
-    const apiUrl = process.env.REACT_APP_API_URL
 
     const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${currentPage}`;
-
-    useEffect(() => {
-        axios.get(`${apiUrl}/api/following/shows/${userId}`)
-            .then(response => {
-                let dataMap = new Map(response.data.map(item => {
-                    let id = item[0]; // The first element is the ID
-                    let associatedObject = item[1]; // The second element is the associated object
-
-                    return [id, associatedObject]; // Returning an array [id, associatedObject] for the Map constructor
-                }));
-                setRecShows(dataMap);
-            })
-            .catch(error => {
-                console.error('Error fetching data: ', error);
-            });
-    }, []);
 
     useEffect(() => {
         if (recShows) {

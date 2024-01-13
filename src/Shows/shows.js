@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 import debounce from 'lodash.debounce';
 import Sidebar from "../Sidebar/sidebar";
 import ShowCard from "./ShowCard/ShowCard";
@@ -12,8 +12,10 @@ import defaultImage from './ShowCard/error.jpg';
 
 
 function Shows() {
+    const userId = localStorage.getItem('userId')
+
     const [shows, setShows] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [recShows, setRecShows] = useState(null)
 
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -21,39 +23,35 @@ function Shows() {
     const [searchResults, setSearchResults] = useState([]);
     const searchApiUrl = query => `https://api.themoviedb.org/3/search/tv?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&query=${query}`;
 
-    const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${currentPage}`;
+    const apiUrl = process.env.REACT_APP_API_URL
 
 
     useEffect(() => {
-        if (searchTerm) {
-            debounceSearch(searchTerm);
-        } else {
-            setCurrentPage(1);
-            setShows([]);
-            Axios.get(popularApiUrl)
-                .then(response => {
-                    const fetchedShows = response.data.results.map(show => ({
-                        id: show.id,
-                        name: show.name,
-                        image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
-                        series_id: show.id
-                    }));
-                    setShows(fetchedShows);
-                })
-                .catch(error => {
-                    console.error('Error fetching data: ', error);
-                });
-        }
-    }, [searchTerm]);
+        axios.get(`${apiUrl}/api/following/shows/${userId}`)
+            .then(response => {
+                let dataMap = new Map(response.data.map(item => {
+                    let id = item[0];
+                    let associatedObject = item[1];
+
+                    return [id, associatedObject];
+                }));
+                setRecShows(dataMap);
+            })
+            .catch(error => {
+                console.error('Error fetching data: ', error);
+            });
+    }, [apiUrl, userId]);
 
     const handleSearch = query => {
-        Axios.get(searchApiUrl(query))
+        axios.get(searchApiUrl(query))
             .then(response => {
                 const searchedShows = response.data.results.map(show => ({
                     id: show.id,
                     name: show.name,
                     image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
-                    series_id: show.id
+                    series_id: show.id,
+                    users: recShows.has(show.id.toString()) ? recShows.get(show.id.toString()).users : []
+
                 }));
                 setShows(searchedShows);
             })
@@ -63,6 +61,12 @@ function Shows() {
     };
 
     const debounceSearch = debounce(handleSearch, 500);
+
+    useEffect(() => {
+        if (searchTerm) {
+            debounceSearch(searchTerm);
+        }
+    }, [searchTerm, debounceSearch]);
 
     if (searchScreenOn) {
         return (<div>
@@ -86,7 +90,7 @@ function Shows() {
                                 <ShowSearch onSearch={setSearchTerm} />
                                 <div className="row">
                                     {shows.map((show, index) => (
-                                        <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
+                                        <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} users={show.users} />
                                     ))}
                                 </div>
                             </div>
@@ -106,8 +110,8 @@ function Shows() {
                     <div className="row position-relative">
                         <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
                             <ShowSearch onSearch={setSearchTerm} />
-                            <FollowerRecShows />
-                            <PopularShows />
+                            <FollowerRecShows recShows = {recShows}/>
+                            <PopularShows recShows = {recShows}/>
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>
