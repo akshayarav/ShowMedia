@@ -61,7 +61,7 @@ function ShowCard({ name, image, series_id, users }) {
                         {name}
                     </div>
                 </div>
-                {showModal && !isLoading && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} />}
+                {showModal && !isLoading && <ShowModal closeModal={toggleShowModal} showName={name} showImg={image} series_id={series_id} seasons={seasons} users = {users}/>}
 
 
                 {users && users.length > 0 ? <div className="pb-2">

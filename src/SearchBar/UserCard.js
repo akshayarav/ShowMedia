@@ -1,24 +1,44 @@
-import {React, useState, useEffect} from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import FollowButton from '../Profile/Overview/FollowButton';
+import axios from 'axios';
 
-function UserCard({ other_user, toggleRefresh }) {
-    const [followedBy, setFollowedBy] = useState(null)
+
+function UserCard({ other_user: initialOtherUser, toggleRefresh, username }) {
+    const [otherUser, setOtherUser] = useState(initialOtherUser);
+    const [followedBy, setFollowedBy] = useState(null);
+    const apiUrl = process.env.REACT_APP_API_URL;
 
     const handleLinkClick = (event) => {
         if (toggleRefresh) {
             event.preventDefault();
             toggleRefresh();
-            window.location.href = `/profile/${other_user.username}`;
+            window.location.href = `/profile/${otherUser.username}`;
         }
     }
 
     useEffect(() => {
-        if (other_user.common_followers) {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get(`${apiUrl}/api/user/${username}`);
+                setOtherUser(response.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // Handle error appropriately
+            }
+        };
+
+        if (!initialOtherUser && username) {
+            fetchUserData();
+        }
+    }, [username, initialOtherUser]);
+
+    useEffect(() => {
+        if (otherUser?.common_followers) {
             const followedByContent = (
                 <div>
                     <small className="text-muted">Followed by: </small>
-                    {other_user.common_followers.slice(0, 3).map((user, index, array) => (
+                    {otherUser.common_followers.slice(0, 3).map((user, index, array) => (
                         <span key={user}>
                             <small className="text-muted">@{user}</small>
                             {index < array.length - 1 && <small className="text-muted">, </small>}
@@ -28,27 +48,30 @@ function UserCard({ other_user, toggleRefresh }) {
             );
             setFollowedBy(followedByContent);
         }
-    }, [other_user.common_followers]);
+    }, [otherUser?.common_followers]);
 
+    if (!otherUser) {
+        return <div>Loading...</div>; 
+    }
 
     return (
         <div className="border-bottom">
             <div className="user-card p-3  d-flex text-dark account-item position-relative">
-                <Link to={`/profile/${other_user.username}`} className="stretched-link" onClick={handleLinkClick} />
-                <img src={other_user.profilePicture} className="img-fluid rounded-circle me-3" alt="profile-img" />
+                <Link to={`/profile/${otherUser.username}`} className="stretched-link" onClick={handleLinkClick} />
+                <img src={otherUser.profilePicture} className="img-fluid rounded-circle me-3" alt="profile-img" />
                 <div className="user-info flex-grow-1">
-                    <p className="fw-bold mb-0 text-light">@{other_user.username}</p>
-                    <small className="text-muted">{other_user.first} {other_user.last}</small>
+                    <p className="fw-bold mb-0 text-light">@{otherUser.username}</p>
+                    <small className="text-muted">{otherUser.first} {otherUser.last}</small>
 
                 </div>
                 <div className="ms-auto">
                     <div className="follow-button-position">
-                        <FollowButton other_user={other_user} />
+                        <FollowButton other_user={otherUser} />
                     </div>
                 </div>
 
             </div>
-            {other_user.common_followers &&
+            {otherUser.common_followers &&
                 <div className="m-2">
                     {followedBy}
                 </div>
