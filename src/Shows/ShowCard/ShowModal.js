@@ -13,6 +13,11 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
     const [episodesTotal, setEpisodesTotal] = useState(null);
     const [episodes, setEpisodes] = useState('');
     const [episodeProgress, setEpisodeProgress] = useState(null);
+    const [showMore, setShowMore] = useState(false);
+
+    const toggleShowMore = () => {
+        setShowMore(!showMore);
+    };
 
     useEffect(() => {
         const seasonObj = seasons.find(season => season.id === parseInt(selectedSeason));
@@ -190,12 +195,25 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                 <Button variant="primary" type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase mt-1">Submit</Button>
                             </form>
                         </div>
-                        <div className="mt-5 scrollable-div">
-                            <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
-                                <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>
-                                {users.map(user => <small key={user}><UserCard username={user} /></small>)}
+                        {!showMore && (
+                            <div className="d-flex justify-content-center">
+                                <Button variant="primary" className="mt-3" onClick={toggleShowMore}>Who's Seen?
+                                    <div>
+                                        <span className="material-icons">expand_more</span>
+                                    </div>
+                                </Button>
                             </div>
-                        </div>
+                        )}
+                        {showMore && (
+                            <div className="p-3 scrollable-div">
+                                <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
+                                    {users && users.length > 0 &&
+                                        <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>}
+                                    {users.map(user => <small key={user}><UserCard username={user} /></small>)}
+                                    <Button variant="primary" className="mt-3" onClick={toggleShowMore}><span className="material-icons">expand_less</span></Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </Modal>
@@ -269,13 +287,29 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                         </form>
 
                     </div>
-                    <div className="p-3 scrollable-div">
-                        <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
-                            {users && users.length > 0 &&
-                                <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>}
-                            {users.map(user => <small key={user}><UserCard username={user} /></small>)}
+                    {!showMore && (
+                        <div className="d-flex justify-content-center">
+                            <Button variant="primary" className="mt-3" onClick={toggleShowMore}>Who's Seen?
+                                <div>
+                                    <span className="material-icons">expand_more</span>
+                                </div>
+                            </Button>
                         </div>
-                    </div>
+                    )}
+                    {showMore && (
+                        <div>
+                            <div className="d-flex justify-content-center">
+                                <Button variant="primary" className="mt-3" onClick={toggleShowMore}><span className="material-icons">expand_less</span></Button>
+                            </div>
+                            <div className="p-3 scrollable-div">
+                                <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
+                                    {users && users.length > 0 &&
+                                        <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>}
+                                    {users.map(user => <small key={user}><UserCard username={user} /></small>)}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </Modal>
