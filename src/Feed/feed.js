@@ -112,7 +112,7 @@ function Feed() {
                                 <h2 class="fw-bold text-white mt-4">Your Feed</h2>
                                 {isAuthenticated && activities && activities.length > 0 && (
                                     <FollowingFeed activities={activities} />
-                                ) }
+                                )}
                                 {!isAuthenticated && <p>Please log in to see the feed.</p>}
                             </div>
                         </main>

@@ -15,6 +15,9 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
     const [episodeProgress, setEpisodeProgress] = useState(null);
     const [showMore, setShowMore] = useState(false);
 
+    console.log("USERS: " + users)
+    console.log("seasons: " + seasons)
+
     const toggleShowMore = () => {
         setShowMore(!showMore);
     };
@@ -102,7 +105,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
         let stars = [];
         for (let i = 1; i <= 10; i++) {
             stars.push(
-                <div key={i} className="star">
+                <div key={i} className="star" role = "button" onClick = {() => setRating(i)}>
                     <span className="material-icons">
                         {i <= rating ? 'star' : 'star_border'}
                     </span>

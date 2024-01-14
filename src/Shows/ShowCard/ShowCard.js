@@ -58,12 +58,14 @@ function ShowCard({ name, image, series_id, users }) {
         <main className="flex-shrink-0 col col-xl-3 col-lg-6 col-md-3 col-sm-6 col-6 show-card-size">
             <div className="bg-glass rounded-4 shadow-sm" >
                 <div>
-                    <div className="image-container">
-                        <img src={image} className="img-fluid rounded-top" alt={name} />
-                    </div>
-                    <div className="details-container p-3 pb-1 text-white">
-                        {name}
-                    </div>
+                    <Link to={`/shows/${series_id}`}> {/* Add this Link component */}
+                        <div className="image-container">
+                            <img src={image} className="img-fluid rounded-top" alt={name} />
+                        </div>
+                        <div className="details-container p-3 pb-1 text-white">
+                            {name}
+                        </div>
+                    </Link>
                 </div>
 
                 {users && users.length > 0 ? <div className="pb-2">
