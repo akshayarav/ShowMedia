@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema({
   last: String,
   profilePicture: {
     type: String,
-    default: '/default_profile.jpg'
+    default: './default_profile.jpg'
   },
   bio: {
     type: String,
@@ -74,6 +74,19 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+const commentSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  comment: String,
+  timestamp: { type: Date, default: Date.now },
+  replies: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+});
+
+const Comment = mongoose.model('Comment', commentSchema);
+
 const seasonRatingSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   show: Number,
@@ -82,12 +95,8 @@ const seasonRatingSchema = new mongoose.Schema({
   comment: String,
   status: String,
   episodes: String,
-  comments: [{
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    comment: String,
-    timestamp: { type: Date, default: Date.now }
-  }],
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 const SeasonRating = mongoose.model('SeasonRating', seasonRatingSchema);
@@ -104,13 +113,7 @@ const activitySchema = new mongoose.Schema({
   episodes: String,
   comment: String,
   timestamp: { type: Date, default: Date.now },
-  comments: [{
-    username: String,
-    profilePicture: String,
-    first: String,
-    comment: String,
-    timestamp: { type: Date, default: Date.now }
-  }],
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
@@ -443,6 +446,20 @@ app.get('/api/activities/:userId', async (req, res) => {
       .sort({ timestamp: -1 })
       .limit(20)
       .populate('user', 'username first profilePicture')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'username first profilePicture'
+        }
+      })
+      .populate({
+        path: 'comments.replies',
+        populate: {
+          path: 'user',
+          select: 'username first profilePicture'
+        }
+      })
       .lean();
 
     res.json(activities);
@@ -451,7 +468,6 @@ app.get('/api/activities/:userId', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
 
 app.get('/api/seasonRatings/:userId', async (req, res) => {
   try {
@@ -558,11 +574,20 @@ app.post('/api/activities/:activityId/comment', async (req, res) => {
       return res.status(404).send('Activity not found');
     }
 
-    const newComment = { username: user.username, profilePicture: user.profilePicture, first: user.first, comment: comment };
-    activity.comments.push(newComment);
+    const newComment = new Comment({
+      user: userId,
+      username: user.username,
+      profilePicture: user.profilePicture,
+      first: user.first,
+      comment: comment
+    });
+
+    const savedComment = await newComment.save();
+
+    activity.comments.push(savedComment._id);
     await activity.save();
 
-    res.status(200).json({ message: 'Comment added successfully', newComment: newComment });
+    res.status(200).json({ message: 'Comment added successfully', newComment: savedComment });
   } catch (error) {
     console.error('Error adding comment:', error);
     res.status(500).send('Internal Server Error');
@@ -640,5 +665,108 @@ app.get('/api/recommendations/:username', async (req, res) => {
   } catch (error) {
     console.error('Error fetching recommendations:', error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.post('/api/activities/:activityId/comment/:commentId/reply', async (req, res) => {
+  const { activityId, commentId } = req.params;
+  const { userId, reply } = req.body;
+
+  try {
+      const activity = await Activity.findById(activityId);
+      if (!activity) {
+          return res.status(404).send('Activity not found');
+      }
+
+      const comment = activity.comments.id(commentId);
+      if (!comment) {
+          return res.status(404).send('Comment not found');
+      }
+
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).send('User not found');
+      }
+
+      const newReply = {
+          user: userId,
+          comment: reply,
+          username: user.username,
+          profilePicture: user.profilePicture,
+          first: user.first,
+          timestamp: new Date()
+      };
+
+      comment.replies.push(newReply);
+      await activity.save();
+
+      res.status(200).json({ message: 'Reply added successfully', newReply: newReply });
+  } catch (error) {
+      console.error('Error adding reply:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/api/activities/:activityId/comment/:commentId/like', async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { userId } = req.body;
+
+    console.log(`Attempting to like comment - Comment ID: ${commentId}, User ID: ${userId}`);
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      console.error('Comment not found');
+      return res.status(404).send('Comment not found');
+    }
+
+    console.log(`Found comment. Current likes: ${comment.likes}`);
+
+    if (comment.likes.includes(userId)) {
+      console.log(`User ${userId} has already liked this comment.`);
+      return res.status(400).send('You have already liked this comment');
+    }
+
+    comment.likes.push(userId);
+    await comment.save();
+
+    console.log(`Like added. Updated likes: ${comment.likes}`);
+
+    res.status(200).json({ message: 'Like added successfully' });
+  } catch (error) {
+    console.error('Error liking comment:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/api/activities/:activityId/comment/:commentId/unlike', async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { userId } = req.body;
+
+    console.log(`Attempting to unlike comment - Comment ID: ${commentId}, User ID: ${userId}`);
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      console.error('Comment not found');
+      return res.status(404).send('Comment not found');
+    }
+
+    console.log(`Found comment. Current likes: ${comment.likes}`);
+
+    if (!comment.likes.includes(userId)) {
+      console.log(`User ${userId} has not liked this comment.`);
+      return res.status(400).send('You have not liked this comment');
+    }
+
+    comment.likes = comment.likes.filter(likeUserId => likeUserId.toString() !== userId.toString());
+    await comment.save();
+
+    console.log(`Like removed. Updated likes: ${comment.likes}`);
+
+    res.status(200).json({ message: 'Unlike successful' });
+  } catch (error) {
+    console.error('Error unliking comment:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
