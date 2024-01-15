@@ -13,7 +13,7 @@ function LandingPage() {
         <body className="bg-light" style = {{height: "100vh"}}>
             <div className="py-4">
                 <div className="container">
-                    <div class="row position-relative">
+                    <div className="row position-relative">
                         <div className="landing-container-logo image-container col-xl-6 col-lg-6 col-sm-12 col-md-6">
                             <img src={'./logo.png'} />
                         </div>

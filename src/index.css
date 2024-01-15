@@ -13,6 +13,34 @@
 -- Dark
 */
 
+.white-placeholder::placeholder {
+    color: white;
+    opacity: 1; /* Required in some browsers to ensure the color is not semi-transparent */
+}
+
+
+.stars-container {
+    display: flex;
+    justify-content:space-between;
+}
+
+.scrollable-div {
+    max-height: 600px;
+    /* Adjust this value based on the actual height of your UserCards */
+    overflow-y: auto;
+}
+
+
+.showcard-user:hover {
+    color: white !important;
+    /* Changes text color to white on hover */
+}
+
+.show-card-size {
+    padding: 15px;
+    min-width: 240px
+}
+
 .main-center {
     min-height: 100vh;
 }
@@ -22,6 +50,11 @@
         display: flex;
         justify-content: center;
         height: 100%;
+    }
+
+    .show-card-size {
+        padding: 10px;
+        min-width: 60px
     }
 }
 
@@ -322,7 +355,7 @@ h6 {
 
 ::-webkit-scrollbar {
     width: 4px;
-    background-color: #ffffff;
+    background: rgba(65, 65, 65, 0.25);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -1088,8 +1121,8 @@ h6 {
 }
 
 .bg-glass {
-    background: rgba(65, 65, 65, 0.25);
-    backdrop-filter: blur(4px);
+    background: rgba(65, 65, 65, 0.25) !important;
+    backdrop-filter: blur(4px) !important;
 }
 
 .bg-dark-glass {

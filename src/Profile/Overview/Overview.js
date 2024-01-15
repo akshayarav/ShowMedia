@@ -87,9 +87,9 @@ function Overview() {
 
     if (!profileUser || isLoading) {
         return (
-            <div class="text-center" style={{ marginTop: '70px' }}>
-                <div class="spinner-border" role="status" style={{ width: '3rem', height: '3rem' }}>
-                    <span class="visually-hidden">Loading...</span>
+            <div className="text-center" style={{ marginTop: '70px' }}>
+                <div className="spinner-border" role="status" style={{ width: '3rem', height: '3rem' }}>
+                    <span className="visually-hidden">Loading...</span>
                 </div>
             </div>
         )
@@ -123,7 +123,7 @@ function Overview() {
                             <p className="mb-0">{numFollowers} <span className="text-muted">Followers</span></p>
                             <div className="d-flex">
                                 {followers.map(user => (
-                                    <img src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
+                                    <img key={user._id} src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
                                 ))}
                             </div>
                         </div>
@@ -133,7 +133,7 @@ function Overview() {
                                 <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
                                 <div className="d-flex">
                                     {following.map(user => (
-                                        <img src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
+                                       <img key={user._id} src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
                                     ))}
                                 </div>
                             </div>

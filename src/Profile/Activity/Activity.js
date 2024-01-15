@@ -23,7 +23,7 @@ function Activity({ userId, refresh }) {
         <div>
             {activities.length > 0 ? activities.map((activity, index) => (
                 <FeedItem key = {index} activity={activity} index = {index} />
-            )) : <p>No recent activities.</p>}
+            )) : <h6 className = "text-white mt-5 d-flex justify-content-center">Start logging shows to see your activity!</h6>}
         </div>
     );
 }

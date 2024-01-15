@@ -48,7 +48,7 @@ function MyShows() {
 
 
     return (
-        <div class="feeds">
+        <div className="feeds">
             <div className="bg-glass p-4 feed-item rounded-4 shadow-sm faq-page account-follow">
                 <div className="rounded-3">
                     <div className="row justify-content-center">

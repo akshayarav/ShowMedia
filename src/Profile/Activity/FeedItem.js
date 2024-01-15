@@ -6,7 +6,6 @@ function FeedItem({ activity, toggleRefresh }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
     const image = activity.showImage ? `https://image.tmdb.org/t/p/w500${activity.showImage}` : 'error.jpg';
-
     const status = activity.status === "Watching" ? `watched episode ${activity.episodes} of` :
         activity.status === "Planning" ? "is planning to watch" :
             activity.status === "Completed" ? "completed" :

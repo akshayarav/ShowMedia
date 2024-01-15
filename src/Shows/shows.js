@@ -1,72 +1,57 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import debounce from 'lodash.debounce';
 import Sidebar from "../Sidebar/sidebar";
 import ShowCard from "./ShowCard/ShowCard";
-import ShowSearch from './ShowSearch';
+import ShowSearch from './ShowSearchBar/ShowSearch';
 import MobileBar from '../MobileBar/MobileBar';
-import defaultImage from './ShowCard/error.jpg';
 import UserCard from '../SearchBar/UserCard';
+import FollowerRecShows from './FollowerRecShows/FollowerRecShows';
+import PopularShows from './PopularShows/PopularShows';
+import defaultImage from './ShowCard/error.jpg';
+
 
 function Shows() {
+    const userId = localStorage.getItem('userId')
+
     const [shows, setShows] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [recShows, setRecShows] = useState(null)
+
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchScreenOn, setSearchScreenOn] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
-
-    const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${currentPage}`;
     const searchApiUrl = query => `https://api.themoviedb.org/3/search/tv?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&query=${query}`;
 
+    const apiUrl = process.env.REACT_APP_API_URL
+
+
     useEffect(() => {
-        Axios.get(popularApiUrl)
+        axios.get(`${apiUrl}/api/following/shows/${userId}`)
             .then(response => {
-                const newShows = response.data.results.map(show => ({
-                    id: show.id,
-                    name: show.name,
-                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
-                    series_id: show.id
+                let dataMap = new Map(response.data.map(item => {
+                    let id = item[0];
+                    let associatedObject = item[1];
+
+                    return [id, associatedObject];
                 }));
-                setShows(prevShows => [...prevShows, ...newShows]);
+                setRecShows(dataMap);
             })
             .catch(error => {
                 console.error('Error fetching data: ', error);
             });
-        window.addEventListener('scroll', debouncedCheckScrollBottom);
-        return () => window.removeEventListener('scroll', debouncedCheckScrollBottom);
-    }, [currentPage]);
-
-    useEffect(() => {
-        if (searchTerm) {
-            debounceSearch(searchTerm);
-        } else {
-            setCurrentPage(1);
-            setShows([]);
-            Axios.get(popularApiUrl)
-                .then(response => {
-                    const fetchedShows = response.data.results.map(show => ({
-                        id: show.id,
-                        name: show.name,
-                        image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
-                        series_id: show.id
-                    }));
-                    setShows(fetchedShows);
-                })
-                .catch(error => {
-                    console.error('Error fetching data: ', error);
-                });
-        }
-    }, [searchTerm]);
+    }, [apiUrl, userId]);
 
     const handleSearch = query => {
-        Axios.get(searchApiUrl(query))
+        axios.get(searchApiUrl(query))
             .then(response => {
                 const searchedShows = response.data.results.map(show => ({
                     id: show.id,
                     name: show.name,
                     image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
-                    series_id: show.id
+                    series_id: show.id,
+                    users: recShows.has(show.id.toString()) ? recShows.get(show.id.toString()).users : []
+
                 }));
                 setShows(searchedShows);
             })
@@ -77,18 +62,11 @@ function Shows() {
 
     const debounceSearch = debounce(handleSearch, 500);
 
-    const handleShowMore = (event) => {
-        if (event) event.preventDefault();
-        setCurrentPage(prevPage => prevPage + 1);
-    };
-
-    const checkScrollBottom = () => {
-        if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
-            handleShowMore();
+    useEffect(() => {
+        if (searchTerm) {
+            debounceSearch(searchTerm);
         }
-    };
-
-    const debouncedCheckScrollBottom = useCallback(debounce(checkScrollBottom, 100), []);
+    }, [searchTerm, debounceSearch]);
 
     if (searchScreenOn) {
         return (<div>
@@ -101,25 +79,39 @@ function Shows() {
         </div>)
     }
 
+    if (searchTerm) {
+        return (
+            <div className="bg-brown-gradient">
+                <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
+                <div className="py-4">
+                    <div className="container">
+                        <div className="row position-relative">
+                            <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
+                                <ShowSearch onSearch={setSearchTerm} />
+                                <div className="row">
+                                    {shows.map((show, index) => (
+                                        <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} users={show.users} />
+                                    ))}
+                                </div>
+                            </div>
+                            <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="bg-brown-gradient">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 main-center border-start">
+                        <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
                             <ShowSearch onSearch={setSearchTerm} />
-                            <h2 class="fw-bold text-white mb-1">Popular Shows</h2>
-                            <div className="row">
-                                {shows.map((show, index) => (
-                                    <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} />
-                                ))}
-                            </div>
-                            {searchTerm === '' && (
-                                <a onClick={handleShowMore} className="text-decoration-none">
-                                    <div className="p-3">Show More</div>
-                                </a>
-                            )}
+                            {recShows && recShows.size > 0 && <FollowerRecShows recShows = {recShows}/>}
+                            <PopularShows recShows = {recShows}/>
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>

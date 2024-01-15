@@ -676,7 +676,7 @@ app.get('/api/recommendations/:username', async (req, res) => {
       .sort((a, b) => recommendations[b] - recommendations[a])
       .slice(0, 3);
 
-    let topRecommendations = await User.find({ '_id': { $in: sortedRecommendations }}).select('-passwordHash');
+    let topRecommendations = await User.find({ '_id': { $in: sortedRecommendations } }).select('-passwordHash');
 
     // Append the common_followers data
     topRecommendations = topRecommendations.map(user => {
@@ -692,6 +692,7 @@ app.get('/api/recommendations/:username', async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 app.post('/api/activities/:activityId/comment/:commentId/reply', async (req, res) => {
   const { activityId, commentId } = req.params;
@@ -812,5 +813,47 @@ app.get('/api/get/activity/:activityId', async (req, res) => {
   } catch (error) {
     console.error('Error fetching activity:', error);
     res.status(500).send('Internal Server Error');
+=======
+app.get('/api/following/shows/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findOne({ _id: userId }).populate('following');
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const seasonRatings = await SeasonRating.find({ user: userId });
+
+    if (!seasonRatings) {
+      return res.status(404).json({ message: 'Season ratings not found' });
+    }
+
+    let showData = {};
+
+    for (const followedUser of user.following) {
+      const seasonRatingsFollowedUser = await SeasonRating.find({ user: followedUser._id });
+
+
+      for (const potentialRecommendation of seasonRatingsFollowedUser) {
+        const alreadyRated = seasonRatings.some(rating => rating.show.toString() === potentialRecommendation.show.toString());
+
+        if (!alreadyRated) {
+          if (!showData[potentialRecommendation.show]) {
+            showData[potentialRecommendation.show] = { cumulativeRating: 0, users: []};
+          }
+          showData[potentialRecommendation.show].cumulativeRating += potentialRecommendation.rating;
+          showData[potentialRecommendation.show].users.push(followedUser.username);
+        }
+      }
+    }
+
+    const sortedRecommendations = Object.entries(showData).sort((a, b) => b[1].cumulativeRating - a[1].cumulativeRating);
+
+    res.json(sortedRecommendations);
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    res.status(500).json({ message: "Internal Server Error" });
+
   }
 });
