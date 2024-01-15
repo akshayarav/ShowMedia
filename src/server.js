@@ -739,25 +739,18 @@ app.post('/api/activities/comment/:commentId/like', async (req, res) => {
     const { commentId } = req.params;
     const { userId } = req.body;
 
-    console.log(`Attempting to like comment - Comment ID: ${commentId}, User ID: ${userId}`);
-
     const comment = await Comment.findById(commentId);
     if (!comment) {
       console.error('Comment not found');
       return res.status(404).send('Comment not found');
     }
 
-    console.log(`Found comment. Current likes: ${comment.likes}`);
-
     if (comment.likes.includes(userId)) {
-      console.log(`User ${userId} has already liked this comment.`);
       return res.status(400).send('You have already liked this comment');
     }
 
     comment.likes.push(userId);
     await comment.save();
-
-    console.log(`Like added. Updated likes: ${comment.likes}`);
 
     res.status(200).json({ message: 'Like added successfully' });
   } catch (error) {
@@ -772,25 +765,18 @@ app.post('/api/activities/comment/:commentId/unlike', async (req, res) => {
     const { commentId } = req.params;
     const { userId } = req.body;
 
-    console.log(`Attempting to unlike comment - Comment ID: ${commentId}, User ID: ${userId}`);
-
     const comment = await Comment.findById(commentId);
     if (!comment) {
       console.error('Comment not found');
       return res.status(404).send('Comment not found');
     }
 
-    console.log(`Found comment. Current likes: ${comment.likes}`);
-
     if (!comment.likes.includes(userId)) {
-      console.log(`User ${userId} has not liked this comment.`);
       return res.status(400).send('You have not liked this comment');
     }
 
     comment.likes = comment.likes.filter(likeUserId => likeUserId.toString() !== userId.toString());
     await comment.save();
-
-    console.log(`Like removed. Updated likes: ${comment.likes}`);
 
     res.status(200).json({ message: 'Unlike successful' });
   } catch (error) {
