@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Comments from './Comments';
 
-function FeedItem({ activity }) {
+function FeedItem({ activity, toggleRefresh }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
     const image = activity.showImage ? `https://image.tmdb.org/t/p/w500${activity.showImage}` : 'error.jpg';
@@ -17,7 +17,6 @@ function FeedItem({ activity }) {
 
     const [isLiked, setIsLiked] = useState(activity.likes.includes(localStorage.getItem('userId')));
     const [likeCount, setLikeCount] = useState(activity.likes.length);
-    const [comments, setComments] = useState(activity.comments || []);
     const [newComment, setNewComment] = useState('');
     const [showCommentBox, setShowCommentBox] = useState(false);
 
@@ -35,9 +34,7 @@ function FeedItem({ activity }) {
         }
     };
 
-    const handleNewCommentChange = (e) => {
-        setNewComment(e.target.value);
-    };
+    const handleNewCommentChange = (e) => {setNewComment(e.target.value);};
 
     const submitComment = async () => {
         const userId = localStorage.getItem('userId');
@@ -52,19 +49,18 @@ function FeedItem({ activity }) {
             const response = await axios.post(`${apiUrl}/api/activities/${activityId}/comment`, { userId, comment: newComment });
 
             if (response.data && response.data.newComment) {
-                setComments(prevComments => [...prevComments, response.data.newComment]);
                 setNewComment('');
             } else {
                 console.error('New comment structure is not as expected:', response.data);
             }
         } catch (error) {
             console.error('Error submitting new comment:', error);
-        } 
+        } finally {
+            toggleRefresh ()
+        }
     };
 
-    const toggleCommentBox = () => {
-        setShowCommentBox(!showCommentBox);
-    };
+    const toggleCommentBox = () => {setShowCommentBox(!showCommentBox);};
 
     const renderStars = (rating) => {
         let stars = [];
@@ -170,7 +166,7 @@ function FeedItem({ activity }) {
                                 </button>
                             </div>
                         )}
-                        <Comments activityId={activity._id} />
+                        <Comments activityId={activity._id}/>
                     </div>
                 </div>
             </div>

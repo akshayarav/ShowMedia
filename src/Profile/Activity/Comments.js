@@ -23,7 +23,6 @@ function Comments({ activityId }) {
         }
     }, [activityId]);
 
-    console.log(comments)
 
 
     const formatTimestamp = (timestamp) => {
@@ -51,9 +50,7 @@ function Comments({ activityId }) {
     };
 
 
-    const handleShowMore = () => {
-        setVisibleComments(prev => prev + 3);
-    };
+    const handleShowMore = () => { setVisibleComments(prev => prev + 3); };
 
     const handleCommentLike = async (commentId) => {
         const userId = localStorage.getItem('userId');
@@ -88,6 +85,8 @@ function Comments({ activityId }) {
             console.error('Error unliking comment:', error);
         }
     };
+
+
     return (
         <div className="comments mt-3">
             {comments.slice(0, visibleComments).map(comment => (

@@ -8,7 +8,6 @@ function EditModal({ closeModal }) {
 
     const [tempBio, setTempBio] = useState(user.bio)
     const [first, setFirst] = useState(user.first)
-    console.log(user)
     const [last, setLast] = useState(user.last)
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');

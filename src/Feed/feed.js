@@ -16,6 +16,7 @@ function Feed() {
     const [searchScreenOn, setSearchScreenOn] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
@@ -29,7 +30,7 @@ function Feed() {
                     console.error('Error fetching following feed:', error);
                 });
         }
-    }, [isAuthenticated, apiUrl, feedKey]);
+    }, [isAuthenticated, apiUrl, feedKey, refresh]);
 
     useEffect(() => {
         if (activities) {
@@ -111,7 +112,7 @@ function Feed() {
                             <div className="main-content">
                                 <h2 class="fw-bold text-white mt-4">Your Feed</h2>
                                 {isAuthenticated && activities && activities.length > 0 && (
-                                    <FollowingFeed activities={activities} />
+                                    <FollowingFeed activities={activities} toggleRefresh = {() => setRefresh(!refresh)}/>
                                 ) }
                                 {!isAuthenticated && <p>Please log in to see the feed.</p>}
                             </div>
