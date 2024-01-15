@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Comments from './Comments';
 
-function FeedItem({ activity, toggleRefresh }) {
+function FeedItem({ activity, refresh, toggleRefresh }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
     const image = activity.showImage ? `https://image.tmdb.org/t/p/w500${activity.showImage}` : 'error.jpg';
@@ -55,7 +55,7 @@ function FeedItem({ activity, toggleRefresh }) {
         } catch (error) {
             console.error('Error submitting new comment:', error);
         } finally {
-            toggleRefresh ()
+            toggleRefresh ();
         }
     };
 
@@ -165,7 +165,7 @@ function FeedItem({ activity, toggleRefresh }) {
                                 </button>
                             </div>
                         )}
-                        <Comments activityId={activity._id}/>
+                        <Comments activityId={activity._id} refresh={refresh} />
                     </div>
                 </div>
             </div>

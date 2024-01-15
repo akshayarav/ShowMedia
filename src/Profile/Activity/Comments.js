@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function Comments({ activityId }) {
+function Comments({ activityId, refresh }) {
     const [visibleComments, setVisibleComments] = useState(1);
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
     const userId = localStorage.getItem('userId')
-    const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -21,14 +20,11 @@ function Comments({ activityId }) {
                 console.error('Error fetching comments:', error);
             }
         };
-    
+
         if (activityId) {
             fetchComments();
         }
     }, [activityId, refresh]);
-    
-
-
 
     const formatTimestamp = (timestamp) => {
         const now = new Date();
@@ -59,19 +55,17 @@ function Comments({ activityId }) {
 
     const handleCommentLike = async (commentId) => {
         const userId = localStorage.getItem('userId');
-        // Optimistically update the UI
         setComments(comments.map(comment => {
             if (comment._id === commentId) {
                 return { ...comment, isLiked: true,  likes: [...comment.likes, userId] }
             }
             return comment;
         }));
-    
+
         try {
             await axios.post(`${apiUrl}/api/activities/comment/${commentId}/like`, { userId });
         } catch (error) {
             console.error('Error liking comment:', error);
-            // Revert the optimistic update in case of an error
             setComments(comments.map(comment => {
                 if (comment._id === commentId) {
                     return { ...comment, isLiked: false, likeCount: (comment.likeCount || 1) - 1, likes: comment.likes.filter(id => id !== userId) };
@@ -80,7 +74,7 @@ function Comments({ activityId }) {
             }));
         }
     };
-    
+
     const handleCommentUnlike = async (commentId) => {
         const userId = localStorage.getItem('userId');
         setComments(comments.map(comment => {
@@ -89,13 +83,11 @@ function Comments({ activityId }) {
             }
             return comment;
         }));
-    
+
         try {
             await axios.post(`${apiUrl}/api/activities/comment/${commentId}/unlike`, { userId });
-            // No need to do anything here as the UI is already updated
         } catch (error) {
             console.error('Error unliking comment:', error);
-            // Revert the optimistic update in case of an error
             setComments(comments.map(comment => {
                 if (comment._id === commentId) {
                     return { ...comment, isLiked: true, likeCount: (comment.likeCount || 0) + 1, likes: [...comment.likes, userId] };
@@ -104,7 +96,7 @@ function Comments({ activityId }) {
             }));
         }
     };
-    
+
 
 
     return (

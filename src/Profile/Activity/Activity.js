@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FeedItem from './FeedItem';
 
-function Activity({ userId, refresh }) {
+function Activity({ userId, refresh, toggleRefresh }) {
     const [activities, setActivities] = useState([]);
     const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -22,7 +22,7 @@ function Activity({ userId, refresh }) {
     return (
         <div>
             {activities.length > 0 ? activities.map((activity, index) => (
-                <FeedItem key={index} activity={activity} index={index} toggleRefresh={refresh} />
+                <FeedItem key={index} activity={activity} index={index} refresh={refresh} toggleRefresh={toggleRefresh} />
             )) : <h6 className="text-white mt-5 d-flex justify-content-center">Start logging shows to see your activity!</h6>}
         </div>
     );

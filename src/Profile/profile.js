@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import MobileBar from '../MobileBar/MobileBar';
 import SearchBar from '../SearchBar/SearchBar';
 import Overview from './Overview/Overview';
-import Feed from './Activity/Activity';
+import Activity from './Activity/Activity';
 import UserCard from '../SearchBar/UserCard';
 
 function Profile() {
@@ -15,16 +15,15 @@ function Profile() {
     const [userData, setUserData] = useState(null);
     const { username } = useParams();
     const [error, setError] = useState(null);
-    const [feedKey, setFeedKey] = useState(0);
+    const [refresh, toggleRefresh] = useState(false);
 
     const [searchScreenOn, setSearchScreenOn] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
 
     const [activeTab, setActiveTab] = useState('overview');
-    const [refresh, setRefresh] = useState(false)
 
-    const handleFeedTabClick = () => {
-        setFeedKey(prevKey => prevKey + 1);
+    const handleActivityTabClick = () => {
+        toggleRefresh (!refresh);
     };
 
     useEffect(() => {
@@ -36,7 +35,6 @@ function Profile() {
                 console.error('Error fetching user data:', error);
                 setError(error.message || 'Error fetching user data');
             });
-        setActiveTab('overview');
     }, [username, apiUrl, refresh]);
 
     if (error) {
@@ -48,15 +46,11 @@ function Profile() {
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
             <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
                 {searchResults.map(user => (
-                    <UserCard key={user._id} other_user={user} toggleRefresh={() => setRefresh(!refresh)} />
+                    <UserCard key={user._id} other_user={user} toggleRefresh={() => toggleRefresh(!refresh)} />
                 ))}
             </div>
         </div>)
     }
-
-    const triggerRefresh = () => {
-        setFeedKey(prevKey => prevKey + 1);
-    };
 
     return (
         <div className="bg-brown-gradient">
@@ -82,7 +76,7 @@ function Profile() {
                                                 id="pills-feed-tab"
                                                 type="button"
                                                 onClick={() => {
-                                                    handleFeedTabClick();
+                                                    handleActivityTabClick();
                                                     setActiveTab('feed');
                                                 }}>
                                                 Activity
@@ -103,7 +97,7 @@ function Profile() {
                                             <Overview />
                                         </div>
                                         <div className={`tab-pane fade ${activeTab === 'feed' ? 'show active' : ''}`} id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
-                                            {userData && <Feed userId={userData._id} refresh={triggerRefresh} />}
+                                            {userData && <Activity userId={userData._id} refresh={refresh} toggleRefresh={toggleRefresh} />}
                                         </div>
                                         <div className={`tab-pane fade ${activeTab === 'shows' ? 'show active' : ''}`} id="pills-shows" role="tabpanel" aria-labelledby="pills-shows-tab">
                                             <MyShows />
