@@ -54,6 +54,10 @@ function Profile() {
         </div>)
     }
 
+    const triggerRefresh = () => {
+        setFeedKey(prevKey => prevKey + 1);
+    };
+
     return (
         <div className="bg-brown-gradient">
             <MobileBar toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} toggleSearchScreen={(e) => setSearchScreenOn(e)} setSearchResults={(e) => setSearchResults(e)} />
@@ -99,7 +103,7 @@ function Profile() {
                                             <Overview />
                                         </div>
                                         <div className={`tab-pane fade ${activeTab === 'feed' ? 'show active' : ''}`} id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
-                                            {userData && <Feed userId={userData._id} refresh={feedKey} />}
+                                            {userData && <Feed userId={userData._id} refresh={triggerRefresh} />}
                                         </div>
                                         <div className={`tab-pane fade ${activeTab === 'shows' ? 'show active' : ''}`} id="pills-shows" role="tabpanel" aria-labelledby="pills-shows-tab">
                                             <MyShows />

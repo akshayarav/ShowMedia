@@ -22,8 +22,8 @@ function Activity({ userId, refresh }) {
     return (
         <div>
             {activities.length > 0 ? activities.map((activity, index) => (
-                <FeedItem key = {index} activity={activity} index = {index} />
-            )) : <h6 className = "text-white mt-5 d-flex justify-content-center">Start logging shows to see your activity!</h6>}
+                <FeedItem key={index} activity={activity} index={index} toggleRefresh={refresh} />
+            )) : <h6 className="text-white mt-5 d-flex justify-content-center">Start logging shows to see your activity!</h6>}
         </div>
     );
 }
