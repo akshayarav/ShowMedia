@@ -813,7 +813,9 @@ app.get('/api/get/activity/:activityId', async (req, res) => {
   } catch (error) {
     console.error('Error fetching activity:', error);
     res.status(500).send('Internal Server Error');
-=======
+  }
+})
+
 app.get('/api/following/shows/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;

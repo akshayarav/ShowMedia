@@ -43,7 +43,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
         e.preventDefault();
         setError('');
         setSuccess('');
-        setIsSubmitting(true);
 
         const userId = localStorage.getItem('userId');
 
@@ -94,12 +93,10 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
             setSuccess('Season rating and comment added successfully!');
             setTimeout(() => {
                 closeModal();
-                setIsSubmitting(false);
             }, 1000);
 
         } catch (err) {
             setError('Server error');
-            setIsSubmitting(false);
         } finally {
             if (updateStatus) { updateStatus() }
         }
