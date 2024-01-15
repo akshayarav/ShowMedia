@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Comments from './Comments';
 
 function FeedItem({ activity }) {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -19,9 +20,6 @@ function FeedItem({ activity }) {
     const [comments, setComments] = useState(activity.comments || []);
     const [newComment, setNewComment] = useState('');
     const [showCommentBox, setShowCommentBox] = useState(false);
-    const [visibleComments, setVisibleComments] = useState(1);
-    const [reply, setReply] = useState('');
-    const [replyingToCommentId, setReplyingToCommentId] = useState(null);
 
     const handleLike = async () => {
         const userId = localStorage.getItem('userId');
@@ -61,39 +59,11 @@ function FeedItem({ activity }) {
             }
         } catch (error) {
             console.error('Error submitting new comment:', error);
-        }
+        } 
     };
 
     const toggleCommentBox = () => {
         setShowCommentBox(!showCommentBox);
-    };
-
-    const formatTimestamp = (timestamp) => {
-        const now = new Date();
-        const commentDate = new Date(timestamp);
-        const diffInSeconds = Math.floor((now - commentDate) / 1000);
-        const diffInMinutes = Math.floor(diffInSeconds / 60);
-        const diffInHours = Math.floor(diffInMinutes / 60);
-        const diffInDays = Math.floor(diffInHours / 24);
-        const diffInWeeks = Math.floor(diffInDays / 7);
-
-        if (diffInSeconds < 60) {
-            return `${diffInSeconds}s`;
-        } else if (diffInMinutes < 60) {
-            return `${diffInMinutes}m`;
-        } else if (diffInHours < 24) {
-            return `${diffInHours}h`;
-        } else if (diffInDays < 7) {
-            return `${diffInDays}d`;
-        } else if (diffInWeeks < 52) {
-            return `${diffInWeeks}w`;
-        } else {
-            return commentDate.toLocaleDateString();
-        }
-    };
-
-    const handleShowMore = () => {
-        setVisibleComments(prev => prev + 3);
     };
 
     const renderStars = (rating) => {
@@ -106,74 +76,6 @@ function FeedItem({ activity }) {
             );
         }
         return stars;
-    };
-
-    const showReplyInput = (commentId) => {
-        setReplyingToCommentId(commentId);
-        setReply('');
-    };
-
-    const submitReply = async (commentId) => {
-        const userId = localStorage.getItem('userId');
-        const activityId = activity._id;
-
-        if (!reply.trim()) {
-            console.error('Cannot submit empty reply');
-            return;
-        }
-
-        try {
-            const response = await axios.post(`${apiUrl}/api/activities/${activityId}/comment/${commentId}/reply`, { userId, reply });
-
-            if (response.data && response.data.newReply) {
-                setComments(prevComments => prevComments.map(comment => {
-                    if (comment._id === commentId) {
-                        return { ...comment, replies: [...comment.replies, response.data.newReply] };
-                    }
-                    return comment;
-                }));
-                setReply('');
-                setReplyingToCommentId(null);
-            } else {
-                console.error('New reply structure is not as expected:', response.data);
-            }
-        } catch (error) {
-            console.error('Error submitting new reply:', error);
-        }
-    };
-
-    const handleCommentLike = async (commentId) => {
-        const userId = localStorage.getItem('userId');
-        try {
-            const response = await axios.post(`${apiUrl}/api/activities/${activity._id}/comment/${commentId}/like`, { userId });
-            if (response.data) {
-                setComments(comments.map(comment => {
-                    if (comment._id === commentId) {
-                        return { ...comment, isLiked: true, likeCount: (comment.likeCount || 0) + 1 };
-                    }
-                    return comment;
-                }));
-            }
-        } catch (error) {
-            console.error('Error liking comment:', error);
-        }
-    };
-
-    const handleCommentUnlike = async (commentId) => {
-        const userId = localStorage.getItem('userId');
-        try {
-            const response = await axios.post(`${apiUrl}/api/activities/${activity._id}/comment/${commentId}/unlike`, { userId });
-            if (response.data) {
-                setComments(comments.map(comment => {
-                    if (comment._id === commentId) {
-                        return { ...comment, isLiked: false, likeCount: (comment.likeCount || 1) - 1 };
-                    }
-                    return comment;
-                }));
-            }
-        } catch (error) {
-            console.error('Error unliking comment:', error);
-        }
     };
 
     return (
@@ -258,106 +160,21 @@ function FeedItem({ activity }) {
                                     placeholder="Write your comment"
                                     value={newComment}
                                     onChange={handleNewCommentChange}
-                                    />
-                                    <button
-                                        className="text-primary ps-2 text-decoration-none"
-                                        onClick={(e) => { e.preventDefault(); submitComment(); }}
-                                        style={{ background: 'none', border: 'none' }}
-                                    >
-                                        Post
-                                    </button>
-                                </div>
-                            )}
-                            <div className="comments mt-3">
-                                {comments.slice(0, visibleComments).map(comment => (
-                                    <div key={comment._id} className="mb-2 d-flex">
-                                        <a href="#" className="text-white text-decoration-none">
-                                            <img src={comment.profilePicture} className="img-fluid rounded-circle" alt="commenters-img" />
-                                        </a>
-                                        <div className="ms-2 small flex-grow-1">
-                                            <div className="d-flex justify-content-between bg-glass px-3 py-2 rounded-4 mb-1 chat-text">
-                                                <div>
-                                                    <p className="fw-500 mb-0">{comment.username}</p>
-                                                    <span className="text-muted">{comment.comment}</span>
-                                                </div>
-                                                <button
-                                                    onClick={() => comment.isLiked ? handleCommentUnlike(comment._id) : handleCommentLike(comment._id)}
-                                                    className="border-0 bg-transparent align-self-start"
-                                                >
-                                                    <span className="material-icons" style={{ fontSize: '18px' }}>
-                                                        {comment.isLiked ? 'favorite' : 'favorite_border'}
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <div className="d-flex align-items-center ms-2">
-                                                <span className="text-muted mx-2">{comment.likeCount || 0} Likes</span>
-                                                <a href="#" onClick={() => showReplyInput(comment._id)}
-                                                    className="small text-muted text-decoration-none">Reply</a>
-                                                <span className="fs-3 text-muted material-icons mx-1">circle</span>
-                                                <span className="small text-muted">{formatTimestamp(comment.timestamp)}</span>
-                                            </div>
-
-                                            {replyingToCommentId === comment._id && (
-                                                <div className="d-flex align-items-center mt-2">
-                                                    <input
-                                                        type="text"
-                                                        value={reply}
-                                                        onChange={(e) => setReply(e.target.value)}
-                                                        placeholder="Write a reply..."
-                                                        className="form-control form-control-sm rounded-3 fw-light bg-glass form-control-text"
-                                                    />
-                                                    <button
-                                                        className="text-primary ps-2 text-decoration-none"
-                                                        onClick={() => submitReply(comment._id)}
-                                                        style={{ background: 'none', border: 'none' }}
-                                                    >
-                                                        Reply
-                                                    </button>
-                                                </div>
-                                            )}
-
-                                            {comment.replies && comment.replies.length > 0 && (
-                                                <div className="replies">
-                                                    {comment.replies.map(reply => (
-                                                        <div key={reply._id} className="reply mb-2 d-flex">
-                                                            <a href="#" className="text-white text-decoration-none">
-                                                                <img src={reply.profilePicture} className="img-fluid rounded-circle"
-                                                                    alt="reply-img" />
-                                                            </a>
-                                                            <div className="ms-2 small">
-                                                                <div className="bg-glass px-3 py-2 rounded-4 mb-1 chat-text">
-                                                                    <p className="fw-500 mb-0">{reply.username}</p>
-                                                                    <span className="text-muted">{reply.comment}</span>
-                                                                </div>
-                                                                <div className="d-flex align-items-center ms-2">
-                                                                    <a href="#"
-                                                                        className="small text-muted text-decoration-none">Like</a>
-                                                                    <span
-                                                                        className="fs-3 text-muted material-icons mx-1">circle</span>
-                                                                    <span className="small text-muted">{formatTimestamp(reply.timestamp)}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                                {comments.length > visibleComments && (
-                                    <button
-                                        onClick={handleShowMore}
-                                        className="text-primary text-decoration-none"
-                                        style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
-                                    >
-                                        Show More
-                                    </button>
-                                )}
+                                />
+                                <button
+                                    className="text-primary ps-2 text-decoration-none"
+                                    onClick={(e) => { e.preventDefault(); submitComment(); }}
+                                    style={{ background: 'none', border: 'none' }}
+                                >
+                                    Post
+                                </button>
                             </div>
-                        </div>
+                        )}
+                        <Comments activityId={activity._id} />
                     </div>
                 </div>
             </div>
+        </div>
     );
 
 }

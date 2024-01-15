@@ -78,6 +78,7 @@ const commentSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   comment: String,
   timestamp: { type: Date, default: Date.now },
+  profilePicture: String,
   replies: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment'
@@ -559,6 +560,7 @@ app.post('/api/activities/:activityId/unlike', async (req, res) => {
   }
 });
 
+//Post a new comment to the activity with id {activityId}
 app.post('/api/activities/:activityId/comment', async (req, res) => {
   try {
     const activityId = req.params.activityId;
@@ -594,6 +596,29 @@ app.post('/api/activities/:activityId/comment', async (req, res) => {
   }
 });
 
+//Get all the comments from activity with id {activityId}, sorted chronologically
+app.get('/api/activities/:activityId/comments', async (req, res) => {
+  try {
+    const activityId = req.params.activityId;
+
+    const activity = await Activity.findById(activityId).populate({
+      path: 'comments',
+      model: 'Comment',
+      options: { sort: { 'createdAt': -1 } }
+    });
+
+    if (!activity) {
+      return res.status(404).send('Activity not found');
+    }
+
+    res.status(200).json(activity.comments);
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+//Delete a comment with id {commentId} from activity with id {activityId}
 app.delete('/api/activities/:activityId/comment/:commentId', async (req, res) => {
   try {
     const activityId = req.params.activityId;
@@ -767,6 +792,23 @@ app.post('/api/activities/:activityId/comment/:commentId/unlike', async (req, re
     res.status(200).json({ message: 'Unlike successful' });
   } catch (error) {
     console.error('Error unliking comment:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+app.get('/api/get/activity/:activityId', async (req, res) => {
+  try {
+    const activityId = req.params.activityId;
+
+    const activity = await Activity.findById(activityId);
+    if (!activity) {
+      return res.status(404).send('Activity not found');
+    }
+
+    res.status(200).json(activity.toObject());
+  } catch (error) {
+    console.error('Error fetching activity:', error);
     res.status(500).send('Internal Server Error');
   }
 });
