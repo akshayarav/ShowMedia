@@ -732,7 +732,8 @@ app.post('/api/activities/:activityId/comment/:commentId/reply', async (req, res
   }
 });
 
-app.post('/api/activities/:activityId/comment/:commentId/like', async (req, res) => {
+//Like a comment with id {commentId} by user with id {userId}
+app.post('/api/activities/comment/:commentId/like', async (req, res) => {
   try {
     const { commentId } = req.params;
     const { userId } = req.body;
@@ -764,7 +765,8 @@ app.post('/api/activities/:activityId/comment/:commentId/like', async (req, res)
   }
 });
 
-app.post('/api/activities/:activityId/comment/:commentId/unlike', async (req, res) => {
+//Unlike a comment with id {commentId} by user with id {userId}
+app.post('/api/activities/comment/:commentId/unlike', async (req, res) => {
   try {
     const { commentId } = req.params;
     const { userId } = req.body;

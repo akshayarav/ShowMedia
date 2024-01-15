@@ -5,23 +5,28 @@ function Comments({ activityId }) {
     const [visibleComments, setVisibleComments] = useState(1);
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
-    const [activity, setActivity] = useState('')
-
+    const userId = localStorage.getItem('userId')
+    const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
         const fetchComments = async () => {
             try {
                 const response = await axios.get(`${apiUrl}/api/activities/${activityId}/comments`);
-                setComments(response.data);
+                const updatedComments = response.data.map(comment => ({
+                    ...comment,
+                    isLiked: comment.likes.includes(userId)
+                }));
+                setComments(updatedComments);
             } catch (error) {
                 console.error('Error fetching comments:', error);
             }
         };
-
+    
         if (activityId) {
             fetchComments();
         }
-    }, [activityId]);
+    }, [activityId, refresh]);
+    
 
 
 
@@ -54,37 +59,52 @@ function Comments({ activityId }) {
 
     const handleCommentLike = async (commentId) => {
         const userId = localStorage.getItem('userId');
-        try {
-            const response = await axios.post(`${apiUrl}/api/activities/${activity._id}/comment/${commentId}/like`, { userId });
-            if (response.data) {
-                setComments(comments.map(comment => {
-                    if (comment._id === commentId) {
-                        return { ...comment, isLiked: true, likeCount: (comment.likeCount || 0) + 1 };
-                    }
-                    return comment;
-                }));
+        // Optimistically update the UI
+        setComments(comments.map(comment => {
+            if (comment._id === commentId) {
+                return { ...comment, isLiked: true,  likes: [...comment.likes, userId] }
             }
+            return comment;
+        }));
+    
+        try {
+            await axios.post(`${apiUrl}/api/activities/comment/${commentId}/like`, { userId });
         } catch (error) {
             console.error('Error liking comment:', error);
+            // Revert the optimistic update in case of an error
+            setComments(comments.map(comment => {
+                if (comment._id === commentId) {
+                    return { ...comment, isLiked: false, likeCount: (comment.likeCount || 1) - 1, likes: comment.likes.filter(id => id !== userId) };
+                }
+                return comment;
+            }));
         }
     };
-
+    
     const handleCommentUnlike = async (commentId) => {
         const userId = localStorage.getItem('userId');
-        try {
-            const response = await axios.post(`${apiUrl}/api/activities/${activity._id}/comment/${commentId}/unlike`, { userId });
-            if (response.data) {
-                setComments(comments.map(comment => {
-                    if (comment._id === commentId) {
-                        return { ...comment, isLiked: false, likeCount: (comment.likeCount || 1) - 1 };
-                    }
-                    return comment;
-                }));
+        setComments(comments.map(comment => {
+            if (comment._id === commentId) {
+                return { ...comment, isLiked: false, likes: comment.likes.filter(id => id !== userId) };
             }
+            return comment;
+        }));
+    
+        try {
+            await axios.post(`${apiUrl}/api/activities/comment/${commentId}/unlike`, { userId });
+            // No need to do anything here as the UI is already updated
         } catch (error) {
             console.error('Error unliking comment:', error);
+            // Revert the optimistic update in case of an error
+            setComments(comments.map(comment => {
+                if (comment._id === commentId) {
+                    return { ...comment, isLiked: true, likeCount: (comment.likeCount || 0) + 1, likes: [...comment.likes, userId] };
+                }
+                return comment;
+            }));
         }
     };
+    
 
 
     return (
@@ -110,7 +130,7 @@ function Comments({ activityId }) {
                             </button>
                         </div>
                         <div className="d-flex align-items-center ms-2">
-                            <span className="text-muted mx-2">{comment.likeCount || 0} Likes</span>
+                            <span className="text-muted mx-2">{comment.likes.length || 0} Likes</span>
                             <a href="#" className="small text-muted text-decoration-none">Reply</a>
                             <span className="fs-3 text-muted material-icons mx-1">circle</span>
                             <span className="small text-muted">{formatTimestamp(comment.timestamp)}</span>
