@@ -73,6 +73,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
         return stars;
     };
 
+
     return (
         <div className="border-bottom py-3 px-lg-3">
             <div className="bg-glass p-3 feed-item rounded-4 shadow-sm">

@@ -15,9 +15,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
     const [episodeProgress, setEpisodeProgress] = useState(null);
     const [showMore, setShowMore] = useState(false);
 
-    console.log("USERS: " + users)
-    console.log("seasons: " + seasons)
-
     const toggleShowMore = () => {
         setShowMore(!showMore);
     };
@@ -55,16 +52,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
             setError('Please select a season, enter a rating, and write a comment.');
             return;
         }
-
-        console.log(JSON.stringify({
-            userId,
-            showId: series_id,
-            seasonNumber: selectedSeasonObject.season_number,
-            rating: parseInt(rating),
-            comment: comment,
-            status: status,
-            episodes: episodeProgress
-        }))
 
         try {
             const response = await fetch(`${apiUrl}/rateSeason`, {

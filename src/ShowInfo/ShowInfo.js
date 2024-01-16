@@ -115,7 +115,6 @@ function ShowInfo() {
         </div>)
     }
 
-    console.log(show)
 
     return (
         <div className="bg-brown-gradient">

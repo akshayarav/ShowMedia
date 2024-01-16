@@ -99,7 +99,6 @@ function Overview() {
 
     const numFollowing = profileUser.following ? profileUser.following.length : 0;
     const numFollowers = profileUser.followers ? profileUser.followers.length : 0;
-
     return (
         <div className="border-bottom pb-3">
             <div className="bg-glass rounded-4 shadow-sm profile ">
