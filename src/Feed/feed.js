@@ -112,7 +112,7 @@ function Feed() {
                             <div className="main-content">
                                 <h2 class="fw-bold text-white mt-4">Your Feed</h2>
                                 {isAuthenticated && activities && activities.length > 0 && (
-                                    <FollowingFeed activities={activities} toggleRefresh = {() => setRefresh(!refresh)}/>
+                                    <FollowingFeed activities={activities} refresh={refresh} toggleRefresh={() => setRefresh(!refresh)}/>
                                 ) }
                                 {!isAuthenticated && <p>Please log in to see the feed.</p>}
                             </div>
