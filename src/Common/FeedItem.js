@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Comments from './Comments';
+import CommentsList from './CommentsList';
 
 function FeedItem({ activity, refresh, toggleRefresh }) {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -166,7 +166,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                                 </button>
                             </div>
                         )}
-                        <Comments activityId={activity._id} refresh={refresh} toggleRefresh={toggleRefresh}/>
+                        <CommentsList activityId={activity._id} refresh={refresh} toggleRefresh={toggleRefresh}/>
                     </div>
                 </div>
             </div>
