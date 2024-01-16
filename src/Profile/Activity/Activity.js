@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import FeedItem from './FeedItem';
+import FeedItem from '../../Common/FeedItem';
 
 function Activity({ userId, refresh, toggleRefresh }) {
     const [activities, setActivities] = useState([]);

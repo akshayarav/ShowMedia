@@ -1,5 +1,5 @@
 import React from 'react';
-import FeedItem from '../../Profile/Activity/FeedItem';
+import FeedItem from '../../Common/FeedItem';
 
 function FollowingFeed({ activities, toggleRefresh }) {
     return (
