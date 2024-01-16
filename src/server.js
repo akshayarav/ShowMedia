@@ -795,3 +795,57 @@ app.post('/api/activities/comment/:commentId/reply', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+// Like a reply with id {replyId} by user with id {userId}
+app.post('/api/activities/comment/:commentId/reply/:replyId/like', async (req, res) => {
+  try {
+    const { replyId } = req.params;
+    const { userId } = req.body;
+
+    // Find the reply comment by its ID
+    const reply = await Comment.findById(replyId);
+    if (!reply) {
+      console.error('Reply not found');
+      return res.status(404).send('Reply not found');
+    }
+
+    if (reply.likes.includes(userId)) {
+      return res.status(400).send('You have already liked this reply');
+    }
+
+    reply.likes.push(userId);
+    await reply.save();
+
+    res.status(200).json({ message: 'Like added successfully to reply' });
+  } catch (error) {
+    console.error('Error liking reply:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Unlike a reply with id {replyId} by user with id {userId}
+app.post('/api/activities/comment/:commentId/reply/:replyId/unlike', async (req, res) => {
+  try {
+    const { replyId } = req.params;
+    const { userId } = req.body;
+
+    // Find the reply comment by its ID
+    const reply = await Comment.findById(replyId);
+    if (!reply) {
+      console.error('Reply not found');
+      return res.status(404).send('Reply not found');
+    }
+
+    if (!reply.likes.includes(userId)) {
+      return res.status(400).send('You have not liked this reply');
+    }
+
+    reply.likes = reply.likes.filter(likeUserId => likeUserId.toString() !== userId.toString());
+    await reply.save();
+
+    res.status(200).json({ message: 'Unlike successful for reply' });
+  } catch (error) {
+    console.error('Error unliking reply:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
