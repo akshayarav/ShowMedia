@@ -34,20 +34,6 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.error('MongoDB connection error:', error);
 });
 
-const ratingSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  show: {
-    type: Number,
-    ref: 'Show'
-  },
-  rating: Number,
-});
-
-const Rating = mongoose.model('Rating', ratingSchema);
-
 const userSchema = new mongoose.Schema({
   email: String,
   username: String,
@@ -180,47 +166,6 @@ app.post('/login', async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: "An error occurred during the login process." });
-  }
-});
-
-app.post('/rate', async (req, res) => {
-  try {
-    const { userId, showId, rating } = req.body;
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User or show not found' });
-    }
-
-    const newRating = new Rating({
-      user: userId,
-      show: showId,
-      rating: rating
-    });
-
-    const savedRating = await newRating.save();
-    res.status(200).json({ message: 'Rating added successfully' });
-  } catch (error) {
-    console.log(req.body)
-    console.error(error);
-    res.status(500).json({ message: 'Error adding rating' });
-  }
-});
-
-app.get('/api/ratings/:userId', async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    if (!userId) {
-      console.log('No userId provided');
-      return res.status(400).send('No userId provided');
-    }
-
-    const ratings = await Rating.find({ user: userId });
-
-    res.send(ratings);
-  } catch (error) {
-    console.error('Error occurred in /api/ratings/:userId:', error); // Log the error details
-    res.status(500).send('Internal Server Error');
   }
 });
 
