@@ -14,7 +14,6 @@ function PopularShows({recShows}) {
             axios.get(popularApiUrl)
                 .then(response => {
                     const newShows = response.data.results
-                    .filter(show => !shows.some(s => s.id === show.id)) // Prevent duplicates
                     .map(show => ({
                         id: show.id,
                         name: show.name,
