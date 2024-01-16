@@ -204,7 +204,6 @@ function CommentsList({ activityId, refresh, toggleRefresh }) {
       <div className="comments mt-4">
           {comments.slice(0, visibleComments).map(comment => (
               <CommentItem
-                  key={comment._id}
                   comment={comment}
                   handleCommentLike={handleCommentLike}
                   handleCommentUnlike={handleCommentUnlike}
