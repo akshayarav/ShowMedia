@@ -13,20 +13,22 @@ function PopularShows({recShows}) {
         if (recShows) {
             axios.get(popularApiUrl)
                 .then(response => {
-                    const newShows = response.data.results.map(show => ({
+                    const newShows = response.data.results
+                    .filter(show => !shows.some(s => s.id === show.id)) // Prevent duplicates
+                    .map(show => ({
                         id: show.id,
                         name: show.name,
                         image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
                         series_id: show.id,
                         users: recShows.has(show.id.toString()) ? recShows.get(show.id.toString()).users : []
                     }));
-                    setShows(prevShows => [...prevShows, ...newShows]);
+                    setShows(newShows);
                 })
                 .catch(error => {
                     console.error('Error fetching data: ', error);
                 });
         }
-    }, [popularApiUrl, recShows]);
+    }, [recShows]);
 
 
     return (
