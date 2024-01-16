@@ -256,10 +256,10 @@ function Comments({ activityId, refresh, toggleRefresh }) {
 
                         <div className="replies-container">
                             {comment.replies && comment.replies.map(reply => (
-                                <div key={reply._id} className="reply mt-3">
+                                <div key={reply._id} className="reply d-flex mt-3">
                                     <div className="d-flex">
                                         <a href="#" className="text-white text-decoration-none">
-                                            <img src={reply.user.profilePicture} className="img-fluid rounded-circle" alt="reply-img" style={{ width: '30px', height: '30px' }} />
+                                            <img src={reply.user.profilePicture} className="img-fluid rounded-circle" alt="reply-img" />
                                         </a>
                                         <div className="ms-2 small flex-grow-1">
                                             <div className="d-flex justify-content-between bg-glass px-3 py-2 rounded-4 mb-1 chat-text">
