@@ -802,7 +802,6 @@ app.post('/api/activities/comment/:commentId/reply/:replyId/like', async (req, r
     const { replyId } = req.params;
     const { userId } = req.body;
 
-    // Find the reply comment by its ID
     const reply = await Comment.findById(replyId);
     if (!reply) {
       console.error('Reply not found');
@@ -829,7 +828,6 @@ app.post('/api/activities/comment/:commentId/reply/:replyId/unlike', async (req,
     const { replyId } = req.params;
     const { userId } = req.body;
 
-    // Find the reply comment by its ID
     const reply = await Comment.findById(replyId);
     if (!reply) {
       console.error('Reply not found');
