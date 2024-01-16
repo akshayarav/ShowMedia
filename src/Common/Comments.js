@@ -6,6 +6,8 @@ function Comments({ activityId, refresh, toggleRefresh }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
     const userId = localStorage.getItem('userId')
+    const [visibleReplyBoxId, setVisibleReplyBoxId] = useState(null);
+    const [replyContent, setReplyContent] = useState('');
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -97,28 +99,39 @@ function Comments({ activityId, refresh, toggleRefresh }) {
         }
     };
 
-    const handleCommentReply = async (commentId) => {
-        const userId = localStorage.getItem('userId');
-        const replyContent = prompt("Enter your reply:");
+    const handleCommentReply = (commentId) => {
+        setVisibleReplyBoxId(commentId);
+        setReplyContent('');
+    };
 
-        if (replyContent) {
-            try {
-                const response = await axios.post(`${apiUrl}/api/activities/comment/${commentId}/reply`, {
-                    userId,
-                    replyContent
-                });
-
-                toggleRefresh ()
-                const updatedComment = response.data;
-
-                setComments(comments.map(comment =>
-                    comment._id === commentId ? updatedComment : comment
-                ));
-
-            } catch (error) {
-                console.error('Error posting reply:', error);
-            }
+    const submitReply = async (commentId) => {
+        if (!replyContent.trim()) {
+            console.error('Cannot submit empty reply');
+            return;
         }
+
+        try {
+            const userId = localStorage.getItem('userId');
+            const response = await axios.post(`${apiUrl}/api/activities/comment/${commentId}/reply`, {
+                userId,
+                replyContent
+            });
+
+            toggleRefresh();
+            setComments(comments.map(comment =>
+                comment._id === commentId ? response.data : comment
+            ));
+
+            setVisibleReplyBoxId(null);
+            setReplyContent('');
+        } catch (error) {
+            console.error('Error posting reply:', error);
+        }
+    };
+
+    const openReplyBox = (commentId) => {
+        setVisibleReplyBoxId(commentId);
+        setReplyContent('');
     };
 
     return (
@@ -147,7 +160,7 @@ function Comments({ activityId, refresh, toggleRefresh }) {
                             <span className="text-muted mx-2">{comment.likes.length || 0} Likes</span>
                             <button
                                 className="small text-muted text-decoration-none"
-                                onClick={() => handleCommentReply(comment._id)}
+                                onClick={() => openReplyBox(comment._id)}
                                 style={{ background: 'none', border: 'none', padding: '0', cursor: 'pointer' }}
                             >
                                 Reply
@@ -155,6 +168,25 @@ function Comments({ activityId, refresh, toggleRefresh }) {
                             <span className="fs-3 text-muted material-icons mx-1">circle</span>
                             <span className="small text-muted">{formatTimestamp(comment.timestamp)}</span>
                         </div>
+
+                        {visibleReplyBoxId === comment._id && (
+                            <div className="d-flex align-items-center mb-3">
+                                <input
+                                    type="text"
+                                    className="form-control form-control-sm rounded-3 fw-light bg-glass form-control-text"
+                                    placeholder="Write your reply"
+                                    value={replyContent}
+                                    onChange={(e) => setReplyContent(e.target.value)}
+                                />
+                                <button
+                                    className="text-primary ps-2 text-decoration-none"
+                                    onClick={() => submitReply(comment._id)}
+                                    style={{ background: 'none', border: 'none' }}
+                                >
+                                    Reply
+                                </button>
+                            </div>
+                        )}
 
                         <div className="replies-container">
                             {comment.replies && comment.replies.map(reply => (
