@@ -604,7 +604,11 @@ app.get('/api/activities/:activityId/comments', async (req, res) => {
     const activity = await Activity.findById(activityId).populate({
       path: 'comments',
       model: 'Comment',
-      options: { sort: { 'createdAt': -1 } }
+      options: { sort: { 'createdAt': -1 } },
+      populate: {
+        path: 'replies',
+        model: 'Comment'
+      }
     });
 
     if (!activity) {
@@ -690,46 +694,6 @@ app.get('/api/recommendations/:username', async (req, res) => {
   } catch (error) {
     console.error('Error fetching recommendations:', error);
     res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-
-app.post('/api/activities/:activityId/comment/:commentId/reply', async (req, res) => {
-  const { activityId, commentId } = req.params;
-  const { userId, reply } = req.body;
-
-  try {
-      const activity = await Activity.findById(activityId);
-      if (!activity) {
-          return res.status(404).send('Activity not found');
-      }
-
-      const comment = activity.comments.id(commentId);
-      if (!comment) {
-          return res.status(404).send('Comment not found');
-      }
-
-      const user = await User.findById(userId);
-      if (!user) {
-          return res.status(404).send('User not found');
-      }
-
-      const newReply = {
-          user: userId,
-          comment: reply,
-          username: user.username,
-          profilePicture: user.profilePicture,
-          first: user.first,
-          timestamp: new Date()
-      };
-
-      comment.replies.push(newReply);
-      await activity.save();
-
-      res.status(200).json({ message: 'Reply added successfully', newReply: newReply });
-  } catch (error) {
-      console.error('Error adding reply:', error);
-      res.status(500).send('Internal Server Error');
   }
 });
 
@@ -843,5 +807,37 @@ app.get('/api/following/shows/:userId', async (req, res) => {
     console.error('Error fetching recommendations:', error);
     res.status(500).json({ message: "Internal Server Error" });
 
+  }
+});
+
+//Reply to a comment by creating a new comment and linking it to the original comment
+app.post('/api/activities/comment/:commentId/reply', async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { userId, replyContent } = req.body;
+
+    const originalComment = await Comment.findById(commentId);
+    if (!originalComment) {
+      console.error('Comment not found');
+      return res.status(404).send('Comment not found');
+    }
+
+    const replyComment = new Comment({
+      user: userId,
+      comment: replyContent,
+    });
+
+    const savedReply = await replyComment.save();
+    originalComment.replies.push(savedReply._id);
+
+    await originalComment.save();
+
+    const updatedOriginalComment = await Comment.findById(commentId)
+      .populate('replies')
+
+    res.status(200).json(updatedOriginalComment);
+  } catch (error) {
+    console.error('Error replying to comment:', error);
+    res.status(500).send('Internal Server Error');
   }
 });

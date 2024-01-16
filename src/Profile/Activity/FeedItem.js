@@ -165,7 +165,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                                 </button>
                             </div>
                         )}
-                        <Comments activityId={activity._id} refresh={refresh} />
+                        <Comments activityId={activity._id} refresh={refresh} toggleRefresh={toggleRefresh}/>
                     </div>
                 </div>
             </div>

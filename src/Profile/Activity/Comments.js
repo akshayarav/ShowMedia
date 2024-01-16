@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function Comments({ activityId, refresh }) {
+function Comments({ activityId, refresh, toggleRefresh }) {
     const [visibleComments, setVisibleComments] = useState(1);
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
@@ -97,10 +97,32 @@ function Comments({ activityId, refresh }) {
         }
     };
 
+    const handleCommentReply = async (commentId) => {
+        const userId = localStorage.getItem('userId');
+        const replyContent = prompt("Enter your reply:");
 
+        if (replyContent) {
+            try {
+                const response = await axios.post(`${apiUrl}/api/activities/comment/${commentId}/reply`, {
+                    userId,
+                    replyContent
+                });
+
+                toggleRefresh ()
+                const updatedComment = response.data;
+
+                setComments(comments.map(comment =>
+                    comment._id === commentId ? updatedComment : comment
+                ));
+
+            } catch (error) {
+                console.error('Error posting reply:', error);
+            }
+        }
+    };
 
     return (
-        <div className="comments mt-3">
+        <div className="comments mt-4">
             {comments.slice(0, visibleComments).map(comment => (
                 <div key={comment._id} className="mb-2 d-flex">
                     <a href="#" className="text-white text-decoration-none">
@@ -123,9 +145,29 @@ function Comments({ activityId, refresh }) {
                         </div>
                         <div className="d-flex align-items-center ms-2">
                             <span className="text-muted mx-2">{comment.likes.length || 0} Likes</span>
-                            <a href="#" className="small text-muted text-decoration-none">Reply</a>
+                            <button
+                                className="small text-muted text-decoration-none"
+                                onClick={() => handleCommentReply(comment._id)}
+                                style={{ background: 'none', border: 'none', padding: '0', cursor: 'pointer' }}
+                            >
+                                Reply
+                            </button>
                             <span className="fs-3 text-muted material-icons mx-1">circle</span>
                             <span className="small text-muted">{formatTimestamp(comment.timestamp)}</span>
+                        </div>
+
+                        <div className="replies-container">
+                            {comment.replies && comment.replies.map(reply => (
+                                <div key={reply._id} className="reply d-flex mt-3">
+                                    <a href="#" className="text-white text-decoration-none">
+                                        <img src={reply.profilePicture} className="img-fluid rounded-circle" alt="reply-img" style={{ width: '30px', height: '30px' }} />
+                                    </a>
+                                    <div className="bg-glass px-3 py-2 rounded-4 ms-2 flex-grow-1">
+                                        <p className="fw-500 mb-0">{reply.username}</p>
+                                        <span className="text-muted">{reply.comment}</span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -140,7 +182,7 @@ function Comments({ activityId, refresh }) {
                 </button>
             )}
         </div>
-    )
+    );
 
 }
 
