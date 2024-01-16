@@ -30,7 +30,7 @@ function Feed() {
                     console.error('Error fetching following feed:', error);
                 });
         }
-    }, [isAuthenticated, apiUrl, feedKey, refresh]);
+    }, [isAuthenticated, apiUrl, feedKey]);
 
     useEffect(() => {
         if (activities) {
