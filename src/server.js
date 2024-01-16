@@ -605,10 +605,22 @@ app.get('/api/activities/:activityId/comments', async (req, res) => {
       path: 'comments',
       model: 'Comment',
       options: { sort: { 'createdAt': -1 } },
-      populate: {
-        path: 'replies',
-        model: 'Comment'
-      }
+      populate: [
+        {
+          path: 'user',
+          model: 'User',
+          select: 'username profilePicture'
+        },
+        {
+          path: 'replies',
+          model: 'Comment',
+          populate: {
+            path: 'user',
+            model: 'User',
+            select: 'username profilePicture'
+          }
+        }
+      ]
     });
 
     if (!activity) {
@@ -621,6 +633,7 @@ app.get('/api/activities/:activityId/comments', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 //Delete a comment with id {commentId} from activity with id {activityId}
 app.delete('/api/activities/:activityId/comment/:commentId', async (req, res) => {

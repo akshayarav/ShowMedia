@@ -131,7 +131,7 @@ function Comments({ activityId, refresh, toggleRefresh }) {
                     <div className="ms-2 small flex-grow-1">
                         <div className="d-flex justify-content-between bg-glass px-3 py-2 rounded-4 mb-1 chat-text">
                             <div>
-                                <p className="fw-500 mb-0">{comment.username}</p>
+                                <p className="fw-500 mb-0">{comment.user.username}</p>
                                 <span className="text-muted">{comment.comment}</span>
                             </div>
                             <button
@@ -160,10 +160,10 @@ function Comments({ activityId, refresh, toggleRefresh }) {
                             {comment.replies && comment.replies.map(reply => (
                                 <div key={reply._id} className="reply d-flex mt-3">
                                     <a href="#" className="text-white text-decoration-none">
-                                        <img src={reply.profilePicture} className="img-fluid rounded-circle" alt="reply-img" style={{ width: '30px', height: '30px' }} />
+                                        <img src={reply.user.profilePicture} className="img-fluid rounded-circle" alt="reply-img" style={{ width: '30px', height: '30px' }} />
                                     </a>
                                     <div className="bg-glass px-3 py-2 rounded-4 ms-2 flex-grow-1">
-                                        <p className="fw-500 mb-0">{reply.username}</p>
+                                        <p className="fw-500 mb-0">{reply.user.username}</p>
                                         <span className="text-muted">{reply.comment}</span>
                                     </div>
                                 </div>
