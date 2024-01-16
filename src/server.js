@@ -744,17 +744,13 @@ app.get('/api/following/shows/:userId', async (req, res) => {
     for (const followedUser of user.following) {
       const seasonRatingsFollowedUser = await SeasonRating.find({ user: followedUser._id });
 
-
       for (const potentialRecommendation of seasonRatingsFollowedUser) {
-        const alreadyRated = seasonRatings.some(rating => rating.show.toString() === potentialRecommendation.show.toString());
 
-        if (!alreadyRated) {
-          if (!showData[potentialRecommendation.show]) {
-            showData[potentialRecommendation.show] = { cumulativeRating: 0, users: []};
-          }
-          showData[potentialRecommendation.show].cumulativeRating += potentialRecommendation.rating;
-          showData[potentialRecommendation.show].users.push(followedUser.username);
+        if (!showData[potentialRecommendation.show]) {
+          showData[potentialRecommendation.show] = { cumulativeRating: 0, users: [] };
         }
+        showData[potentialRecommendation.show].cumulativeRating += potentialRecommendation.rating;
+        showData[potentialRecommendation.show].users.push(followedUser.username);
       }
     }
 
