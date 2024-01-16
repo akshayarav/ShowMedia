@@ -256,7 +256,7 @@ function Comments({ activityId, refresh, toggleRefresh }) {
 
                         <div className="replies-container">
                             {comment.replies && comment.replies.map(reply => (
-                                <div key={reply._id} className="reply d-flex mt-3">
+                                <div key={reply._id} className="reply mt-3">
                                     <div className="d-flex">
                                         <a href="#" className="text-white text-decoration-none">
                                             <img src={reply.user.profilePicture} className="img-fluid rounded-circle" alt="reply-img" />
