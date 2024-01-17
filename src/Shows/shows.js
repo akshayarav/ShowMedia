@@ -105,7 +105,6 @@ function Shows() {
                                 <ShowSearch onSearch={setSearchTerm} addGenre={addGenre} selectedGenres={selectedGenres} />
                                 <div className="row">
                                     {shows.filter(show => {
-                                        // Check if any of the show's genre IDs is included in the selectedGenres
                                         return selectedGenres.length === 0 || show.genre_ids.some(genreId => selectedGenres.includes(genreId));
                                     }).map((show, index) => (
                                         <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} users={show.users} />
@@ -128,8 +127,8 @@ function Shows() {
                     <div className="row position-relative">
                         <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
                             <ShowSearch onSearch={setSearchTerm} addGenre={addGenre} selectedGenres={selectedGenres} />
-                            {recShows && recShows.size > 0 && <FollowerRecShows recShows={recShows} />}
-                            <PopularShows recShows={recShows} />
+                            {recShows && recShows.size > 0 && <FollowerRecShows recShows={recShows} selectedGenres={selectedGenres} />}
+                            <PopularShows recShows={recShows} selectedGenres={selectedGenres}/>
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>

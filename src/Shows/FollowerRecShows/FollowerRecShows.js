@@ -4,7 +4,7 @@ import axios from "axios"
 import ShowCard from "../ShowCard/ShowCard"
 import defaultImage from '../ShowCard/error.jpg';
 
-function FollowerRecShows({recShows}) {
+function FollowerRecShows({recShows, selectedGenres}) {
     const [shows, setShows] = useState([])
     
     const tmdbApiKey = process.env.REACT_APP_API_KEY
@@ -35,13 +35,22 @@ function FollowerRecShows({recShows}) {
     useEffect(() => {
         async function updateShows() {
             const detailedShows = await getAllShowDetails(recShows);
-            setShows(Array.from(detailedShows));
+            const newShows = Array.from(detailedShows)
+            if (selectedGenres.length === 0) {
+                setShows(newShows)
+            }
+            else {
+                const filteredShows = newShows.filter(show => {
+                    return show.genres.some(genre => selectedGenres.includes(genre.id));
+                });
+                setShows(filteredShows)
+            }
         }
 
         if (recShows && recShows.size > 0) {
             updateShows();
         }
-    }, [recShows]);
+    }, [recShows, selectedGenres]);
 
 
     return (<div>
