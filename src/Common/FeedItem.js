@@ -16,8 +16,10 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
 
     const [isLiked, setIsLiked] = useState(activity.likes.includes(localStorage.getItem('userId')));
     const [likeCount, setLikeCount] = useState(activity.likes.length);
-    const [newComment, setNewComment] = useState('');
-    const [showCommentBox, setShowCommentBox] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
+
+    const openModal = () => setModalOpen(true);
+    const closeModal = () => setModalOpen(false);
 
     const handleLike = async () => {
         const userId = localStorage.getItem('userId');
@@ -32,34 +34,6 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
             console.error('Error updating like status:', error);
         }
     };
-
-    const handleNewCommentChange = (e) => {setNewComment(e.target.value);};
-
-    const submitComment = async () => {
-        const userId = localStorage.getItem('userId');
-        const activityId = activity._id;
-
-        if (!newComment.trim()) {
-            console.error('Cannot submit empty comment');
-            return;
-        }
-
-        try {
-            const response = await axios.post(`${apiUrl}/api/activities/${activityId}/comment`, { userId, comment: newComment });
-
-            if (response.data && response.data.newComment) {
-                setNewComment('');
-            } else {
-                console.error('New comment structure is not as expected:', response.data);
-            }
-        } catch (error) {
-            console.error('Error submitting new comment:', error);
-        } finally {
-            toggleRefresh ();
-        }
-    };
-
-    const toggleCommentBox = () => {setShowCommentBox(!showCommentBox);};
 
     const renderStars = (rating) => {
         let stars = [];
@@ -120,7 +94,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                                         </button>
                                     </div>
                                     <div>
-                                        <div onClick={toggleCommentBox}
+                                        <div onClick={openModal}
                                             className="text-muted text-decoration-none d-flex align-items-start fw-light"><span
                                                 className="material-icons md-20 me-2">chat_bubble_outline</span>
                                         </div>
@@ -145,28 +119,16 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                                 style={{ maxWidth: '100px', height: 'auto' }}
                             />
                         </div>
+                        <CommentsList
+                            activity={activity}
+                            activityId={activity._id}
+                            refresh={refresh}
+                            toggleRefresh={toggleRefresh}
+                            isModalOpen={isModalOpen}
+                            openModal={openModal}
+                            closeModal={closeModal}
+                            />
 
-                        {showCommentBox && (
-                            <div className="d-flex align-items-center mb-3" >
-                                <span
-                                    className="material-icons bg-transparent border-0 text-primary pe-2 md-36">account_circle</span>
-                                <input
-                                    type="text"
-                                    className="form-control form-control-sm rounded-3 fw-light bg-glass form-control-text"
-                                    placeholder="Write your comment"
-                                    value={newComment}
-                                    onChange={handleNewCommentChange}
-                                />
-                                <button
-                                    className="text-primary ps-2 text-decoration-none"
-                                    onClick={(e) => { e.preventDefault(); submitComment(); }}
-                                    style={{ background: 'none', border: 'none' }}
-                                >
-                                    Post
-                                </button>
-                            </div>
-                        )}
-                        <CommentsList activityId={activity._id} refresh={refresh} toggleRefresh={toggleRefresh}/>
                     </div>
                 </div>
             </div>

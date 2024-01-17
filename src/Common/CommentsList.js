@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import CommentItem from './CommentItem';
 
-function CommentsList({ activityId, refresh, toggleRefresh }) {
-    const [visibleComments, setVisibleComments] = useState(1);
+function CommentsList({ activity, activityId, refresh, toggleRefresh, isModalOpen, openModal, closeModal }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
     const userId = localStorage.getItem('userId')
-    const [visibleReplyBoxId, setVisibleReplyBoxId] = useState(null);
     const [replyContent, setReplyContent] = useState('');
 
     useEffect(() => {
@@ -56,9 +54,6 @@ function CommentsList({ activityId, refresh, toggleRefresh }) {
             return commentDate.toLocaleDateString();
         }
     };
-
-
-    const handleShowMore = () => { setVisibleComments(prev => prev + 3); };
 
     const handleCommentLike = async (commentId) => {
         const userId = localStorage.getItem('userId');
@@ -188,38 +183,36 @@ function CommentsList({ activityId, refresh, toggleRefresh }) {
                 comment._id === commentId ? response.data : comment
             ));
 
-            setVisibleReplyBoxId(null);
             setReplyContent('');
         } catch (error) {
             console.error('Error posting reply:', error);
         }
     };
 
-    const openReplyBox = (commentId) => {
-        setVisibleReplyBoxId(commentId);
-        setReplyContent('');
-    };
-
     return (
       <div className="comments mt-4">
-          {comments.slice(0, visibleComments).map(comment => (
+          {comments.slice(0, 3).map(comment => (
               <CommentItem
+                  activityId={activityId}
+                  refresh={refresh}
+                  toggleRefresh={toggleRefresh}
                   comment={comment}
                   handleCommentLike={handleCommentLike}
                   handleCommentUnlike={handleCommentUnlike}
                   handleReplyLike={handleReplyLike}
                   handleReplyUnlike={handleReplyUnlike}
-                  openReplyBox={openReplyBox}
-                  visibleReplyBoxId={visibleReplyBoxId}
                   submitReply={submitReply}
                   replyContent={replyContent}
                   setReplyContent={setReplyContent}
                   formatTimestamp={formatTimestamp}
+                  isModalOpen={isModalOpen}
+                  openModal={openModal}
+                  closeModal={closeModal}
               />
           ))}
-          {comments.length > visibleComments && (
+          {comments.length > 3 && (
               <button
-                  onClick={handleShowMore}
+                  onClick={openModal}
                   className="text-primary text-decoration-none"
                   style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
               >
