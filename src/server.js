@@ -617,6 +617,7 @@ app.delete('/api/activities/:activityId/comment/:commentId', async (req, res) =>
   }
 });
 
+//Get's following recommendations for user with name {username}
 app.get('/api/recommendations/:username', async (req, res) => {
   try {
     const username = req.params.username;
