@@ -38,14 +38,6 @@ function Shows() {
     };
 
     useEffect(() => {
-        console.log(selectedGenres);
-    }, [selectedGenres]);
-
-    useEffect(() => {
-        console.log(selectedGenres);
-    }, [selectedGenres]);
-
-    useEffect(() => {
         axios.get(`${apiUrl}/api/following/shows/${userId}`)
             .then(response => {
                 let dataMap = new Map(response.data.map(item => {
@@ -64,14 +56,17 @@ function Shows() {
     const handleSearch = query => {
         axios.get(searchApiUrl(query))
             .then(response => {
-                const searchedShows = response.data.results.map(show => ({
-                    id: show.id,
-                    name: show.name,
-                    image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
-                    series_id: show.id,
-                    users: recShows.has(show.id.toString()) ? recShows.get(show.id.toString()).users : []
-
-                }));
+                const searchedShows = response.data.results.map(show => {
+                
+                    return {
+                        id: show.id,
+                        name: show.name,
+                        image: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : defaultImage,
+                        series_id: show.id,
+                        genre_ids: show.genre_ids,
+                        users: recShows.has(show.id.toString()) ? recShows.get(show.id.toString()).users : []
+                    };
+                });                
                 setShows(searchedShows);
             })
             .catch(error => {
@@ -109,7 +104,10 @@ function Shows() {
                             <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
                                 <ShowSearch onSearch={setSearchTerm} addGenre={addGenre} selectedGenres={selectedGenres} />
                                 <div className="row">
-                                    {shows.map((show, index) => (
+                                    {shows.filter(show => {
+                                        // Check if any of the show's genre IDs is included in the selectedGenres
+                                        return selectedGenres.length === 0 || show.genre_ids.some(genreId => selectedGenres.includes(genreId));
+                                    }).map((show, index) => (
                                         <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} users={show.users} />
                                     ))}
                                 </div>
