@@ -193,21 +193,24 @@ function ShowInfo() {
                                                         </li>
                                                     </ul>
                                                 </div>
-
                                             </div>
                                         </div>
-                                        <div className="py-3 px-lg-3 col-9">
-                                            {show?.overview}
+                                        <div className="py-3 px-lg-3 col-9 d-flex flex-column justify-content-between">
+                                            <div>{show?.overview}</div>
+                                            <div>
+                                                <h6 className="fw-bold text-body" >Status: {show?.status}</h6>
+                                                <a className="align-self: flex-end" href={show?.homepage} target="_blank" rel="noopener noreferrer">{show?.homepage}</a>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="row border-top mt-3" >
                                         <div className="p-3">
                                             <div className="bg-glass rounded-4 overflow-hidden shadow-sm">
-                                                <h6 className="fw-bold text-body p-3 mb-0">Created By</h6>
-                                                <div className="d-flex">
+                                                <h5 className="fw-bold text-body p-3 mb-0 d-flex justify-content-center">Created By</h5>
+                                                <div className="d-flex justify-content-center">
                                                     {show && show.created_by && show.created_by.map(creator =>
                                                         <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow ms-3 mb-3 me-3 d-flex">
-                                                            <img src = {`https://image.tmdb.org/t/p/w92/${creator.profile_path}`} alt = "/default_profile.jpg"/>
+                                                            <img src={`https://image.tmdb.org/t/p/w92/${creator.profile_path}`} alt="/default_profile.jpg" />
                                                             <h6 className="fw-bold text-body p-3 mb-0">{creator.name} </h6>
                                                         </div>)}
                                                 </div>
@@ -217,12 +220,11 @@ function ShowInfo() {
                                     <div className="row border-top mt-3" >
                                         <div className="p-3">
                                             <div className="bg-glass rounded-4 overflow-hidden shadow-sm">
-                                                <h6 className="fw-bold text-body p-3 mb-0">Networks</h6>
-                                                <div className="d-flex">
+                                                <h5 className="fw-bold text-body p-3 mb-0 d-flex justify-content-center">Networks</h5>
+                                                <div className="d-flex justify-content-center">
                                                     {show && show.networks && show.networks.map(network =>
-                                                        <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow ms-3 mb-3 me-3 d-flex">
-                                                            <img src = {`https://image.tmdb.org/t/p/w92/${network.logo_path}`} alt = "/default_profile.jpg"/>
-                                                            <h6 className="fw-bold text-body p-3 mb-0">{network.name} </h6>
+                                                        <div className=" ms-3 mb-3 me-3 d-flex">
+                                                            <img src={`https://image.tmdb.org/t/p/w92/${network.logo_path}`} alt="/default_profile.jpg" />
                                                         </div>)}
                                                 </div>
                                             </div>

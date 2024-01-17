@@ -87,7 +87,7 @@ function Shows() {
                     <div className="container">
                         <div className="row position-relative">
                             <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
-                                <ShowSearch onSearch={setSearchTerm} />
+                                <ShowSearch onSearch={setSearchTerm}/>
                                 <div className="row">
                                     {shows.map((show, index) => (
                                         <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} users={show.users} />
