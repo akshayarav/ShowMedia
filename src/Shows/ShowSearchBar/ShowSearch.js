@@ -1,9 +1,26 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 
-function ShowSearch({ onSearch }) {
+function ShowSearch({ onSearch, addGenre, selectedGenres }) {
     const tmdbApiKey = process.env.REACT_APP_API_KEY
     const [genres, setGenres] = useState([])
+    const dropdownMenuRef = useRef(null);
+
+
+    const handleDropdownClick = (e) => {
+        // Check if the click is not on a checkbox
+        if (e.target.type !== 'checkbox') {
+            e.stopPropagation();
+        }
+    };
+
+    useEffect(() => {
+        const dropdownElement = dropdownMenuRef.current;
+        dropdownElement.addEventListener('click', handleDropdownClick);
+
+        return () => dropdownElement.removeEventListener('click', handleDropdownClick);
+    }, []);
+
 
 
     useEffect(() => {
@@ -24,11 +41,10 @@ function ShowSearch({ onSearch }) {
             const fetchedGenres = await fetchGenres();
             setGenres(fetchedGenres);
         };
-    
-        loadGenres();
-    }, []); 
 
-    console.log(genres)
+        loadGenres();
+    }, []);
+
     return (
         <div className="row">
             <div className="col-10">
@@ -47,18 +63,23 @@ function ShowSearch({ onSearch }) {
                     <div className="dropdown flex-grow-1">
                         <Button variant="primary" type="submit" className="btn btn-primary" style={{ width: '100%', height: 'auto' }} data-bs-toggle="dropdown" aria-expanded="false">
                             <div className="d-flex align-items-center justify-content-center">
-                                Genre
+                                Genres
                                 <span className="material-icons md-20">expand_more</span>
                             </div>
                         </Button>
-                        <ul className="dropdown-menu fs-13 dropdown-menu-end" aria-labelledby="dropdownMenuButton9" style={{ position: 'relative', zIndex: 1000 }}>
+                        <ul ref={dropdownMenuRef} className="dropdown-menu fs-13 dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
                             {genres?.map(genre => (
-                                <li key={genre.id}>
-                                    <button className="dropdown-item text-muted z-top">
-                                        <span className="material-icons md-13 me-1">sell</span>
+                                <label className="dropdown-item text-muted z-top">
+                                    <li key={genre.id}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedGenres?.includes(genre.id)}
+                                            onChange={() => addGenre(genre.id)}
+                                            className="me-2"
+                                        />
                                         {genre.name}
-                                    </button>
-                                </li>
+                                    </li>
+                                </label>
                             ))}
                         </ul>
                     </div>

@@ -25,6 +25,25 @@ function Shows() {
 
     const apiUrl = process.env.REACT_APP_API_URL
 
+    const [selectedGenres, setSelectedGenres] = useState([]);
+
+    const addGenre = (genreId) => {
+        setSelectedGenres(prevSelectedGenres => {
+            if (prevSelectedGenres.includes(genreId)) {
+                return prevSelectedGenres.filter(id => id !== genreId);
+            } else {
+                return [...prevSelectedGenres, genreId];
+            }
+        });
+    };
+
+    useEffect(() => {
+        console.log(selectedGenres);
+    }, [selectedGenres]);
+
+    useEffect(() => {
+        console.log(selectedGenres);
+    }, [selectedGenres]);
 
     useEffect(() => {
         axios.get(`${apiUrl}/api/following/shows/${userId}`)
@@ -79,6 +98,7 @@ function Shows() {
         </div>)
     }
 
+
     if (searchTerm) {
         return (
             <div className="bg-brown-gradient">
@@ -87,7 +107,7 @@ function Shows() {
                     <div className="container">
                         <div className="row position-relative">
                             <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
-                                <ShowSearch onSearch={setSearchTerm}/>
+                                <ShowSearch onSearch={setSearchTerm} addGenre={addGenre} selectedGenres={selectedGenres} />
                                 <div className="row">
                                     {shows.map((show, index) => (
                                         <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} users={show.users} />
@@ -109,9 +129,9 @@ function Shows() {
                 <div className="container">
                     <div className="row position-relative">
                         <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
-                            <ShowSearch onSearch={setSearchTerm} />
-                            {recShows && recShows.size > 0 && <FollowerRecShows recShows = {recShows}/>}
-                            <PopularShows recShows = {recShows}/>
+                            <ShowSearch onSearch={setSearchTerm} addGenre={addGenre} selectedGenres={selectedGenres} />
+                            {recShows && recShows.size > 0 && <FollowerRecShows recShows={recShows} />}
+                            <PopularShows recShows={recShows} />
                         </div>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>
