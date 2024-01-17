@@ -32,6 +32,7 @@ function ShowInfo() {
     const toggleShowPlanningModal = () => setShowPlanningModal(!showPlanningModal);
     const toggleShowDroppedModal = () => setShowDroppedModal(!showDroppedModal);
 
+    console.log(show)
 
 
     useEffect(() => {
@@ -69,7 +70,7 @@ function ShowInfo() {
         } finally {
             setIsLoading(false); // End loading
         }
-    
+
     }
 
     useEffect(() => {
@@ -141,7 +142,7 @@ function ShowInfo() {
                                 </div>
 
                                 <div className="container mt-3">
-                                    <div className="row bg-glass p-3 feed-item rounded-4 shadow-sm">
+                                    <div className="row bg-glass p-3 feed-item rounded-4 shadow-sm z-top">
                                         <div className="col-3">
                                             <img src={`https://image.tmdb.org/t/p/w500${show?.poster_path}`}
                                                 style={{ maxWidth: '100%', height: 'auto' }} />
@@ -153,9 +154,9 @@ function ShowInfo() {
                                                             <span className="material-icons md-20">expand_more</span>
                                                         </div>
                                                     </Button>
-                                                    <ul className="dropdown-menu fs-13 dropdown-menu-end" aria-labelledby="dropdownMenuButton7">
+                                                    <ul className="dropdown-menu fs-13 dropdown-menu-end" aria-labelledby="dropdownMenuButton7" style={{ position: 'relative', zIndex: 1000 }}>
                                                         <li>
-                                                            <button onClick={toggleShowCompletedModal} className="dropdown-item text-muted" htmlFor="btncheck1">
+                                                            <button onClick={toggleShowCompletedModal} className="dropdown-item text-muted z-top" htmlFor="btncheck1">
                                                                 <span className="material-icons md-13 me-1">add_task</span>
                                                                 Completed
                                                             </button>
@@ -163,7 +164,33 @@ function ShowInfo() {
                                                                 <ShowModal closeModal={toggleShowCompletedModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show?.poster_path}`} series_id={show.id} seasons={seasons} users={show.users} status={"Completed"} />
                                                             )}
                                                         </li>
-
+                                                        <li>
+                                                            <button onClick={toggleShowWatchingModal} className="dropdown-item text-muted z-top" htmlFor="btncheck2">
+                                                                <span className="material-icons md-13 me-1">theaters</span>
+                                                                Watching
+                                                            </button>
+                                                            {!isLoading && show && Array.isArray(show.users) && showWatchingModal && (
+                                                                <ShowModal closeModal={toggleShowWatchingModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show?.poster_path}`} series_id={show.id} seasons={seasons} users={show.users} status={"Watching"} />
+                                                            )}
+                                                        </li>
+                                                        <li>
+                                                            <button onClick={toggleShowPlanningModal} className="dropdown-item text-muted z-top" htmlFor="btncheck2">
+                                                                <span className="material-icons md-13 me-1">date_range</span>
+                                                                Planning
+                                                            </button>
+                                                            {!isLoading && show && Array.isArray(show.users) && showPlanningModal && (
+                                                                <ShowModal closeModal={toggleShowPlanningModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show?.poster_path}`} series_id={show.id} seasons={seasons} users={show.users} status={"Planning"} />
+                                                            )}
+                                                        </li>
+                                                        <li>
+                                                            <button onClick={toggleShowDroppedModal} className="dropdown-item text-muted z-top" htmlFor="btncheck2">
+                                                                <span className="material-icons md-13 me-1">theaters</span>
+                                                                Dropped
+                                                            </button>
+                                                            {!isLoading && show && Array.isArray(show.users) && showDroppedModal && (
+                                                                <ShowModal closeModal={toggleShowDroppedModal} showName={show.name} showImg={`https://image.tmdb.org/t/p/w500${show?.poster_path}`} series_id={show.id} seasons={seasons} users={show.users} status={"Dropped"} />
+                                                            )}
+                                                        </li>
                                                     </ul>
                                                 </div>
 
@@ -173,8 +200,22 @@ function ShowInfo() {
                                             {show?.overview}
                                         </div>
                                     </div>
-                                    <div className="row border-top mt-3">
-                                        <div className="p-3 scrollable-div">
+                                    <div className="row border-top mt-3" >
+                                        <div className="p-3">
+                                            <div className="bg-glass rounded-4 overflow-hidden shadow-sm">
+                                                <h6 className="fw-bold text-body p-3 mb-0">Created By</h6>
+                                                <div className="d-flex">
+                                                    {show && show.created_by && show.created_by.map(creator =>
+                                                        <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow ms-3 mb-3 me-3 d-flex">
+                                                            <img src = {`https://image.tmdb.org/t/p/w92/${creator.profile_path}`} alt = "/default_profile.jpg"/>
+                                                            <h6 className="fw-bold text-body p-3 mb-0">{creator.name} </h6>
+                                                        </div>)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row border-top mt-3" >
+                                        <div className="p-3 scrollable-div" >
                                             <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
                                                 {show && show.users && show.users.length > 0 &&
                                                     <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>}

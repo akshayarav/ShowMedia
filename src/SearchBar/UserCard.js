@@ -55,7 +55,7 @@ function UserCard({ other_user: initialOtherUser, toggleRefresh, username }) {
     }
 
     return (
-        <div className="border-bottom">
+        <div className="border-bottom z-bottom">
             <div className="user-card p-3  d-flex text-dark account-item position-relative">
                 <Link to={`/profile/${otherUser.username}`} className="stretched-link" onClick={handleLinkClick} />
                 <img src={otherUser.profilePicture} className="img-fluid rounded-circle me-3" alt="profile-img" />
