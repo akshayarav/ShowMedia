@@ -111,6 +111,7 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+//register a new user via the user's email provided in {req.body.email}
 app.post('/register', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -144,6 +145,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
+//user login via {req.body.email} and checks for correct {req.body.password}
 app.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -169,11 +171,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.get('/verify', async (req, res) => {
-  const { token } = req.query;
-  // Find the user with this token and set their account to verified
-});
-
+// Returns the userData queries via {username}
 app.get('/api/user/:username', async (req, res) => {
   try {
     const username = req.params.username;
@@ -189,6 +187,7 @@ app.get('/api/user/:username', async (req, res) => {
   }
 });
 
+//Searches for matching users via the query {req.query.q}
 app.get('/api/search/users', async (req, res) => {
   try {
     const searchQuery = req.query.q || '';
@@ -201,6 +200,7 @@ app.get('/api/search/users', async (req, res) => {
   }
 });
 
+//Posts edited information for user {username}, altering username, bio, first, and last names via req params
 app.post('/edit/:username', async (req, res) => {
   const { username } = req.params;
   const { bio, first, last } = req.body;
@@ -219,6 +219,7 @@ app.post('/edit/:username', async (req, res) => {
   }
 });
 
+//Adds user {username} to following list of user {req.body.userId}
 app.post('/follow/:username', async (req, res) => {
   const { username } = req.params;
   const { userId } = req.body;
@@ -250,6 +251,7 @@ app.post('/follow/:username', async (req, res) => {
   }
 });
 
+//Gets the following list of user {userId}
 app.get('/following/:userId', async (req, res) => {
   const { userId } = req.params;
 
@@ -265,6 +267,7 @@ app.get('/following/:userId', async (req, res) => {
   }
 });
 
+//Removes user {username} from following list of user {userId}
 app.post('/unfollow/:username', async (req, res) => {
   const { username } = req.params;
   const { userId } = req.body;
@@ -295,6 +298,7 @@ app.post('/unfollow/:username', async (req, res) => {
   }
 });
 
+//Gets the followers of user {userId}
 app.get('/followers/:userId', async (req, res) => {
   const { userId } = req.params;
 
@@ -310,6 +314,7 @@ app.get('/followers/:userId', async (req, res) => {
   }
 });
 
+//Creates new season rating for user with id {userId}
 app.post('/rateSeason', async (req, res) => {
   try {
     const { userId, showId, seasonNumber, rating, comment, status, episodes } = req.body;
@@ -356,6 +361,7 @@ app.post('/rateSeason', async (req, res) => {
   }
 });
 
+//Deletes SeasonRating for show {showId} for user with id {userId}
 app.post('/delSeason', async (req, res) => {
   try {
     const { userId, showId, seasonNumber } = req.body;
@@ -385,6 +391,7 @@ app.post('/delSeason', async (req, res) => {
   }
 });
 
+//Gets all the activities of user with id {userId}, sorted chronologically
 app.get('/api/activities/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -415,6 +422,7 @@ app.get('/api/activities/:userId', async (req, res) => {
   }
 });
 
+//Gets all the seasonRatings of user with id {userId}
 app.get('/api/seasonRatings/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -429,6 +437,7 @@ app.get('/api/seasonRatings/:userId', async (req, res) => {
   }
 });
 
+//Gets the activity feed of all the users that user with id {userId} follows
 app.get('/api/followingFeed/:userId', async (req, res) => {
   const userId = req.params.userId;
 
@@ -457,6 +466,7 @@ app.get('/api/followingFeed/:userId', async (req, res) => {
   }
 });
 
+//Likes activity with id {activityId} by user with id {req.body.userId}
 app.post('/api/activities/:activityId/like', async (req, res) => {
   try {
     const activityId = req.params.activityId;
@@ -481,6 +491,7 @@ app.post('/api/activities/:activityId/like', async (req, res) => {
   }
 });
 
+//Unlikes activity with id {activityId} by user with Id {userId}
 app.post('/api/activities/:activityId/unlike', async (req, res) => {
   try {
     const activityId = req.params.activityId;
