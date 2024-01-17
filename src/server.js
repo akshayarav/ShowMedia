@@ -719,23 +719,7 @@ app.post('/api/activities/comment/:commentId/unlike', async (req, res) => {
   }
 });
 
-
-app.get('/api/get/activity/:activityId', async (req, res) => {
-  try {
-    const activityId = req.params.activityId;
-
-    const activity = await Activity.findById(activityId);
-    if (!activity) {
-      return res.status(404).send('Activity not found');
-    }
-
-    res.status(200).json(activity.toObject());
-  } catch (error) {
-    console.error('Error fetching activity:', error);
-    res.status(500).send('Internal Server Error');
-  }
-})
-
+//Get the shows seen by following list of user with id {userId} 
 app.get('/api/following/shows/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
