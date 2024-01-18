@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import CommentItem from './CommentItem';
 
-function CommentsList({ activity, activityId, refresh, toggleRefresh, isModalOpen, openModal, closeModal }) {
+function CommentsList({ image, activityId, refresh, toggleRefresh, isModalOpen, openModal, closeModal }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
     const userId = localStorage.getItem('userId')
@@ -29,7 +29,7 @@ function CommentsList({ activity, activityId, refresh, toggleRefresh, isModalOpe
         if (activityId) {
             fetchComments();
         }
-    }, [activityId, refresh]);
+    }, [activityId, refresh, apiUrl, userId]);
 
       const formatTimestamp = (timestamp) => {
         const now = new Date();
@@ -190,37 +190,39 @@ function CommentsList({ activity, activityId, refresh, toggleRefresh, isModalOpe
     };
 
     return (
-      <div className="comments mt-4">
-          {comments.slice(0, 3).map(comment => (
-              <CommentItem
-                  activityId={activityId}
-                  refresh={refresh}
-                  toggleRefresh={toggleRefresh}
-                  comment={comment}
-                  handleCommentLike={handleCommentLike}
-                  handleCommentUnlike={handleCommentUnlike}
-                  handleReplyLike={handleReplyLike}
-                  handleReplyUnlike={handleReplyUnlike}
-                  submitReply={submitReply}
-                  replyContent={replyContent}
-                  setReplyContent={setReplyContent}
-                  formatTimestamp={formatTimestamp}
-                  isModalOpen={isModalOpen}
-                  openModal={openModal}
-                  closeModal={closeModal}
-              />
-          ))}
-          {comments.length > 3 && (
-              <button
-                  onClick={openModal}
-                  className="text-primary text-decoration-none"
-                  style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
-              >
-                  Show More
-              </button>
-          )}
-      </div>
-  );
+        <div className="comments mt-4">
+            {comments.slice(0, 3).map(comment => (
+                <CommentItem
+                    key={comment._id}
+                    image={image}
+                    activityId={activityId}
+                    refresh={refresh}
+                    toggleRefresh={toggleRefresh}
+                    comment={comment}
+                    handleCommentLike={handleCommentLike}
+                    handleCommentUnlike={handleCommentUnlike}
+                    handleReplyLike={handleReplyLike}
+                    handleReplyUnlike={handleReplyUnlike}
+                    submitReply={submitReply}
+                    replyContent={replyContent}
+                    setReplyContent={setReplyContent}
+                    formatTimestamp={formatTimestamp}
+                    isModalOpen={isModalOpen}
+                    openModal={openModal}
+                    closeModal={closeModal}
+                />
+            ))}
+            {comments.length > 3 && (
+                <button
+                    onClick={openModal}
+                    className="text-primary text-decoration-none"
+                    style={{ background: 'none', border: 'none', padding: '3px', cursor: 'pointer' }}
+                >
+                    Show More
+                </button>
+            )}
+        </div>
+    );
 }
 
 export default CommentsList;

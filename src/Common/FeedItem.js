@@ -18,8 +18,15 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
     const [likeCount, setLikeCount] = useState(activity.likes.length);
     const [isModalOpen, setModalOpen] = useState(false);
 
-    const openModal = () => setModalOpen(true);
-    const closeModal = () => setModalOpen(false);
+    const openModal = () => {
+        console.log("openModal function called");
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        console.log("closeModal function called");
+        setModalOpen(false);
+    };
 
     const handleLike = async () => {
         const userId = localStorage.getItem('userId');
@@ -120,7 +127,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                             />
                         </div>
                         <CommentsList
-                            activity={activity}
+                            image={image}
                             activityId={activity._id}
                             refresh={refresh}
                             toggleRefresh={toggleRefresh}
