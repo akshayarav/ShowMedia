@@ -5,7 +5,7 @@ import Shows from "./Shows/shows";
 import Profile from './Profile/profile';
 import AuthContext from './AuthContext';
 import LandingPage from './LandingPage/LandingPage';
-import ShowInfo from './ShowInfo/ShowInfo';
+import ShowInfoMain from './ShowInfoMain/ShowInfoMain';
 
 function App() {
   const { isAuthenticated, isLoading } = useContext(AuthContext);
@@ -21,7 +21,7 @@ function App() {
           <Route path="/feed" element={<Feed />} />
           <Route path="/shows" element={<Shows />} />
           <Route path="/profile/:username" element={<Profile />} />
-          <Route path="/shows/:showId" element={<ShowInfo />} />
+          <Route path="/shows/:showId" element={<ShowInfoMain />} />
           <Route path="/" element={<Feed />} />
         </Routes>
       </Router>

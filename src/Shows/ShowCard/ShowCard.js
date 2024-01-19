@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Axios from "axios";
 import ShowModal from "./ShowModal";
 import { Link } from "react-router-dom";
+import Main from "../../ShowInfoMain/ShowInfo/ShowInfo";
 
 function ShowCard({ name, image, series_id, users }) {
     const [showModal, setShowModal] = useState(false);

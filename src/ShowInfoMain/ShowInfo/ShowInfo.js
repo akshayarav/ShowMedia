@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
-import Sidebar from "../Sidebar/sidebar";
+import Sidebar from "../../Sidebar/sidebar";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import MobileBar from "../MobileBar/MobileBar";
-import UserCard from "../SearchBar/UserCard";
+import MobileBar from "../../MobileBar/MobileBar";
+import UserCard from "../../SearchBar/UserCard";
 import { Button } from "react-bootstrap";
-import ShowModal from "../Shows/ShowCard/ShowModal";
+import ShowModal from "../../Shows/ShowCard/ShowModal";
 
 function ShowInfo() {
     const { showId } = useParams();
@@ -123,9 +123,8 @@ function ShowInfo() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <div className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
+                        <div className="col">
                             <div className="main-content">
-                                <a href="/shows" class="material-icons text-white text-decoration-none mb-4 me-5">arrow_back</a>
                                 <h2 className="fw-bold text-white mb-1">{show?.name}</h2>
                                 <div className="pb-4 m-none">
                                     <div
@@ -243,7 +242,6 @@ function ShowInfo() {
 
                             </div>
                         </div>
-                        <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>
                 </div>
             </div>
