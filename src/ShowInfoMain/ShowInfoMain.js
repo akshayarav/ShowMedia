@@ -1,10 +1,13 @@
 import { useState } from "react";
 import ShowInfo from "./ShowInfo/ShowInfo";
 import Sidebar from "../Sidebar/sidebar";
+import Reviews from "./Reviews/Reviews";
+import { useParams } from "react-router-dom";
 
 function ShowInfoMain() {
     const [activeTab, setActiveTab] = useState('info')
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false)
+    const showId = useParams().showId
 
     return (
         <div className="bg-brown-gradient">
@@ -41,6 +44,7 @@ function ShowInfoMain() {
                                     <ShowInfo />
                                 </div>
                                 <div className={`tab-pane fade ${activeTab === 'reviews' ? 'show active' : ''}`} id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
+                                    <Reviews showId={showId}/>
                                 </div>
                             </div>
                         </main>

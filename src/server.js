@@ -25,6 +25,14 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+/*
+=====================================================================================================================================================================
+
+DATABASES
+
+=====================================================================================================================================================================
+*/
+
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -34,6 +42,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.error('MongoDB connection error:', error);
 });
 
+//Database for users
 const userSchema = new mongoose.Schema({
   email: String,
   username: String,
@@ -60,6 +69,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+//Database for comments under activities
 const commentSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   comment: String,
@@ -74,6 +84,7 @@ const commentSchema = new mongoose.Schema({
 
 const Comment = mongoose.model('Comment', commentSchema);
 
+//Database for a user's ratings that appear on their profile
 const seasonRatingSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   show: Number,
@@ -88,6 +99,7 @@ const seasonRatingSchema = new mongoose.Schema({
 
 const SeasonRating = mongoose.model('SeasonRating', seasonRatingSchema);
 
+//Database for activites
 const activitySchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   type: String,
@@ -106,9 +118,55 @@ const activitySchema = new mongoose.Schema({
 
 const Activity = mongoose.model('Activity', activitySchema);
 
+//Database for official show reviews
+const reviewSchema = new mongoose.Schema({
+  showId: Number, 
+  score: Number,
+  text: String,
+  profileImg: String,
+  username: String, // Alternatively, reference the User model if you want to link to user accounts
+  // Optionally, add timestamp fields
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const Review = mongoose.model('Review', reviewSchema);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+
+
+/*
+=====================================================================================================================================================================
+
+ENDPOINTS
+
+=====================================================================================================================================================================
+*/
+
+//Add a new review
+app.post('/api/reviews', (req, res) => {
+  const newReview = new Review({
+    showId: req.body.showId,
+    score: req.body.score,
+    text: req.body.text,
+    profileImg: req.body.profileImg,
+    username: req.body.username
+  });
+
+  newReview.save()
+    .then(review => res.status(201).json(review))
+    .catch(err => res.status(500).json({ error: err.message }));
+});
+
+//Get all the reviews for show with id {showId}
+app.get('/api/reviews/:showId', (req, res) => {
+  Review.find({ showId: req.params.showId })
+    .then(reviews => res.json(reviews))
+    .catch(err => res.status(500).json({ error: err.message }));
 });
 
 //register a new user via the user's email provided in {req.body.email}
