@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Modal } from 'react-bootstrap';
 
 const CommentModal = ({
   image,
@@ -96,7 +97,7 @@ const CommentModal = ({
   };
 
   return (
-    <div className="modal fade" id="commentModal" tabIndex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <Modal show={true} onHide={closeModal} centered className="modal fade">
         <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content rounded-4 overflow-hidden border-0">
                 <div className="modal-header d-none">
@@ -160,7 +161,7 @@ const CommentModal = ({
                 </div>
             </div>
         </div>
-    </div>
+    </Modal>
 );
 }
 

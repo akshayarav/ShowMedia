@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import CommentsList from './CommentsList';
+import CommentModal from './CommentModal';
 
 function FeedItem({ activity, refresh, toggleRefresh }) {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -105,6 +106,14 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                                             className="text-muted text-decoration-none d-flex align-items-start fw-light"><span
                                                 className="material-icons md-20 me-2">chat_bubble_outline</span>
                                         </div>
+                                        {openModal && <CommentModal 
+                                        image={image}
+                                        activityId={activity._id}
+                                        refresh={refresh}
+                                        toggleRefresh={toggleRefresh}
+                                        isModalOpen={isModalOpen}
+                                        openModal={openModal}
+                                        closeModal={closeModal}/>}
                                     </div>
                                     <div>
                                         <a href="#"
