@@ -106,8 +106,9 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                                             className="text-muted text-decoration-none d-flex align-items-start fw-light"><span
                                                 className="material-icons md-20 me-2">chat_bubble_outline</span>
                                         </div>
-                                        {openModal && <CommentModal 
+                                        {openModal && <CommentModal
                                         image={image}
+                                        activity={activity}
                                         activityId={activity._id}
                                         refresh={refresh}
                                         toggleRefresh={toggleRefresh}
@@ -137,6 +138,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                         </div>
                         <CommentsList
                             image={image}
+                            activity={activity}
                             activityId={activity._id}
                             refresh={refresh}
                             toggleRefresh={toggleRefresh}

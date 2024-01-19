@@ -3,6 +3,7 @@ import CommentModal from './CommentModal';
 
 function CommentItem({
   image,
+  activity,
   activityId,
   refresh,
   toggleRefresh,
@@ -57,6 +58,7 @@ function CommentItem({
             </div>
             <CommentModal
                 image={image}
+                activity={activity}
                 activityId={activityId}
                 refresh={refresh}
                 toggleRefresh={toggleRefresh}

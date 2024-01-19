@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import CommentItem from './CommentItem';
 
-function CommentsList({ image, activityId, refresh, toggleRefresh, isModalOpen, openModal, closeModal }) {
+function CommentsList({ image, activity, activityId, refresh, toggleRefresh, isModalOpen, openModal, closeModal }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
     const userId = localStorage.getItem('userId')
@@ -31,7 +31,7 @@ function CommentsList({ image, activityId, refresh, toggleRefresh, isModalOpen, 
         }
     }, [activityId, refresh, apiUrl, userId]);
 
-      const formatTimestamp = (timestamp) => {
+    const formatTimestamp = (timestamp) => {
         const now = new Date();
         const commentDate = new Date(timestamp);
         const diffInSeconds = Math.floor((now - commentDate) / 1000);
@@ -195,6 +195,7 @@ function CommentsList({ image, activityId, refresh, toggleRefresh, isModalOpen, 
                 <CommentItem
                     key={comment._id}
                     image={image}
+                    activity={activity}
                     activityId={activityId}
                     refresh={refresh}
                     toggleRefresh={toggleRefresh}
