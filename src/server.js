@@ -124,10 +124,11 @@ const reviewSchema = new mongoose.Schema({
   score: Number,
   text: String,
   profileImg: String,
-  username: String, // Alternatively, reference the User model if you want to link to user accounts
-  // Optionally, add timestamp fields
+  username: String,
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  updatedAt: { type: Date, default: Date.now },
+  upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 const Review = mongoose.model('Review', reviewSchema);
@@ -207,14 +208,70 @@ app.delete('/api/reviews/:reviewId', (req, res) => {
     .catch(err => res.status(500).json({ error: err.message }));
 });
 
-
-
 //Get all the reviews for show with id {showId}
 app.get('/api/reviews/:showId', (req, res) => {
   Review.find({ showId: req.params.showId })
     .then(reviews => res.json(reviews))
     .catch(err => res.status(500).json({ error: err.message }));
 });
+
+// Endpoint to upvote a review
+app.post('/api/reviews/:reviewId/upvote', (req, res) => {
+  const reviewId = req.params.reviewId;
+  const userId = req.body.userId; // The ID of the user who is upvoting
+
+  Review.findById(reviewId)
+    .then(review => {
+      if (!review) {
+        return res.status(404).json({ message: 'Review not found' });
+      }
+
+      // Add userId to upvotes if not already there, and remove from downvotes if present
+      const alreadyUpvoted = review.upvotes.includes(userId);
+      const alreadyDownvoted = review.downvotes.includes(userId);
+      if (!alreadyUpvoted) {
+        review.upvotes.push(userId);
+      }
+      if (alreadyDownvoted) {
+        review.downvotes = review.downvotes.filter(id => id !== userId);
+      }
+
+      review.save()
+        .then(() => res.json({ message: 'Review upvoted successfully' }))
+        .catch(err => res.status(500).json({ error: err.message }));
+    })
+    .catch(err => res.status(500).json({ error: err.message }));
+});
+
+// Endpoint to downvote a review
+app.post('/api/reviews/:reviewId/downvote', (req, res) => {
+  const reviewId = req.params.reviewId;
+  const userId = req.body.userId; // The ID of the user who is downvoting
+
+  Review.findById(reviewId)
+    .then(review => {
+      if (!review) {
+        return res.status(404).json({ message: 'Review not found' });
+      }
+
+      // Add userId to downvotes if not already there, and remove from upvotes if present
+      const alreadyDownvoted = review.downvotes.includes(userId);
+      const alreadyUpvoted = review.upvotes.includes(userId);
+      if (!alreadyDownvoted) {
+        review.downvotes.push(userId);
+      }
+      if (alreadyUpvoted) {
+        review.upvotes = review.upvotes.filter(id => id.toString() !== userId);
+      }
+
+      review.save()
+        .then(() => res.json({ message: 'Review downvoted successfully' }))
+        .catch(err => res.status(500).json({ error: err.message }));
+    })
+    .catch(err => res.status(500).json({ error: err.message }));
+});
+
+
 
 //register a new user via the user's email provided in {req.body.email}
 app.post('/register', async (req, res) => {
