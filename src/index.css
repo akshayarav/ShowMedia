@@ -1308,3 +1308,8 @@ label {
 .footer-copyright a {
     color: #99a2ab;
 }
+
+.scrollable-comments {
+    max-height: 525px;
+    overflow-y: auto;
+}

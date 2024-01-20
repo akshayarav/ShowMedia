@@ -84,7 +84,7 @@ const CommentModal = ({
   return (
     <Modal show={true} onHide={closeModal} centered className="modal fade modal-lg">
       <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content rounded-4 overflow-hidden border-0">
+        <div className="modal-content rounded-4 overflow-hidden border-0 bg-brown-gradient-color" >
           <div className="modal-header d-none">
             <h5 className="modal-title" id="exampleModalLabel2">Modal title</h5>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -117,44 +117,45 @@ const CommentModal = ({
                   </div>
                   {/* Comments Section - Dynamically generated comments go here */}
                   <div className="comments p-3">
-                    {comments.map(comment => (
-                      <div key={comment._id} className="mb-2 d-flex">
-                        <a href="#" className="text-white text-decoration-none">
-                          <img src={comment.user.profilePicture} className="img-fluid rounded-circle" alt="commenters-img" />
-                        </a>
-                        <div className="ms-2 small flex-grow-1">
-                          <div className="d-flex justify-content-between bg-glass px-3 py-2 rounded-4 mb-1 comment-box">
-                            <div>
-                              <p className="fw-500 mb-0 comment-text">{comment.user.username}</p>
-                              <span className="text-muted comment-text">{comment.comment}</span>
+                    <div className={`comments p-3 ${comments.length > 6 ? 'scrollable-comments' : ''}`}>
+                      {comments.map(comment => (
+                        <div key={comment._id} className="mb-2 d-flex">
+                          <a href="#" className="text-white text-decoration-none">
+                            <img src={comment.user.profilePicture} className="img-fluid rounded-circle" alt="commenters-img" />
+                          </a>
+                          <div className="ms-2 small flex-grow-1">
+                            <div className="d-flex justify-content-between bg-glass px-3 py-2 rounded-4 mb-1 comment-box">
+                              <div>
+                                <p className="fw-500 mb-0 comment-text">{comment.user.username}</p>
+                                <span className="text-muted comment-text">{comment.comment}</span>
+                              </div>
+                              <button
+                                onClick={() => comment.isLiked ? handleCommentUnlike(comment._id) : handleCommentLike(comment._id)}
+                                className="border-0 bg-transparent align-self-start"
+                              >
+                                <span className="material-icons" style={{ fontSize: '18px' }}>
+                                  {comment.isLiked ? 'favorite' : 'favorite_border'}
+                                </span>
+                              </button>
                             </div>
-                            <button
-                              onClick={() => comment.isLiked ? handleCommentUnlike(comment._id) : handleCommentLike(comment._id)}
-                              className="border-0 bg-transparent align-self-start"
-                            >
-                              <span className="material-icons" style={{ fontSize: '18px' }}>
-                                {comment.isLiked ? 'favorite' : 'favorite_border'}
-                              </span>
-                            </button>
-                          </div>
-                          <div className="d-flex align-items-center ms-2">
-                            <span className="text-muted">{comment.likes.length || 0} Likes</span>
-                            <span className="fs-3 text-muted material-icons mx-1">circle</span>
-                            <button
-                              className="small text-muted text-decoration-none"
-                              onClick={() => handleReplyClick(comment._id, replyContent)}
-                              style={{ background: 'none', border: 'none', padding: '0', cursor: 'pointer' }}
-                            >
-                              Reply
-                            </button>
-                            <span className="fs-3 text-muted material-icons mx-1">circle</span>
-                            <span className="small text-muted">{formatTimestamp(comment.timestamp)}</span>
+                            <div className="d-flex align-items-center ms-2">
+                              <span className="text-muted">{comment.likes.length || 0} Likes</span>
+                              <span className="fs-3 text-muted material-icons mx-1">circle</span>
+                              <button
+                                className="small text-muted text-decoration-none"
+                                onClick={() => handleReplyClick(comment._id, replyContent)}
+                                style={{ background: 'none', border: 'none', padding: '0', cursor: 'pointer' }}
+                              >
+                                Reply
+                              </button>
+                              <span className="fs-3 text-muted material-icons mx-1">circle</span>
+                              <span className="small text-muted">{formatTimestamp(comment.timestamp)}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                  {/* Comment Post Functionality */}
                   <div className="border-top p-3 mt-auto">
                     <div className="d-flex align-items-center mb-3">
                       <span className="material-icons bg-transparent border-0 text-primary pe-2 md-36">account_circle</span>
