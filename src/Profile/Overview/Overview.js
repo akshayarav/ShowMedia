@@ -101,6 +101,9 @@ function Overview() {
     const numFollowers = profileUser.followers ? profileUser.followers.length : 0;
     return (
         <div className="border-bottom pb-3">
+            {isAuthenticated &&
+                <h2 className="fw-bold text-white mt-3">My Profile</h2>
+            }
             <div className="bg-glass rounded-4 shadow-sm profile ">
                 <div className="d-flex align-items-center px-3 pt-3">
                     <img src={profileUser.profilePicture} className="img-fluid rounded-circle" alt="profile-img"></img>
@@ -132,7 +135,7 @@ function Overview() {
                                 <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
                                 <div className="d-flex">
                                     {following.map(user => (
-                                       <img key={user._id} src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
+                                        <img key={user._id} src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
                                     ))}
                                 </div>
                             </div>

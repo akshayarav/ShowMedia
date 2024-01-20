@@ -36,6 +36,30 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('username', username);
         setIsAuthenticated(true);
     };
+
+    const register = async (email, username, password, first, last) => {
+        try {
+            const response = await axios.post(`${apiUrl}/register`, {
+                email, username, password, first, last
+            });
+
+            if (response.status === 201) {
+                const { token, userId } = response.data;
+
+                // Optionally you can log the user in after registration
+                login(token, userId, username);
+
+                // You might want to return some value or state to indicate success
+                return { success: true };
+            } else {
+                // Handle non-successful responses
+                return { success: false, message: response.data.error || 'Registration failed.' };
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
+            return { success: false, message: 'Error during registration.' };
+        }
+    };
     
 
     const logout = () => {
@@ -46,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout , isLoading}}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout , isLoading, register}}>
             {children}
         </AuthContext.Provider>
     );

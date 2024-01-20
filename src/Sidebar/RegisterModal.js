@@ -13,7 +13,7 @@ function RegisterModal({ closeModal }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    const { isAuthenticated, login, logout } = useContext(AuthContext);
+    const { register } = useContext(AuthContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,37 +31,16 @@ function RegisterModal({ closeModal }) {
         else if (username.length === 0) { setError("Please enter a valid username") }
         else if (pass.length === 0) { setError("Please enter a valid password") }
         else {
-            try {
-                const response = await fetch(`${apiUrl}/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        username: username,
-                        password: pass,
-                        first: first,
-                        last: last
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (response.status === 201) {
-                    setSuccess('Account created successfully!');
-                    setTimeout(() => {
-                        login(data.token, data.userId, username);
-                        closeModal()
-                        window.location.reload();
-                    }, 1000);
-                } else {
-                    // Handle errors
-                    setError(data.error || 'Failed to create account.'); // Set error message
-                }
-            } catch (error) {
-                setError('There was an error submitting the form.');
-                console.error('There was an error submitting the form', error);
+            const result = await register(email, username, pass, first, last);
+            if (result.success) {
+                setSuccess('Account created successfully!');
+                // Optionally, close modal and refresh page
+                setTimeout(() => {
+                    closeModal();
+                    window.location.reload();
+                }, 1000);
+            } else {
+                setError(result.message);
             }
         }
 
