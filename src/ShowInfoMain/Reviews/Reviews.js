@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReviewCard from "./ReviewCard/ReviewCard";
 import axios from "axios";
+import AddReviewModal from './AddReviewModal';
 
 function Reviews({ showId }) {
     const [reviews, setReviews] = useState([]);
@@ -8,10 +9,19 @@ function Reviews({ showId }) {
     const [userReviewId, setUserReviewId] = useState(null);
     const [userReview, setUserReview] = useState(null);
     const user = JSON.parse(localStorage.getItem('user'));
-    console.log(user)
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const toggleReviewModal = () => setShowReviewModal(!showReviewModal);
     const apiUrl = process.env.REACT_APP_API_URL;
 
-    const handleAddReview = async (score, text) => {
+    const handleAddReview = async (showId, score, text) => {
+        const newReview = {
+            showId, // Assuming you want to include the showId in the review
+            score,
+            text,
+            profileImg: user.profilePicture, // User's profile image
+            username: user.username, // User's username
+        };
+        console.log(newReview)
         try {
             const newReview = {
                 showId, // Assuming you want to include the showId in the review
@@ -52,14 +62,17 @@ function Reviews({ showId }) {
         const fetchReviews = async () => {
             try {
                 const response = await axios.get(`${apiUrl}/api/reviews/${showId}`);
+                console.log(response)
                 const userReview = response.data.find(review => review.username === user.username);
                 if (userReview) {
+                    console.log("RECHED")
                     setHasReviewed(true);
                     setUserReviewId(userReview._id); // Store the ID of the user's review
                     setUserReview(userReview)
                     setReviews(response.data.filter(review => review._id !== userReviewId));
                 } else {
                     setUserReviewId(null); // Reset the userReviewId if no review is found
+                    setReviews(response.data)
                 }
             } catch (error) {
                 console.error("Error fetching reviews:", error);
@@ -69,6 +82,8 @@ function Reviews({ showId }) {
         fetchReviews();
     }, [showId, user.username]);
 
+    console.log(reviews)
+
     return (
         <div className="d-flex flex-column align-items-center">
             {hasReviewed ? (
@@ -76,10 +91,15 @@ function Reviews({ showId }) {
                     Remove My Review
                 </button>
             ) : (
-                <button type="button" className="btn btn-outline-primary btn-sm px-3 rounded-pill" onClick={() => handleAddReview(5, "Great show!")}>
+                <button type="button" className="btn btn-outline-primary btn-sm px-3 rounded-pill" onClick={toggleReviewModal}>
                     Add Review
                 </button>
             )}
+            {showReviewModal && <AddReviewModal
+                showId={showId}
+                handleAddReview={handleAddReview}
+                closeModal={toggleReviewModal}
+            />}
             {hasReviewed &&
                 <div className="mt-5 d-flex flex-column align-items-center" style={{ width: "100%" }}>
                     <h2 className="fw-bold text-white mb-1">Your Review</h2>
