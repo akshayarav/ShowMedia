@@ -18,7 +18,6 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
     const [likeCount, setLikeCount] = useState(activity.likes.length);
     const [isModalOpen, setModalOpen] = useState(false);
     const [comments, setComments] = useState([]);
-    const userId = localStorage.getItem('userId');
     const [replyContent, setReplyContent] = useState('');
 
     const openModal = () => {
@@ -280,7 +279,6 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                                         replyContent={replyContent}
                                         setReplyContent={setReplyContent}
                                         isModalOpen={isModalOpen}
-                                        openModal={openModal}
                                         closeModal={closeModal}
                                         formatTimestamp={formatTimestamp}/>}
                                     </div>

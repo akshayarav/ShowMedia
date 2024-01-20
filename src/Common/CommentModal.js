@@ -15,7 +15,6 @@ const CommentModal = ({
   replyContent,
   setReplyContent,
   isModalOpen,
-  openModal,
   closeModal,
   formatTimestamp }) => {
 
