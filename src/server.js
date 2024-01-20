@@ -120,7 +120,7 @@ const Activity = mongoose.model('Activity', activitySchema);
 
 //Database for official show reviews
 const reviewSchema = new mongoose.Schema({
-  showId: Number, 
+  showId: Number,
   score: Number,
   text: String,
   profileImg: String,
@@ -148,19 +148,66 @@ ENDPOINTS
 */
 
 //Add a new review
-app.post('/api/reviews', (req, res) => {
-  const newReview = new Review({
-    showId: req.body.showId,
-    score: req.body.score,
-    text: req.body.text,
-    profileImg: req.body.profileImg,
-    username: req.body.username
-  });
 
-  newReview.save()
-    .then(review => res.status(201).json(review))
+app.post('/api/reviews', (req, res) => {
+  const { showId, username } = req.body; // Assuming you're passing the user's ID in the request body
+
+  // First, check if the user has already reviewed this show
+  Review.findOne({ showId, username })
+    .then(existingReview => {
+      if (existingReview) {
+        // User has already reviewed this show
+        return res.status(400).json({ message: "You have already reviewed this show." });
+      } else {
+        // No existing review, create a new one
+        const newReview = new Review({
+          showId: req.body.showId,
+          userId: req.body.userId, // Save the user's ID with the review
+          score: req.body.score,
+          text: req.body.text,
+          profileImg: req.body.profileImg,
+          username: req.body.username
+        });
+
+        newReview.save()
+          .then(review => res.status(201).json(review))
+          .catch(err => res.status(500).json({ error: err.message }));
+      }
+    })
     .catch(err => res.status(500).json({ error: err.message }));
 });
+
+//Delete a review with id {reviewId} by user with username {username}
+app.delete('/api/reviews/:reviewId', (req, res) => {
+  const reviewId = req.params.reviewId;
+  const username = req.query.username;
+
+  console.log(reviewId)
+
+  // Find the review by ID
+  Review.findById(reviewId)
+    .then(review => {
+      if (!review) {
+        return res.status(404).json({ message: 'Review not found' });
+      }
+
+      // Check if the review was written by the user making the request
+      if (review.username !== username) {
+        // If usernames do not match
+        return res.status(403).json({ message: 'Unauthorized to delete this review' });
+      }
+
+      console.log(review.username)
+
+      // Delete the review
+      Review.findByIdAndDelete(reviewId)
+        .then(() => res.status(200).json({ message: 'Review deleted successfully' }))
+        .catch(err => res.status(500).json({ error: err.message }));
+    })
+    .catch(err => res.status(500).json({ error: err.message }));
+});
+
+
 
 //Get all the reviews for show with id {showId}
 app.get('/api/reviews/:showId', (req, res) => {

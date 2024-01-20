@@ -4,7 +4,10 @@ import axios from "axios";
 
 function Reviews({ showId }) {
     const [reviews, setReviews] = useState([]);
-    const user = JSON.parse(localStorage.getItem('user')); // Parse the user object from localStorage
+    const [hasReviewed, setHasReviewed] = useState(false);
+    const [userReviewId, setUserReviewId] = useState(null);
+    const [userReview, setUserReview] = useState(null);
+    const user = JSON.parse(localStorage.getItem('user'));
     const apiUrl = process.env.REACT_APP_API_URL;
 
     const handleAddReview = async (score, text) => {
@@ -24,6 +27,8 @@ function Reviews({ showId }) {
                 profileImg: user.profilePicture, // User's profile image
                 username: user.username, // User's username
             };
+            setHasReviewed(true);
+            setUserReview(newReview)
 
             const response = await axios.post(`${apiUrl}/api/reviews`, newReview);
             setReviews([...reviews, response.data]); // Append the new review to the current list
@@ -32,24 +37,55 @@ function Reviews({ showId }) {
         }
     };
 
+    const handleRemoveReview = async () => {
+        try {
+            await axios.delete(`${apiUrl}/api/reviews/${userReviewId}?username=${encodeURIComponent(user.username)}`);
+            setReviews(reviews.filter(review => review._id !== userReviewId));
+            setHasReviewed(false);
+            setUserReviewId(null); // Reset the userReviewId
+        } catch (error) {
+            console.error("Error removing review:", error);
+        }
+    };
+
+
     useEffect(() => {
         const fetchReviews = async () => {
             try {
                 const response = await axios.get(`${apiUrl}/api/reviews/${showId}`);
                 setReviews(response.data);
+                const userReview = response.data.find(review => review.username === user.username);
+                if (userReview) {
+                    setHasReviewed(true);
+                    setUserReviewId(userReview._id); // Store the ID of the user's review
+                } else {
+                    setUserReviewId(null); // Reset the userReviewId if no review is found
+                }
             } catch (error) {
                 console.error("Error fetching reviews:", error);
             }
         };
 
         fetchReviews();
-    }, [showId]);
+    }, [showId, user.username]);
 
     return (
         <div className="d-flex flex-column align-items-center">
-            <button type="button" className="btn btn-outline-primary btn-sm px-3 rounded-pill" onClick={() => handleAddReview(5, "Great show!")}>
-                Add Review
-            </button>
+            {hasReviewed ? (
+                <button type="button" className="btn btn-outline-danger btn-sm px-3 rounded-pill" onClick={handleRemoveReview}>
+                    Remove Review
+                </button>
+            ) : (
+                <button type="button" className="btn btn-outline-primary btn-sm px-3 rounded-pill" onClick={() => handleAddReview(5, "Great show!")}>
+                    Add Review
+                </button>
+            )}
+            {userReview &&
+                <div>
+                    <h2 className="fw-bold text-white mb-1">Your Review</h2>
+                    <ReviewCard key={userReview._id} {...userReview} />
+                </div>
+            }
             {reviews.map((review) => (
                 <ReviewCard key={review._id} {...review} />
             ))}
