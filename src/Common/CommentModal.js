@@ -5,7 +5,6 @@ import { Modal } from 'react-bootstrap';
 const CommentModal = ({
   image,
   activity,
-  activityId,
   refresh,
   toggleRefresh,
   handleCommentLike,
@@ -17,7 +16,8 @@ const CommentModal = ({
   setReplyContent,
   isModalOpen,
   openModal,
-  closeModal }) => {
+  closeModal,
+  formatTimestamp }) => {
 
   console.log("Rendering CommentModal, isModalOpen:", isModalOpen);
 
@@ -25,6 +25,7 @@ const CommentModal = ({
   const userId = localStorage.getItem('userId');
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const activityId = activity._id;
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -47,7 +48,7 @@ const CommentModal = ({
     };
 
     fetchComments();
-  }, [activityId, isModalOpen, refresh, apiUrl, userId]);
+  }, [activityId, isModalOpen, comments, refresh, apiUrl, userId]);
 
   if (!isModalOpen) return null;
 
@@ -78,30 +79,6 @@ const CommentModal = ({
 
   const handleReplyClick = (commentId, replyText) => {
     submitReply(commentId, replyText);
-  };
-
-  const formatTimestamp = (timestamp) => {
-    const now = new Date();
-    const commentDate = new Date(timestamp);
-    const diffInSeconds = Math.floor((now - commentDate) / 1000);
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    const diffInDays = Math.floor(diffInHours / 24);
-    const diffInWeeks = Math.floor(diffInDays / 7);
-
-    if (diffInSeconds < 60) {
-        return `${diffInSeconds}s`;
-    } else if (diffInMinutes < 60) {
-        return `${diffInMinutes}m`;
-    } else if (diffInHours < 24) {
-        return `${diffInHours}h`;
-    } else if (diffInDays < 7) {
-        return `${diffInDays}d`;
-    } else if (diffInWeeks < 52) {
-        return `${diffInWeeks}w`;
-    } else {
-        return commentDate.toLocaleDateString();
-    }
   };
 
   return (
@@ -152,7 +129,7 @@ const CommentModal = ({
                               <span className="text-muted comment-text">{comment.comment}</span>
                             </div>
                             <button
-                              onClick={() => comment.isLiked ? handleCommentLike(comment._id) : handleCommentUnlike(comment._id)}
+                              onClick={() => comment.isLiked ? handleCommentUnlike(comment._id) : handleCommentLike(comment._id)}
                               className="border-0 bg-transparent align-self-start"
                             >
                               <span className="material-icons" style={{ fontSize: '18px' }}>

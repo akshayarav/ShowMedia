@@ -57,6 +57,7 @@ function CommentsList({ image, activity, activityId, refresh, toggleRefresh, isM
 
     const handleCommentLike = async (commentId) => {
         const userId = localStorage.getItem('userId');
+        console.log('like');
         setComments(comments.map(comment => {
             if (comment._id === commentId) {
                 return { ...comment, isLiked: true,  likes: [...comment.likes, userId] }
@@ -79,6 +80,7 @@ function CommentsList({ image, activity, activityId, refresh, toggleRefresh, isM
 
     const handleCommentUnlike = async (commentId) => {
         const userId = localStorage.getItem('userId');
+        console.log('unlike');
         setComments(comments.map(comment => {
             if (comment._id === commentId) {
                 return { ...comment, isLiked: false, likes: comment.likes.filter(id => id !== userId) };
