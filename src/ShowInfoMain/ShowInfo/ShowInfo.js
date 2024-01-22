@@ -208,7 +208,7 @@ function ShowInfo() {
                                                 <div className="d-flex justify-content-center">
                                                     {show && show.created_by && show.created_by.map(creator =>
                                                         <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow ms-3 mb-3 me-3 d-flex">
-                                                            <img src={`https://image.tmdb.org/t/p/w92/${creator.profile_path}`} alt="/default_profile.jpg" />
+                                                            <img style={{ width: '80px', height: '80px' }} className="img-fluid rounded-circle" src={creator.profile_path ? `https://image.tmdb.org/t/p/w92/${creator.profile_path}` : "/default_profile.jpg"} alt={creator.name} />
                                                             <h6 className="fw-bold text-body p-3 mb-0">{creator.name} </h6>
                                                         </div>)}
                                                 </div>
@@ -222,7 +222,7 @@ function ShowInfo() {
                                                 <div className="d-flex justify-content-center">
                                                     {show && show.networks && show.networks.map(network =>
                                                         <div className=" ms-3 mb-3 me-3 d-flex">
-                                                            <img src={`https://image.tmdb.org/t/p/w92/${network.logo_path}`} alt="/default_profile.jpg" />
+                                                            <img style={{ width: '80px', height: '80px' }} className="img-fluid rounded-circle" src={network.logo_path ? `https://image.tmdb.org/t/p/w92/${network.logo_path}` : "/default_profile.jpg"} alt={network.name} />
                                                         </div>)}
                                                 </div>
                                             </div>
