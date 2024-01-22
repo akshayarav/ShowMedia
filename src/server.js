@@ -316,6 +316,31 @@ app.post('/api/reviews/:reviewId/unvote', (req, res) => {
     .catch(err => res.status(500).json({ error: err.message }));
 });
 
+//Endpoint to get reviews for a specific show from following
+app.get('/api/reviews/following/:userId/:showId', async (req, res) => {
+  const userId = req.params.userId;
+  const showId = req.params.showId;
+
+  try {
+    const user = await User.findById(userId).populate('following');
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const followedUsernames = user.following.map(followedUser => followedUser.username);
+
+    const reviewsFromFollowing = await Review.find({ 
+      username: { $in: followedUsernames },
+      showId: showId // Filter by showId
+    });
+
+    res.json(reviewsFromFollowing);
+  } catch (error) {
+    console.error('Error fetching reviews from following:', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 //register a new user via the user's email provided in {req.body.email}
 app.post('/register', async (req, res) => {

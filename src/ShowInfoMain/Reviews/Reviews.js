@@ -5,6 +5,8 @@ import AddReviewModal from './AddReviewModal';
 
 function Reviews({ showId }) {
     const [reviews, setReviews] = useState([]);
+    const [reviewsFollowing, setReviewsFollowing] = useState([]);
+
     const [hasReviewed, setHasReviewed] = useState(false);
     const [userReviewId, setUserReviewId] = useState(null);
     const [userReview, setUserReview] = useState(null);
@@ -12,6 +14,17 @@ function Reviews({ showId }) {
     const [showReviewModal, setShowReviewModal] = useState(false);
     const toggleReviewModal = () => setShowReviewModal(!showReviewModal);
     const apiUrl = process.env.REACT_APP_API_URL;
+
+    const fetchReviewsFromFollowing = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/api/reviews/following/${user._id}/${showId}`);
+            return response.data; // This should be an array of review IDs
+        } catch (error) {
+            console.error("Error fetching reviews from following:", error);
+            return [];
+        }
+    };
+
 
     const handleAddReview = async (showId, score, text) => {
         const newReview = {
@@ -56,9 +69,11 @@ function Reviews({ showId }) {
             try {
                 const response = await axios.get(`${apiUrl}/api/reviews/${showId}`);
                 const userReview = response.data.find(review => review.username === user.username);
-                console.log('Fetched reviews:', response.data);
+                const followingReviews = await fetchReviewsFromFollowing();
+                setReviewsFollowing(followingReviews)
+                console.log("FOLLOWING REVIEWS: " + followingReviews)
+
                 const sortedReviews = response.data.sort((a, b) => {
-                    console.log('Comparing:', a.votes, 'and', b.votes); // Log the items being compared
                     return b.votes - a.votes; // Sort by 'votes' in descending order
                 });
                 setReviews(sortedReviews.filter(review => review._id !== userReviewId));
@@ -100,7 +115,18 @@ function Reviews({ showId }) {
                     <ReviewCard key={userReviewId} review={userReview} />
                 </div>
             }
-            <h2 className="fw-bold text-white mt-4">Other Reviews</h2>
+            <h2 className="fw-bold text-white mt-4">Reviews by Following</h2>
+            {
+                reviewsFollowing.length > 0 && (
+                    <>
+                        {reviewsFollowing.filter(review => review._id !== userReviewId).map((review) => (
+                            <ReviewCard key={review._id} review={review} />
+                        ))}
+                    </>
+                )
+            }
+
+            <h2 className="fw-bold text-white mt-4">Top Reviews</h2>
             {
                 reviews.length > 0 && (
                     <>
