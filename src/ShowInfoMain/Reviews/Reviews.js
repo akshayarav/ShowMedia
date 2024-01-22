@@ -51,7 +51,6 @@ function Reviews({ showId }) {
         }
     };
 
-
     const handleRemoveReview = async () => {
         try {
             await axios.delete(`${apiUrl}/api/reviews/${userReviewId}?username=${encodeURIComponent(user.username)}`);
@@ -73,9 +72,14 @@ function Reviews({ showId }) {
                 setReviewsFollowing(followingReviews)
                 console.log("FOLLOWING REVIEWS: " + followingReviews)
 
-                const sortedReviews = response.data.sort((a, b) => {
+                const filteredReviews = response.data.filter(review => 
+                    !followingReviews.some(followingReview => followingReview._id === review._id)
+                );
+
+                const sortedReviews = filteredReviews.sort((a, b) => {
                     return b.votes - a.votes; // Sort by 'votes' in descending order
                 });
+
                 setReviews(sortedReviews.filter(review => review._id !== userReviewId));
                 if (userReview) {
                     setHasReviewed(true);

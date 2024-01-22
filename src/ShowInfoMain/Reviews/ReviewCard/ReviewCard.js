@@ -33,7 +33,6 @@ function ReviewCard({ review, onVoteChange}) {
             }
         }
         setVotesState(updatedReview.votes); // Update local state
-        onVoteChange(updatedReview); // Call onVoteChange with the updated review
     }
     
 
