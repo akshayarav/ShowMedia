@@ -129,6 +129,13 @@ const reviewSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
   upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+reviewSchema.virtual('votes').get(function() {
+  return this.upvotes.length - this.downvotes.length;
 });
 
 const Review = mongoose.model('Review', reviewSchema);
@@ -149,7 +156,6 @@ ENDPOINTS
 */
 
 //Add a new review
-
 app.post('/api/reviews', (req, res) => {
   const { showId, username } = req.body; // Assuming you're passing the user's ID in the request body
 
@@ -167,8 +173,12 @@ app.post('/api/reviews', (req, res) => {
           score: req.body.score,
           text: req.body.text,
           profileImg: req.body.profileImg,
-          username: req.body.username
+          username: req.body.username,
+          upvotes: [], // Initialize as an empty array
+          downvotes: [] // Initialize as an empty array
         });
+
+        console.log(newReview)
 
         newReview.save()
           .then(review => res.status(201).json(review))
@@ -178,12 +188,11 @@ app.post('/api/reviews', (req, res) => {
     .catch(err => res.status(500).json({ error: err.message }));
 });
 
+
 //Delete a review with id {reviewId} by user with username {username}
 app.delete('/api/reviews/:reviewId', (req, res) => {
   const reviewId = req.params.reviewId;
   const username = req.query.username;
-
-  console.log(reviewId)
 
   // Find the review by ID
   Review.findById(reviewId)
@@ -197,8 +206,6 @@ app.delete('/api/reviews/:reviewId', (req, res) => {
         // If usernames do not match
         return res.status(403).json({ message: 'Unauthorized to delete this review' });
       }
-
-      console.log(review.username)
 
       // Delete the review
       Review.findByIdAndDelete(reviewId)
@@ -219,12 +226,14 @@ app.get('/api/reviews/:showId', (req, res) => {
 app.post('/api/reviews/:reviewId/upvote', (req, res) => {
   const reviewId = req.params.reviewId;
   const userId = req.body.userId; // The ID of the user who is upvoting
+  console.log("USERID" + userId)
 
   Review.findById(reviewId)
     .then(review => {
       if (!review) {
         return res.status(404).json({ message: 'Review not found' });
       }
+
 
       // Add userId to upvotes if not already there, and remove from downvotes if present
       const alreadyUpvoted = review.upvotes.includes(userId);
@@ -261,7 +270,7 @@ app.post('/api/reviews/:reviewId/downvote', (req, res) => {
         review.downvotes.push(userId);
       }
       if (alreadyUpvoted) {
-        review.upvotes = review.upvotes.filter(id => id.toString() !== userId);
+        review.upvotes = review.upvotes.filter(id => id !== userId);
       }
 
       review.save()
@@ -271,6 +280,41 @@ app.post('/api/reviews/:reviewId/downvote', (req, res) => {
     .catch(err => res.status(500).json({ error: err.message }));
 });
 
+//Endpoint to remove vote on review with id {reviewId} by user with id {userId}
+app.post('/api/reviews/:reviewId/unvote', (req, res) => {
+  const reviewId = req.params.reviewId;
+  const userId = req.body.userId; // The ID of the user who is retracting their vote
+
+  Review.findById(reviewId)
+    .then(review => {
+      if (!review) {
+        return res.status(404).json({ message: 'Review not found' });
+      }
+
+      // Check if the user has upvoted or downvoted and remove their vote
+      const indexUpvote = review.upvotes.indexOf(userId);
+      const indexDownvote = review.downvotes.indexOf(userId);
+      let voteRemoved = false;
+
+      if (indexUpvote > -1) {
+        review.upvotes.splice(indexUpvote, 1); // Remove the user's upvote
+        voteRemoved = true;
+      }
+      if (indexDownvote > -1) {
+        review.downvotes.splice(indexDownvote, 1); // Remove the user's downvote
+        voteRemoved = true;
+      }
+
+      if (!voteRemoved) {
+        return res.status(400).json({ message: 'User has not voted on this review' });
+      }
+
+      review.save()
+        .then(() => res.json({ message: 'Vote retracted successfully' }))
+        .catch(err => res.status(500).json({ error: err.message }));
+    })
+    .catch(err => res.status(500).json({ error: err.message }));
+});
 
 
 //register a new user via the user's email provided in {req.body.email}

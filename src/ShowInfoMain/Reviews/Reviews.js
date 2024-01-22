@@ -20,22 +20,15 @@ function Reviews({ showId }) {
             text,
             profileImg: user.profilePicture, // User's profile image
             username: user.username, // User's username
+            // No need to include upvotes and downvotes here; they start as empty in the backend
         };
-        console.log(newReview)
-        try {
-            const newReview = {
-                showId, // Assuming you want to include the showId in the review
-                score,
-                text,
-                profileImg: user.profilePicture, // User's profile image
-                username: user.username, // User's username
-            };
 
+        try {
             const response = await axios.post(`${apiUrl}/api/reviews`, newReview);
 
             // Update states with the response data
             setHasReviewed(true);
-            setUserReview(response.data); // Now the new review includes the _id
+            setUserReview(response.data); // The new review now includes the _id
             setUserReviewId(response.data._id); // Store the ID of the user's review
 
             // Append the new review to the current list
@@ -62,14 +55,17 @@ function Reviews({ showId }) {
         const fetchReviews = async () => {
             try {
                 const response = await axios.get(`${apiUrl}/api/reviews/${showId}`);
-                console.log(response)
                 const userReview = response.data.find(review => review.username === user.username);
+                console.log('Fetched reviews:', response.data);
+                const sortedReviews = response.data.sort((a, b) => {
+                    console.log('Comparing:', a.votes, 'and', b.votes); // Log the items being compared
+                    return b.votes - a.votes; // Sort by 'votes' in descending order
+                });
+                setReviews(sortedReviews.filter(review => review._id !== userReviewId));
                 if (userReview) {
-                    console.log("RECHED")
                     setHasReviewed(true);
                     setUserReviewId(userReview._id); // Store the ID of the user's review
                     setUserReview(userReview)
-                    setReviews(response.data.filter(review => review._id !== userReviewId));
                 } else {
                     setUserReviewId(null); // Reset the userReviewId if no review is found
                     setReviews(response.data)
@@ -81,8 +77,6 @@ function Reviews({ showId }) {
 
         fetchReviews();
     }, [showId, user.username]);
-
-    console.log(reviews)
 
     return (
         <div className="d-flex flex-column align-items-center">
@@ -103,7 +97,7 @@ function Reviews({ showId }) {
             {hasReviewed &&
                 <div className="mt-5 d-flex flex-column align-items-center" style={{ width: "100%" }}>
                     <h2 className="fw-bold text-white mb-1">Your Review</h2>
-                    <ReviewCard key={userReviewId} {...userReview} />
+                    <ReviewCard key={userReviewId} review={userReview} />
                 </div>
             }
             <h2 className="fw-bold text-white mt-4">Other Reviews</h2>
@@ -111,7 +105,7 @@ function Reviews({ showId }) {
                 reviews.length > 0 && (
                     <>
                         {reviews.filter(review => review._id !== userReviewId).map((review) => (
-                            <ReviewCard key={review._id} {...review} />
+                            <ReviewCard key={review._id} review={review} />
                         ))}
                     </>
                 )

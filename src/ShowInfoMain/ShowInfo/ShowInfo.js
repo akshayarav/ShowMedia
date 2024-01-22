@@ -32,7 +32,6 @@ function ShowInfo() {
     const toggleShowPlanningModal = () => setShowPlanningModal(!showPlanningModal);
     const toggleShowDroppedModal = () => setShowDroppedModal(!showDroppedModal);
 
-    console.log(show)
 
 
     useEffect(() => {

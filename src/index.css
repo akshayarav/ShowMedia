@@ -26,13 +26,14 @@
 
 .white-placeholder::placeholder {
     color: white;
-    opacity: 1; /* Required in some browsers to ensure the color is not semi-transparent */
+    opacity: 1;
+    /* Required in some browsers to ensure the color is not semi-transparent */
 }
 
 
 .stars-container {
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
 }
 
 .scrollable-div {
@@ -506,6 +507,12 @@ h6 {
 
 .md-48 {
     font-size: 48px !important;
+}
+
+.bold-icon {
+    font-weight:800;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+    /* Optional, for extra boldness */
 }
 
 .h6,
