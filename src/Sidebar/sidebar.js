@@ -49,7 +49,7 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
     >
       Log Out
     </button>
-  ) 
+  )
 
 
 
@@ -68,12 +68,12 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
               <Link to="/feed" className={`nav-link ${location.pathname === '/feed' ? 'active' : ''}`}> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
             {isAuthenticated && (
-            <li className="nav-item">
-              <Link to={`/profile/${currentUser}`} className={`nav-link ${location.pathname === `/profile/${currentUser}` ? 'active' : ''}`}>
-                <span className="material-icons me-3">account_circle</span> <span>Profile</span>
-              </Link>
-            </li>
-          )}
+              <li className="nav-item">
+                <Link to={`/profile/${currentUser}`} className={`nav-link ${location.pathname === `/profile/${currentUser}` ? 'active' : ''}`}>
+                  <span className="material-icons me-3">account_circle</span> <span>Profile</span>
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link to="/shows" className={`nav-link ${location.pathname === '/shows' ? 'active' : ''}`}> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>
@@ -93,12 +93,19 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
               <Link to="/feed" className={`nav-link ${location.pathname === '/feed' ? 'active' : ''}`}> <span className="material-icons me-3">house</span> <span>Feed</span></Link>
             </li>
             {isAuthenticated && (
-            <li className="nav-item">
-              <Link to={`/profile/${currentUser}`} className={`nav-link ${location.pathname === `/profile/${currentUser}` ? 'active' : ''}`}>
-                <span className="material-icons me-3">account_circle</span> <span>Profile</span>
-              </Link>
-            </li>
-          )}
+              <li className="nav-item">
+                <Link to={`/profile/${currentUser}`} className={`nav-link ${location.pathname === `/profile/${currentUser}` ? 'active' : ''}`}>
+                  <span className="material-icons me-3">account_circle</span> <span>Profile</span>
+                </Link>
+              </li>
+            )}
+            {isAuthenticated && (
+              <li className="nav-item">
+                <Link to={`/notifications/${currentUser}`} className={`nav-link ${location.pathname === `/notifications/${currentUser}` ? 'active' : ''}`}>
+                  <span className="material-icons me-3">notifications</span> <span>Notifications</span>
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link to="/shows" className={`nav-link ${location.pathname === '/shows' ? 'active' : ''}`}> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>

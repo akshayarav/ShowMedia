@@ -15,7 +15,7 @@ function ShowInfoMain() {
                 <div className="container">
                     <div className="row justify-content-center ">
                         <main className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
-                            <a href="/shows" class="material-icons text-white text-decoration-none mb-4 me-5">arrow_back</a>
+                            <a href="/shows" className="material-icons text-white text-decoration-none mb-4 me-5">arrow_back</a>
                             <ul className="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-glass my-3 mx-lg-3" id="pills-tab" role="tablist">
                                 <li className="nav-item" role="presentation">
                                     <button

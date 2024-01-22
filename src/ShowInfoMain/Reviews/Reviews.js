@@ -70,7 +70,6 @@ function Reviews({ showId }) {
                 const userReview = response.data.find(review => review.username === user.username);
                 const followingReviews = await fetchReviewsFromFollowing();
                 setReviewsFollowing(followingReviews)
-                console.log("FOLLOWING REVIEWS: " + followingReviews)
 
                 const filteredReviews = response.data.filter(review => 
                     !followingReviews.some(followingReview => followingReview._id === review._id)

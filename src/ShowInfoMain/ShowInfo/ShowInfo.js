@@ -101,7 +101,7 @@ function ShowInfo() {
             }
         };
 
-        fetchSeasons();
+        if (show) {fetchSeasons()};
     }, [show]);
 
     if (searchScreenOn) {
