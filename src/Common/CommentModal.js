@@ -124,7 +124,7 @@ const CommentModal = ({
               <div className="d-flex flex-column justify-content-between col-5 content-body px-web-0">
                 <div className="p-3 justify-content-between border-bottom">
                   <div className="d-flex justify-content-end mb-3">
-                    <h5 className="mb-0 text-bold">
+                    <h5 className="mb-0 text-bold details-container">
                       {activity.showName} - Season {activity.seasonNumber}
                     </h5>
                     <div className="small dropdown">
