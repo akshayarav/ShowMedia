@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-function ReviewCard({ review, onVoteChange}) {
+function ReviewCard({ review }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const reviewId = review._id;
     const userId = localStorage.getItem('userId')
-    const [votesState, setVotesState] = useState(review.votes);
+    const [votesState, setVotesState] = useState(review.upvotes.length - review.downvotes.length);
     const state = review.upvotes.includes(userId) ? "upvote" : review.downvotes.includes(userId) ? "downvote" : null
     const [userVote, setUserVote] = useState(state); // 'upvote', 'downvote', or null
     
@@ -35,7 +35,6 @@ function ReviewCard({ review, onVoteChange}) {
         setVotesState(updatedReview.votes); // Update local state
     }
     
-
     return (
         <main className="col-11 my-2">
             <div className="bg-glass rounded-4 shadow-sm p-3">

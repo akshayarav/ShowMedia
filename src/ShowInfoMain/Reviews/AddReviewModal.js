@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
-import { Modal } from "react-bootstrap";
+import { Modal, Alert } from "react-bootstrap";
 
 function AddReviewModal({ showId, handleAddReview, closeModal }) {
     // State for handling form inputs
     const [score, setScore] = useState('');
     const [text, setText] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setSuccess('test');
         // Call the handleAddReview passed from parent with the review details
         handleAddReview(showId, score, text);
-        closeModal(); // Close the modal after submitting the review
+        setTimeout(() => {
+            closeModal();
+        }, 1000);// Close the modal after submitting the review
     };
 
     return (
         <Modal show={true} onHide={closeModal} centered className="modal fade bg-glass">
             <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
+                {error && <Alert variant="danger">{error}</Alert>}
+                {success && <Alert variant="success">{success}</Alert>}
                 <form onSubmit={handleSubmit}>
                     <div className="form-group mb-3">
                         <label htmlFor="scoreInput">Score</label>

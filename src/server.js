@@ -111,6 +111,7 @@ const activitySchema = new mongoose.Schema({
   status: String,
   episodes: String,
   comment: String,
+  review: { type: mongoose.Schema.Types.ObjectId, ref: 'Review' },
   timestamp: { type: Date, default: Date.now },
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
@@ -134,7 +135,7 @@ const reviewSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-reviewSchema.virtual('votes').get(function() {
+reviewSchema.virtual('votes').get(function () {
   return this.upvotes.length - this.downvotes.length;
 });
 
@@ -329,7 +330,7 @@ app.get('/api/reviews/following/:userId/:showId', async (req, res) => {
 
     const followedUsernames = user.following.map(followedUser => followedUser.username);
 
-    const reviewsFromFollowing = await Review.find({ 
+    const reviewsFromFollowing = await Review.find({
       username: { $in: followedUsernames },
       showId: showId // Filter by showId
     });
@@ -548,7 +549,7 @@ app.get('/followers/:userId', async (req, res) => {
 //Creates new season rating for user with id {userId}
 app.post('/rateSeason', async (req, res) => {
   try {
-    const { userId, showId, seasonNumber, rating, comment, status, episodes } = req.body;
+    const { userId, showId, seasonNumber, rating, comment, status, episodes, reviewUserName } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -569,6 +570,13 @@ app.post('/rateSeason', async (req, res) => {
       { new: true, upsert: true }
     );
 
+    const review = await Review.findOne({
+      username: reviewUserName,
+      showId: showId // Filter by showId
+    });
+
+    console.log(review)
+
     const newActivity = new Activity({
       user: userId,
       type: 'rated',
@@ -580,6 +588,7 @@ app.post('/rateSeason', async (req, res) => {
       comment: comment,
       status: status,
       episodes: episodes,
+      review: review,
       timestamp: new Date()
     });
 
@@ -644,6 +653,7 @@ app.get('/api/activities/:userId', async (req, res) => {
           select: 'username first profilePicture'
         }
       })
+      .populate({ path: 'review', select: '' })
       .lean();
 
     res.json(activities);
@@ -652,6 +662,8 @@ app.get('/api/activities/:userId', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
 
 //Gets all the seasonRatings of user with id {userId}
 app.get('/api/seasonRatings/:userId', async (req, res) => {
