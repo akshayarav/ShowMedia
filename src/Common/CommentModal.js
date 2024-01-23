@@ -167,7 +167,7 @@ const CommentModal = ({
                 </div>
                 <div className="comments p-3 border-top">
                   <div
-                    className={`comments p-3 ${
+                    className={`comments ${
                       comments.length > 6 ? "scrollable-comments" : ""
                     }`}
                   >
@@ -240,7 +240,7 @@ const CommentModal = ({
                       </div>
                     ))}
                   </div>
-                  <div className="p-3 mt-auto">
+                  <div className="mt-auto">
                     <div className="d-flex align-items-center mb-3">
                       <span className="material-icons bg-transparent border-0 text-primary pe-2 md-36">
                         account_circle
