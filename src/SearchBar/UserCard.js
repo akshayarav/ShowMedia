@@ -4,12 +4,18 @@ import FollowButton from '../Profile/Overview/FollowButton';
 import axios from 'axios';
 
 
-function UserCard({ other_user: initialOtherUser, toggleRefresh, username }) {
+function UserCard({ other_user: initialOtherUser, toggleRefresh, username, messages, messagesSubmit }) {
     const [otherUser, setOtherUser] = useState(initialOtherUser);
     const [followedBy, setFollowedBy] = useState(null);
     const apiUrl = process.env.REACT_APP_API_URL;
 
     const handleLinkClick = (event) => {
+        event.stopPropagation()
+        if (messages) {
+            event.preventDefault();
+            console.log(otherUser)
+            messagesSubmit(otherUser);
+        }
         if (toggleRefresh) {
             event.preventDefault();
             toggleRefresh();
@@ -51,14 +57,14 @@ function UserCard({ other_user: initialOtherUser, toggleRefresh, username }) {
     }, [otherUser?.common_followers]);
 
     if (!otherUser) {
-        return <div>Loading...</div>; 
+        return <div>Loading...</div>;
     }
 
     return (
         <div className="border-bottom z-bottom">
             <div className="user-card p-3  d-flex text-dark account-item position-relative">
                 <Link to={`/profile/${otherUser.username}`} className="stretched-link" onClick={handleLinkClick} />
-                <img src={otherUser.profilePicture} className="img-fluid rounded-circle me-3" alt="profile-img" />
+                <img src={otherUser.profilePicture} className="img-fluid rounded-circle me-3" alt="profile-img" style = {{width: "50px", height: "50px"}}/>
                 <div className="user-info flex-grow-1">
                     <p className="fw-bold mb-0 text-light">@{otherUser.username}</p>
                     <small className="text-muted">{otherUser.first} {otherUser.last}</small>

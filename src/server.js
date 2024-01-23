@@ -64,7 +64,8 @@ const userSchema = new mongoose.Schema({
   followers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }]
+  }],
+  timestamp: { type: Date, default: Date.now },
 });
 
 const User = mongoose.model('User', userSchema);
@@ -141,6 +142,26 @@ reviewSchema.virtual('votes').get(function () {
 
 const Review = mongoose.model('Review', reviewSchema);
 
+const messageSchema = new mongoose.Schema({
+  sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  message: String,
+  timestamp: { type: Date, default: Date.now },
+  read: { type: Boolean, default: false }
+});
+
+const Message = mongoose.model('Message', messageSchema);
+
+const conversationSchema = new mongoose.Schema({
+  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
+  lastMessage: { type: mongoose.Schema.Types.ObjectId, ref: 'Message' },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const Conversation = mongoose.model('Conversation', conversationSchema);
+
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -155,6 +176,146 @@ ENDPOINTS
 
 =====================================================================================================================================================================
 */
+
+// GET endpoint to fetch a conversation between two users
+app.get('/api/conversations/find', async (req, res) => {
+  try {
+      const { userId1, userId2 } = req.query;
+
+      // Find a conversation that includes both userId1 and userId2
+      const conversation = await Conversation.findOne({
+          participants: { $all: [userId1, userId2] }
+      }).exec();
+
+      if (!conversation) {
+          return res.status(404).send('Conversation not found');
+      }
+
+      res.json(conversation);
+  } catch (error) {
+      console.error('Error fetching conversation:', error);
+      res.status(500).send('Server error: ' + error.message);
+  }
+});
+
+// GET endpoint to fetch conversations for a user
+app.get('/api/conversations/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Fetch conversations where the user is a participant
+    const conversations = await Conversation.find({ participants: userId })
+      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+      .populate('participants', 'username') // Optionally populate participant details
+      .exec();
+
+    res.json(conversations);
+  } catch (error) {
+    res.status(500).send('Server error: ' + error.message);
+  }
+});
+
+// POST endpoint to create a new conversation
+app.post('/api/conversations/create', async (req, res) => {
+  try {
+    const { userId1, userId2 } = req.body;
+
+    // Check if users exist in the database
+    const user1 = await User.findById(userId1);
+    const user2 = await User.findById(userId2);
+    if (!user1 || !user2) {
+      return res.status(404).send('One or both users not found');
+    }
+
+    // Check if a conversation between these users already exists
+    let conversation = await Conversation.findOne({
+      participants: { $all: [userId1, userId2] }
+    });
+
+    if (conversation) {
+      // Conversation already exists, return it
+      return res.json(conversation);
+    } else {
+      // Create a new conversation
+      conversation = new Conversation({
+        participants: [userId1, userId2],
+        messages: [] // Starting with an empty message array
+      });
+
+      // Save the conversation to the database
+      await conversation.save();
+
+      res.status(201).json(conversation);
+    }
+  } catch (error) {
+    res.status(500).send('Server error: ' + error.message);
+  }
+});
+
+// GET endpoint to fetch a message by its ID
+app.get('/api/messages/:messageId', async (req, res) => {
+  try {
+    const messageId = req.params.messageId;
+
+    // Find the message by ID
+    const message = await Message.findById(messageId).exec();
+
+    if (!message) {
+      return res.status(404).send('Message not found');
+    }
+
+    res.json(message);
+  } catch (error) {
+    console.error('Error fetching message:', error);
+    res.status(500).send('Server error: ' + error.message);
+  }
+});
+
+// POST endpoint for sending a message
+app.post('/api/messages/send', async (req, res) => {
+  try {
+    const { sender, receiver, message } = req.body;
+
+    // Basic validation
+    if (!sender || !receiver || !message) {
+      return res.status(400).send('Missing required fields');
+    }
+
+    // Create a new message
+    const newMessage = new Message({
+      sender,
+      receiver,
+      message
+    });
+
+    // Save the message to the database
+    await newMessage.save();
+
+    // Find the conversation between sender and receiver
+    let conversation = await Conversation.findOne({
+      participants: { $all: [sender, receiver] }
+    });
+
+    // If conversation doesn't exist, create a new one
+    if (!conversation) {
+      conversation = new Conversation({
+        participants: [sender, receiver],
+        messages: []
+      });
+    }
+
+    // Add the new message to the conversation
+    conversation.messages.push(newMessage._id);
+
+    // Update the conversation in the database
+    await conversation.save();
+
+    res.status(201).send('Message sent successfully');
+  } catch (error) {
+    res.status(500).send('Server error: ' + error.message);
+  }
+});
+
 
 //Add a new review
 app.post('/api/reviews', (req, res) => {
