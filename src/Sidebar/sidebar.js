@@ -106,6 +106,13 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
                 </Link>
               </li>
             )}
+            {isAuthenticated && (
+              <li className="nav-item">
+                <Link to={`/messages/${currentUser}`} className={`nav-link ${location.pathname === `/messages/${currentUser}` ? 'active' : ''}`}>
+                  <span className="material-icons me-3">mail</span> <span>Messages</span>
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link to="/shows" className={`nav-link ${location.pathname === '/shows' ? 'active' : ''}`}> <span className="material-icons me-3">explore</span> <span>Shows</span></Link>
             </li>
