@@ -139,7 +139,7 @@ const CommentModal = ({
                       </div>
                     </div>
                   </div>
-                  <div className="d-flex justify-content-between align-items-center mt-3 pb-3 border-bottom">
+                  <div className="d-flex justify-content-between align-items-center border-bottom p-2">
                     <div className="d-flex">
                       <a href="#" className="text-decoration-none">
                         <img
