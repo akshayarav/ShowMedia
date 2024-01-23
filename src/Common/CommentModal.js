@@ -122,23 +122,24 @@ const CommentModal = ({
                 </div>
               </div>
               <div className="d-flex flex-column justify-content-between col-5 content-body px-web-0">
-                <div className="p-3 justify-content-between border-bottom">
-                  <div className="d-flex justify-content-end mb-3">
-                    <h5 className="mb-0 text-bold details-container">
-                      {activity.showName} - Season {activity.seasonNumber}
-                    </h5>
-                    <div className="small dropdown">
-                      <a
-                        href="#"
-                        className="text-muted text-decoration-none material-icons ms-2 md-"
-                        onClick={closeModal}
-                      >
-                        close
-                      </a>
+                <div className="">
+                  <div className="border-bottom">
+                    <div className="d-flex justify-content-between">
+                      <h5 className="mb-0 text-bold details-container">
+                        {activity.showName}
+                      </h5>
+                      <div className="small dropdown p-3">
+                        <a
+                          href="#"
+                          className="text-muted text-decoration-none material-icons"
+                          onClick={closeModal}
+                        >
+                          close
+                        </a>
+                      </div>
                     </div>
                   </div>
-                  <div></div>
-                  <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex justify-content-between align-items-center mt-3 pb-3 border-bottom">
                     <div className="d-flex">
                       <a href="#" className="text-decoration-none">
                         <img
@@ -159,12 +160,13 @@ const CommentModal = ({
                         </div>
                       </div>
                     </div>
-
+                    <h6 className="mb-0 text-bold">Season {activity.seasonNumber}</h6>
                     <div>
                       <p className="mb-0">{activity.rating}/10</p>
                     </div>
                   </div>
                 </div>
+
                 <div className="comments p-3 border-top">
                   <div
                     className={`comments ${
@@ -241,7 +243,7 @@ const CommentModal = ({
                     ))}
                   </div>
                   <div className="mt-auto">
-                    <div className="d-flex align-items-center mb-3">
+                    <div className="d-flex align-items-center">
                       <span className="material-icons bg-transparent border-0 text-primary pe-2 md-36">
                         account_circle
                       </span>
