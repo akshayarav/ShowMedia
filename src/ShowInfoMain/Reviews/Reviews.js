@@ -49,6 +49,33 @@ function Reviews({ showId }) {
         } catch (error) {
             console.error("Error adding review:", error);
         }
+
+        try {
+            const response = await fetch(`${apiUrl}/rateSeason`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: localStorage.getItem('userId'),
+                    showId: showId,
+                    rating: score,
+                    comment: text,
+                    status: "Review",
+                    reviewUserName: user.username
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data.message || `Failed to add rating and comment for Show`);
+                return;
+            }
+
+        } catch (err) {
+            console.error(err)
+        }
     };
 
     const handleRemoveReview = async () => {
@@ -59,6 +86,30 @@ function Reviews({ showId }) {
             setUserReviewId(null); // Reset the userReviewId
         } catch (error) {
             console.error("Error removing review:", error);
+        }
+        try {
+            const response = await fetch(`${apiUrl}/rateSeason`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: localStorage.getItem('userId'),
+                    showId: showId,
+                    status: "Removed Review",
+                    reviewUserName: user.username
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data.message || `Failed to add rating and comment for Show`);
+                return;
+            }
+
+        } catch (err) {
+            console.error(err)
         }
     };
 
