@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
+import ReplyModal from "./ReplyModal";
 
 const CommentModal = ({
   image,
   activity,
   refresh,
   toggleRefresh,
-  handleCommentLike,
-  handleCommentUnlike,
-  handleReplyLike,
-  handleReplyUnlike,
-  submitReply,
-  replyContent,
-  setReplyContent,
   isModalOpen,
   closeModal,
   formatTimestamp,
 }) => {
-  console.log("Rendering CommentModal, isModalOpen:", isModalOpen);
-
   const apiUrl = process.env.REACT_APP_API_URL;
   const userId = localStorage.getItem("userId");
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const activityId = activity._id;
+  const [isReplyModalOpen, setReplyModalOpen] = useState(false);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -52,6 +46,16 @@ const CommentModal = ({
   }, [activityId, isModalOpen, comments, refresh, apiUrl, userId]);
 
   if (!isModalOpen) return null;
+
+  const openReplyModal = () => {
+    console.log("reply modal opened")
+    setReplyModalOpen(true);
+  };
+
+  const closeReplyModal = () => {
+    console.log("reply modal closed")
+    setReplyModalOpen(false);
+  };
 
   const submitComment = async () => {
     const userId = localStorage.getItem("userId");
@@ -86,8 +90,85 @@ const CommentModal = ({
     setNewComment(e.target.value);
   };
 
-  const handleReplyClick = (commentId, replyText) => {
-    submitReply(commentId, replyText);
+  const handleReplyClick = (commentId) => {
+    setSelectedCommentId(commentId);
+    openReplyModal();
+  };
+
+  const handleCommentLike = async (commentId) => {
+    const userId = localStorage.getItem("userId");
+    console.log("like");
+    setComments(
+      comments.map((comment) => {
+        if (comment._id === commentId) {
+          return {
+            ...comment,
+            isLiked: true,
+            likes: [...comment.likes, userId],
+          };
+        }
+        return comment;
+      })
+    );
+
+    try {
+      await axios.post(`${apiUrl}/api/activities/comment/${commentId}/like`, {
+        userId,
+      });
+    } catch (error) {
+      console.error("Error liking comment:", error);
+      setComments(
+        comments.map((comment) => {
+          if (comment._id === commentId) {
+            return {
+              ...comment,
+              isLiked: false,
+              likeCount: (comment.likeCount || 1) - 1,
+              likes: comment.likes.filter((id) => id !== userId),
+            };
+          }
+          return comment;
+        })
+      );
+    }
+  };
+
+  const handleCommentUnlike = async (commentId) => {
+    const userId = localStorage.getItem("userId");
+    console.log("unlike");
+    setComments(
+      comments.map((comment) => {
+        if (comment._id === commentId) {
+          return {
+            ...comment,
+            isLiked: false,
+            likes: comment.likes.filter((id) => id !== userId),
+          };
+        }
+        return comment;
+      })
+    );
+
+    try {
+      await axios.post(`${apiUrl}/api/activities/comment/${commentId}/unlike`, {
+        userId,
+      });
+    } catch (error) {
+      console.error("Error unliking comment:", error);
+      setComments(
+        comments.map((comment) => {
+          if (comment._id === commentId) {
+            return {
+              ...comment,
+              isLiked: true,
+              likeCount: (comment.likeCount || 0) + 1,
+              likes: [...comment.likes, userId],
+            };
+          }
+          return comment;
+        })
+      );
+    }
   };
 
   return (
@@ -160,7 +241,9 @@ const CommentModal = ({
                         </div>
                       </div>
                     </div>
-                    <h6 className="mb-0 text-bold">Season {activity.seasonNumber}</h6>
+                    <h6 className="mb-0 text-bold">
+                      Season {activity.seasonNumber}
+                    </h6>
                     <div>
                       <p className="mb-0">{activity.rating}/10</p>
                     </div>
@@ -219,9 +302,7 @@ const CommentModal = ({
                             </span>
                             <button
                               className="small text-muted text-decoration-none"
-                              onClick={() =>
-                                handleReplyClick(comment._id, replyContent)
-                              }
+                              onClick={() => handleReplyClick(comment._id)}
                               style={{
                                 background: "none",
                                 border: "none",
@@ -231,6 +312,18 @@ const CommentModal = ({
                             >
                               Reply
                             </button>
+                            <div>
+                              <ReplyModal
+                                commentId={selectedCommentId}
+                                activityId={activityId}
+                                refresh={refresh}
+                                toggleRefresh={toggleRefresh}
+                                isReplyModalOpen={isReplyModalOpen}
+                                closeReplyModal={closeReplyModal}
+                                formatTimestamp={formatTimestamp}
+                              />
+                            </div>
+
                             <span className="fs-3 text-muted material-icons mx-1">
                               circle
                             </span>
@@ -244,29 +337,29 @@ const CommentModal = ({
                   </div>
                 </div>
                 <div className="mt-auto">
-                    <div className="d-flex align-items-center p-2 border-top">
-                      <span className="material-icons bg-transparent border-0 text-primary pe-2 md-36">
-                        account_circle
-                      </span>
-                      <input
-                        type="text"
-                        className="form-control form-control-sm rounded-3 fw-light bg-light form-control-text"
-                        placeholder="Write your comment"
-                        value={newComment}
-                        onChange={handleNewCommentChange}
-                      />
-                      <button
-                        className="text-primary ps-2 text-decoration-none"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          submitComment();
-                        }}
-                        style={{ background: "none", border: "none" }}
-                      >
-                        Post
-                      </button>
-                    </div>
+                  <div className="d-flex align-items-center p-2 border-top">
+                    <span className="material-icons bg-transparent border-0 text-primary pe-2 md-36">
+                      account_circle
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control form-control-sm rounded-3 fw-light bg-light form-control-text"
+                      placeholder="Write your comment"
+                      value={newComment}
+                      onChange={handleNewCommentChange}
+                    />
+                    <button
+                      className="text-primary ps-2 text-decoration-none"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        submitComment();
+                      }}
+                      style={{ background: "none", border: "none" }}
+                    >
+                      Post
+                    </button>
                   </div>
+                </div>
               </div>
             </div>
           </div>

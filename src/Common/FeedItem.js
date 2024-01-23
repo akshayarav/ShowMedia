@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import CommentModal from "./CommentModal";
 
@@ -27,16 +27,12 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
   );
   const [likeCount, setLikeCount] = useState(activity.likes.length);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [comments, setComments] = useState([]);
-  const [replyContent, setReplyContent] = useState("");
 
   const openModal = () => {
-    console.log("openModal function called");
     setModalOpen(true);
   };
 
   const closeModal = () => {
-    console.log("closeModal function called");
     setModalOpen(false);
   };
 
@@ -89,207 +85,6 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
       return `${diffInWeeks}w`;
     } else {
       return commentDate.toLocaleDateString();
-    }
-  };
-
-  const handleCommentLike = async (commentId) => {
-    const userId = localStorage.getItem("userId");
-    console.log("like");
-    setComments(
-      comments.map((comment) => {
-        if (comment._id === commentId) {
-          return {
-            ...comment,
-            isLiked: true,
-            likes: [...comment.likes, userId],
-          };
-        }
-        return comment;
-      })
-    );
-
-    try {
-      await axios.post(`${apiUrl}/api/activities/comment/${commentId}/like`, {
-        userId,
-      });
-    } catch (error) {
-      console.error("Error liking comment:", error);
-      setComments(
-        comments.map((comment) => {
-          if (comment._id === commentId) {
-            return {
-              ...comment,
-              isLiked: false,
-              likeCount: (comment.likeCount || 1) - 1,
-              likes: comment.likes.filter((id) => id !== userId),
-            };
-          }
-          return comment;
-        })
-      );
-    }
-  };
-
-  const handleCommentUnlike = async (commentId) => {
-    const userId = localStorage.getItem("userId");
-    console.log("unlike");
-    setComments(
-      comments.map((comment) => {
-        if (comment._id === commentId) {
-          return {
-            ...comment,
-            isLiked: false,
-            likes: comment.likes.filter((id) => id !== userId),
-          };
-        }
-        return comment;
-      })
-    );
-
-    try {
-      await axios.post(`${apiUrl}/api/activities/comment/${commentId}/unlike`, {
-        userId,
-      });
-    } catch (error) {
-      console.error("Error unliking comment:", error);
-      setComments(
-        comments.map((comment) => {
-          if (comment._id === commentId) {
-            return {
-              ...comment,
-              isLiked: true,
-              likeCount: (comment.likeCount || 0) + 1,
-              likes: [...comment.likes, userId],
-            };
-          }
-          return comment;
-        })
-      );
-    }
-  };
-
-  const handleReplyLike = async (commentId, replyId) => {
-    const userId = localStorage.getItem("userId");
-
-    setComments(
-      comments.map((comment) => {
-        if (comment._id === commentId) {
-          return {
-            ...comment,
-            replies: comment.replies.map((reply) =>
-              reply._id === replyId
-                ? { ...reply, isLiked: true, likes: [...reply.likes, userId] }
-                : reply
-            ),
-          };
-        }
-        return comment;
-      })
-    );
-
-    try {
-      await axios.post(
-        `${apiUrl}/api/activities/comment/${commentId}/reply/${replyId}/like`,
-        { userId }
-      );
-    } catch (error) {
-      console.error("Error liking reply:", error);
-      setComments(
-        comments.map((comment) => {
-          if (comment._id === commentId) {
-            return {
-              ...comment,
-              replies: comment.replies.map((reply) =>
-                reply._id === replyId
-                  ? {
-                      ...reply,
-                      isLiked: false,
-                      likes: reply.likes.filter((id) => id !== userId),
-                    }
-                  : reply
-              ),
-            };
-          }
-          return comment;
-        })
-      );
-    }
-  };
-
-  const handleReplyUnlike = async (commentId, replyId) => {
-    const userId = localStorage.getItem("userId");
-
-    setComments(
-      comments.map((comment) => {
-        if (comment._id === commentId) {
-          return {
-            ...comment,
-            replies: comment.replies.map((reply) =>
-              reply._id === replyId
-                ? {
-                    ...reply,
-                    isLiked: false,
-                    likes: reply.likes.filter((id) => id !== userId),
-                  }
-                : reply
-            ),
-          };
-        }
-        return comment;
-      })
-    );
-
-    try {
-      await axios.post(
-        `${apiUrl}/api/activities/comment/${commentId}/reply/${replyId}/unlike`,
-        { userId }
-      );
-    } catch (error) {
-      console.error("Error unliking reply:", error);
-      setComments(
-        comments.map((comment) => {
-          if (comment._id === commentId) {
-            return {
-              ...comment,
-              replies: comment.replies.map((reply) =>
-                reply._id === replyId
-                  ? { ...reply, isLiked: true, likes: [...reply.likes, userId] }
-                  : reply
-              ),
-            };
-          }
-          return comment;
-        })
-      );
-    }
-  };
-
-  const submitReply = async (commentId) => {
-    if (!replyContent.trim()) {
-      console.error("Cannot submit empty reply");
-      return;
-    }
-
-    try {
-      const userId = localStorage.getItem("userId");
-      const response = await axios.post(
-        `${apiUrl}/api/activities/comment/${commentId}/reply`,
-        {
-          userId,
-          replyContent,
-        }
-      );
-
-      toggleRefresh();
-      setComments(
-        comments.map((comment) =>
-          comment._id === commentId ? response.data : comment
-        )
-      );
-
-      setReplyContent("");
-    } catch (error) {
-      console.error("Error posting reply:", error);
     }
   };
 
@@ -369,13 +164,6 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                         activity={activity}
                         refresh={refresh}
                         toggleRefresh={toggleRefresh}
-                        handleCommentLike={handleCommentLike}
-                        handleCommentUnlike={handleCommentUnlike}
-                        handleReplyLike={handleReplyLike}
-                        handleReplyUnlike={handleReplyUnlike}
-                        submitReply={submitReply}
-                        replyContent={replyContent}
-                        setReplyContent={setReplyContent}
                         isModalOpen={isModalOpen}
                         closeModal={closeModal}
                         formatTimestamp={formatTimestamp}
