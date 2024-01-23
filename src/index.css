@@ -1310,6 +1310,6 @@ label {
 }
 
 .scrollable-comments {
-    max-height: 525px;
+    max-height: 500px;
     overflow-y: auto;
 }
