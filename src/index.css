@@ -1317,6 +1317,8 @@ label {
 }
 
 .scrollable-comments {
-    max-height: 500px;
+    display: flex;
+    flex-direction: column-reverse;
+    max-height: 455px;
     overflow-y: auto;
 }

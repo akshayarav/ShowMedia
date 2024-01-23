@@ -121,7 +121,7 @@ const CommentModal = ({
                   />
                 </div>
               </div>
-              <div className="d-flex flex-column justify-content-between col-5 content-body px-web-0">
+              <div className="d-flex flex-column col-5 content-body px-web-0">
                 <div className="">
                   <div className="border-bottom">
                     <div className="d-flex justify-content-between">
@@ -167,7 +167,7 @@ const CommentModal = ({
                   </div>
                 </div>
 
-                <div className="comments p-3 border-top">
+                <div className="comments p-3">
                   <div
                     className={`comments ${
                       comments.length > 6 ? "scrollable-comments" : ""
@@ -242,8 +242,9 @@ const CommentModal = ({
                       </div>
                     ))}
                   </div>
-                  <div className="mt-auto">
-                    <div className="d-flex align-items-center">
+                </div>
+                <div className="mt-auto">
+                    <div className="d-flex align-items-center p-2 border-top">
                       <span className="material-icons bg-transparent border-0 text-primary pe-2 md-36">
                         account_circle
                       </span>
@@ -266,7 +267,6 @@ const CommentModal = ({
                       </button>
                     </div>
                   </div>
-                </div>
               </div>
             </div>
           </div>
