@@ -8,6 +8,7 @@ function MessageCard({ selectedUser, mobile }) {
     const user = selectedUser
     const [message, setMessage] = useState('')
     const [convo, setConvo] = useState(null)
+    
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);

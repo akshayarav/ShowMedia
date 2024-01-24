@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import EditModal from './EditModal';
+import EditModal from './Modals/EditModal';
 import { FollowerUpdateContext } from '../../FollowerUpdateContext';
 import FollowButton from './FollowButton';
-import FollowersModal from './FollowersModal';
+import FollowersModal from './Modals/FollowersModal';
+import Stats from './Stats/Stats';
 
 function Overview() {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -37,6 +38,11 @@ function Overview() {
 
     const { followerUpdate } = useContext(FollowerUpdateContext);
     const [isLoading, setIsLoading] = useState(false)
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
 
 
     useEffect(() => {
@@ -100,52 +106,62 @@ function Overview() {
     const numFollowing = profileUser.following ? profileUser.following.length : 0;
     const numFollowers = profileUser.followers ? profileUser.followers.length : 0;
     return (
-        <div className="border-bottom pb-3">
-            {isAuthenticated &&
-                <h2 className="fw-bold text-white mt-3">My Profile</h2>
-            }
-            <div className="bg-glass rounded-4 shadow-sm profile ">
-                <div className="d-flex align-items-center px-3 pt-3">
-                    <img src={profileUser.profilePicture} className="img-fluid rounded-circle" alt="profile-img"></img>
-                    <div className="ms-3">
-                        <h6 className="mb-0 d-flex align-items-start text-body fs-6 fw-bold">{profileUser.first} {profileUser.last} </h6>
-                        <p className="text-muted mb-0">@{profileUser.username}</p>
-                    </div>
-                    {isAuthenticated ? (
-                        <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                            <button onClick={toggleEditModal} className="btn btn-outline-primary btn-sm px-3 rounded-pill" htmlFor="btncheck1">Edit Profile</button>
-                            {showEditModal && <EditModal closeModal={toggleEditModal} />}
+        //Handle picture upload using Amazon S3, upload image to cloud which then stores in the server
+        <div>
+            <div className="border-bottom pb-3">
+                {isAuthenticated &&
+                    <h2 className="fw-bold text-white mt-3">My Profile</h2>
+                }
+                <div className="bg-glass rounded-4 shadow-sm profile ">
+                    <div className="d-flex align-items-center px-3 pt-3">
+                        <div>
+                            <img src={profileUser.profilePicture} className="img-fluid rounded-circle" alt="profile-img"></img>
                         </div>
-                    ) : <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group"><FollowButton other_user={profileUser} /></div>}
-                </div>
-                <div className="p-3">
-                    <p className="mb-2 fs-6">{profileUser.bio}</p>
-                    <div className="d-flex followers">
-                        <div onClick={toggleFollowersModal} role="button" tabIndex="0">
-                            <p className="mb-0">{numFollowers} <span className="text-muted">Followers</span></p>
-                            <div className="d-flex">
-                                {followers.map(user => (
-                                    <img key={user._id} src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
-                                ))}
+                        <div className="ms-3">
+                            <h6 className="mb-0 d-flex align-items-start text-body fs-6 fw-bold">{profileUser.first} {profileUser.last} </h6>
+                            <p className="text-muted mb-0">@{profileUser.username}</p>
+                        </div>                    {isAuthenticated ? (
+                            <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                <button onClick={toggleEditModal} className="btn btn-outline-primary btn-sm px-3 rounded-pill" htmlFor="btncheck1">Edit Profile</button>
+                                {showEditModal && <EditModal closeModal={toggleEditModal} />}
                             </div>
-                        </div>
-                        {showFollowersModal && <FollowersModal closeModal={toggleFollowersModal} title={"Followers"} followers={followers} />}
-                        <div onClick={toggleFollowingModal} role="button" tabIndex="0">
-                            <div className="ms-5 ps-5">
-                                <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
+                        ) : <div className="ms-auto btn-group" role="group" aria-label="Basic checkbox toggle button group"><FollowButton other_user={profileUser} /></div>}
+                    </div>
+                    <p className="text-muted mt-2 ms-3"> Joined {formatDate(profileUser.timestamp)} </p>
+                    <div className="p-3">
+                        <p className="mb-2 fs-6">{profileUser.bio}</p>
+                        <div className="d-flex followers">
+                            <div onClick={toggleFollowersModal} role="button" tabIndex="0">
+                                <p className="mb-0">{numFollowers} <span className="text-muted">Followers</span></p>
                                 <div className="d-flex">
-                                    {following.map(user => (
+                                    {followers.map(user => (
                                         <img key={user._id} src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
                                     ))}
                                 </div>
                             </div>
+                            {showFollowersModal && <FollowersModal closeModal={toggleFollowersModal} title={"Followers"} followers={followers} />}
+                            <div onClick={toggleFollowingModal} role="button" tabIndex="0">
+                                <div className="ms-5 ps-5">
+                                    <p className="mb-0">{numFollowing} <span className="text-muted">Following</span></p>
+                                    <div className="d-flex">
+                                        {following.map(user => (
+                                            <img key={user._id} src={user.profilePicture} className="img-fluid rounded-circle" alt="follower-img" />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            {showFollowingModal && <FollowersModal closeModal={toggleFollowingModal} title={"Following"} following={following} />}
                         </div>
-                        {showFollowingModal && <FollowersModal closeModal={toggleFollowingModal} title={"Following"} following={following} />}
                     </div>
                 </div>
             </div>
+            <div className="container">
+                <div className="row">
+                    <Stats />
+                </div>
+            </div>
         </div>
-        //Handle picture upload using Amazon S3, upload image to cloud which then stores in the server
+
     )
 }
 

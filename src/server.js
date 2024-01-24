@@ -177,6 +177,43 @@ ENDPOINTS
 =====================================================================================================================================================================
 */
 
+//GET the stats of a user with username {username}
+app.get('/api/user/stats/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    // Find the user by username
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Fetch all season ratings for this user
+    const seasonRatings = await SeasonRating.find({ user: user._id });
+
+    // Calculate the total number of shows and episodes seen, and average rating
+    const totalShows = seasonRatings.length;
+    const totalEpisodes = seasonRatings.reduce((sum, rating) => {
+      // Extract the first number from the episodes string
+      const episodesWatched = rating.episodes.match(/\d+/);
+      return sum + (episodesWatched ? parseInt(episodesWatched[0], 10) : 0);
+  }, 0);
+    const averageRating = seasonRatings.reduce((sum, rating) => sum + rating.rating, 0) / totalShows;
+
+    // Return the stats
+    res.json({
+      username: username,
+      totalShows: totalShows,
+      totalEpisodes: totalEpisodes,
+      averageRating: isNaN(averageRating) ? 0 : averageRating.toFixed(2) // in case there are no ratings
+    });
+  } catch (error) {
+    console.error('Error fetching user stats:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
 // GET endpoint to fetch a conversation between two users
 app.get('/api/conversations/find', async (req, res) => {
   try {
