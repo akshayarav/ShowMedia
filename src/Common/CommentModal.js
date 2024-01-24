@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
-import ReplyModal from "./ReplyModal";
+// import ReplyModal from "./ReplyModal";
 
 const CommentModal = ({
   image,
@@ -48,12 +48,12 @@ const CommentModal = ({
   if (!isModalOpen) return null;
 
   const openReplyModal = () => {
-    console.log("reply modal opened")
+    console.log("reply modal opened");
     setReplyModalOpen(true);
   };
 
   const closeReplyModal = () => {
-    console.log("reply modal closed")
+    console.log("reply modal closed");
     setReplyModalOpen(false);
   };
 
@@ -176,10 +176,10 @@ const CommentModal = ({
       show={true}
       onHide={closeModal}
       centered
-      className="modal fade modal-lg"
+      className="modal fade modal-xl"
     >
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content rounded-4 overflow-hidden border-0 bg-brown-gradient-color">
+      <div className="modal-dialog modal-dialog-centered modal-xl">
+        <div className="modal-content rounded-4 shadow-sm border-0 bg-brown-gradient-color">
           <div className="modal-header d-none">
             <h5 className="modal-title" id="exampleModalLabel2">
               Modal title
@@ -193,60 +193,49 @@ const CommentModal = ({
           </div>
           <div className="modal-body p-0">
             <div className="row m-0">
-              <div className="col-sm-7 px-0 m-sm-none">
-                <div className="single-image-placeholder">
-                  <img
-                    src={image}
-                    className="d-block w-100"
-                    alt="Placeholder"
-                  />
+              <div className="content-body px-web-0">
+                <div className="border-bottom">
+                  <div className="d-flex justify-content-between">
+                    <h5 className="mb-0 text-bold details-container">
+                      Comments
+                    </h5>
+                    <div className="small dropdown p-3">
+                      <a
+                        href="#"
+                        className="text-muted text-decoration-none material-icons"
+                        onClick={closeModal}
+                      >
+                        close
+                      </a>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="d-flex flex-column col-5 content-body px-web-0">
-                <div className="">
-                  <div className="border-bottom">
-                    <div className="d-flex justify-content-between">
-                      <h5 className="mb-0 text-bold details-container">
-                        {activity.showName}
-                      </h5>
-                      <div className="small dropdown p-3">
-                        <a
-                          href="#"
-                          className="text-muted text-decoration-none material-icons"
-                          onClick={closeModal}
-                        >
-                          close
-                        </a>
+                <div className="d-flex justify-content-between align-items-center border-bottom p-2">
+                  <div className="d-flex">
+                    <a href="#" className="text-decoration-none">
+                      <img
+                        src={activity.user.profilePicture}
+                        className="img-fluid rounded-circle"
+                        alt="profile-img"
+                        style={{ width: "40px", height: "40px", marginRight: "10px", marginLeft: "20px", marginBottom: "20px", marginTop: "20px" }}
+                      />
+                    </a>
+                    <div className="d-flex ms-1 justify-content-between" style={{ marginRight: "20px", marginBottom: "20px", marginTop: "20px" }}>
+                      <div>
+                        <h6 className="fw-bold text-body mb-0">
+                          {activity.user.first}
+                        </h6>
+                        <p className="text-muted mb-0 small">
+                          @{activity.user.username}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <div className="d-flex justify-content-between align-items-center border-bottom p-2">
-                    <div className="d-flex">
-                      <a href="#" className="text-decoration-none">
-                        <img
-                          src={activity.user.profilePicture}
-                          className="img-fluid rounded-circle"
-                          alt="profile-img"
-                          style={{ width: "40px", height: "40px" }}
-                        />
-                      </a>
-                      <div className="d-flex ms-1 justify-content-between">
-                        <div>
-                          <h6 className="fw-bold text-body mb-0">
-                            {activity.user.first}
-                          </h6>
-                          <p className="text-muted mb-0 small">
-                            @{activity.user.username}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <h6 className="mb-0 text-bold">
-                      Season {activity.seasonNumber}
-                    </h6>
-                    <div>
-                      <p className="mb-0">{activity.rating}/10</p>
-                    </div>
+                  <h6 className="mb-0 text-bold" style={{ marginRight: "20px" }}>
+                    {activity.showName} Season {activity.seasonNumber}
+                  </h6>
+                  <div style={{ marginRight: "20px" }}>
+                    <p className="mb-0">{activity.rating}/10</p>
                   </div>
                 </div>
 
@@ -257,15 +246,15 @@ const CommentModal = ({
                     }`}
                   >
                     {comments.map((comment) => (
-                      <div key={comment._id} className="mb-2 d-flex">
-                        <a href="#" className="text-white text-decoration-none">
+                      <div key={comment._id} className="mb-3 d-flex">
+                        <a href="#" className="text-white text-decoration-none" style={{ marginLeft: "20px" }}>
                           <img
                             src={comment.user.profilePicture}
                             className="img-fluid rounded-circle"
                             alt="commenters-img"
                           />
                         </a>
-                        <div className="ms-2 small flex-grow-1">
+                        <div className="ms-2 small flex-grow-1" style={{ marginRight: "20px" }}>
                           <div className="d-flex justify-content-between bg-glass px-3 py-2 rounded-4 mb-1 comment-box">
                             <div>
                               <p className="fw-500 mb-0 comment-text">
@@ -312,7 +301,7 @@ const CommentModal = ({
                             >
                               Reply
                             </button>
-                            <div>
+                            {/* <div>
                               <ReplyModal
                                 commentId={selectedCommentId}
                                 activityId={activityId}
@@ -322,7 +311,7 @@ const CommentModal = ({
                                 closeReplyModal={closeReplyModal}
                                 formatTimestamp={formatTimestamp}
                               />
-                            </div>
+                            </div> */}
 
                             <span className="fs-3 text-muted material-icons mx-1">
                               circle
