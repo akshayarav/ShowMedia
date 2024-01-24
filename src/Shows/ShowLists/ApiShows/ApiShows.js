@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import defaultImage from '../ShowCard/error.jpg';
-import ShowCard from "../ShowCard/ShowCard";
+import defaultImage from '../../ShowCard/error.jpg';
+import ShowCard from "../../ShowCard/ShowCard";
 
-function PopularShows({ recShows, selectedGenres }) {
+function ApiShows({ recShows, selectedGenres, list }) {
     const [shows, setShows] = useState([]);
 
-    const popularApiUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=1`;
+    const apiUrl = list === "trending" ? `https://api.themoviedb.org/3/trending/tv/week?api_key=${process.env.REACT_APP_API_KEY}`
+    : `https://api.themoviedb.org/3/tv/${list}?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=1`;
     useEffect(() => {
         if (recShows) {
-            axios.get(popularApiUrl)
+            axios.get(apiUrl)
                 .then(response => {
                     const newShows = response.data.results
                         .map(show => {
@@ -40,7 +41,6 @@ function PopularShows({ recShows, selectedGenres }) {
 
     return (
         <div>
-            <h2 className="fw-bold text-white mb-1">Popular Shows</h2>
             <div className="d-flex flex-row overflow-auto mb-5">
                 {shows.map((show, index) => (
                     <ShowCard key={index} series_id={show.id} name={show.name} image={show.image} users={show.users} />
@@ -50,4 +50,4 @@ function PopularShows({ recShows, selectedGenres }) {
     )
 }
 
-export default PopularShows
+export default ApiShows

@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from "react"
 import axios from "axios"
-import ShowCard from "../ShowCard/ShowCard"
-import defaultImage from '../ShowCard/error.jpg';
+import defaultImage from '../../ShowCard/error.jpg';
+import ShowCard from "../../ShowCard/ShowCard";
 
 function FollowerRecShows({recShows, selectedGenres}) {
     const [shows, setShows] = useState([])
