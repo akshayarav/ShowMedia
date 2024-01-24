@@ -8,6 +8,7 @@ import MessageCard from "./MessageCard/MessageCard"
 import axios from "axios"
 
 function Messages() {
+    const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
 
     const [searchScreenOn, setSearchScreenOn] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
@@ -37,6 +38,15 @@ function Messages() {
             return null;
         }
     };
+
+    useEffect(() => {
+        function handleResize() {
+            setIsMobileView(window.innerWidth < 768);
+        }
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const fetchConversations = async () => {
@@ -78,26 +88,48 @@ function Messages() {
             <div className="py-4">
                 <div className="container">
                     <div className="row position-relative">
-                        <main className="col col-xl-4 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12 border-start border-end main-center">
-                            <div className="main-content">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h2 className="fw-bold text-white mt-4">Messages</h2>
-                                    <div
-                                        role="button"
-                                        className="mt-4"
-                                        style={{ display: "inline-block", width: "30px" }}
-                                        onClick={toggleNewMessageModal} // Add this line
-                                    >
-                                        <span class="material-icons">rate_review_outlined</span>
+                        {selectedUser ?
+                            <main className="col col-xl-4 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12 border-start border-end main-center m-none">
+                                <div className="main-content">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h2 className="fw-bold text-white mt-4">Messages</h2>
+                                        <div
+                                            role="button"
+                                            className="mt-4"
+                                            style={{ display: "inline-block", width: "30px" }}
+                                            onClick={toggleNewMessageModal} // Add this line
+                                        >
+                                            <span class="material-icons">rate_review_outlined</span>
+                                        </div>
+                                        {showNewMessageModal && <NewMessageModal closeModal={toggleNewMessageModal} setUser={(e) => setSelectedUser(e)} />}
                                     </div>
-                                    {showNewMessageModal && <NewMessageModal closeModal={toggleNewMessageModal} setUser = {(e) => setSelectedUser(e)}/>}
+                                    {userDataConversations.map((user) => (
+                                        <UserCard key={user._id} other_user={user} messages={true} messagesSubmit={(e) => setSelectedUser(e)} />
+                                    ))}
                                 </div>
-                                {userDataConversations.map((user) => (
-                                    <UserCard key={user._id} other_user={user} messages={true} messagesSubmit={(e) => setSelectedUser(e)}/>
-                                ))}
-                            </div>
-                        </main>
-                        <MessageCard selectedUser={selectedUser} />
+                            </main>
+                            :
+                            <main className="col col-xl-4 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12 border-start border-end main-center">
+                                <div className="main-content">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h2 className="fw-bold text-white mt-4">Messages</h2>
+                                        <div
+                                            role="button"
+                                            className="mt-4"
+                                            style={{ display: "inline-block", width: "30px" }}
+                                            onClick={toggleNewMessageModal} // Add this line
+                                        >
+                                            <span class="material-icons">rate_review_outlined</span>
+                                        </div>
+                                        {showNewMessageModal && <NewMessageModal closeModal={toggleNewMessageModal} setUser={(e) => setSelectedUser(e)} />}
+                                    </div>
+                                    {userDataConversations.map((user) => (
+                                        <UserCard key={user._id} other_user={user} messages={true} messagesSubmit={(e) => setSelectedUser(e)} />
+                                    ))}
+                                </div>
+                            </main>
+                        }
+                        <MessageCard selectedUser={selectedUser} mobile = {isMobileView}/>
                         <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                     </div>
                 </div>

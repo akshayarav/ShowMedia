@@ -13,7 +13,6 @@ function UserCard({ other_user: initialOtherUser, toggleRefresh, username, messa
         event.stopPropagation()
         if (messages) {
             event.preventDefault();
-            console.log(otherUser)
             messagesSubmit(otherUser);
         }
         if (toggleRefresh) {

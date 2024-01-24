@@ -15,8 +15,16 @@ function MessageText({ message_id }) {
             console.error(error)
             return null
         }
-
     }
+
+    const formatDate = (dateString) => {
+        const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+
+        const date = new Date(dateString);
+        return `${date.toLocaleDateString(undefined, dateOptions)} ${date.toLocaleTimeString(undefined, timeOptions)}`;
+    };
+
 
     useEffect(() => {
         if (message_id) {
@@ -27,16 +35,18 @@ function MessageText({ message_id }) {
         }
     }, [message_id])
 
-    console.log(message)
     if (message.message) {
         if (message.sender == userId) {
             return (
                 <div className="container">
                     <div className="row">
-                        <div className="offset-6 col-6 bg-glass rounded-4 mt-2">
-                            <div className="m-1 d-flex justify-content-end align-items-center">
-                                <p className="mt-1"> {message.message}  </p>
+                        <div className="offset-5 col-7 mt-2">
+                            <div className="bg-glass rounded-4 mt-2">
+                                <p className="p-3 text-light" style={{ wordWrap: "break-word", overflowWrap: "break-word" }}> {message.message} </p>
                             </div>
+                        </div>
+                        <div className="d-flex justify-content-end">
+                            <p className=""> {formatDate(message.timestamp)}  </p>
                         </div>
                     </div>
                 </div>
@@ -46,11 +56,12 @@ function MessageText({ message_id }) {
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-6 bg-glass rounded-4 mt-2">
-                        <div className="m-1 d-flex justify-content-end align-items-center">
-                            <p className="mt-1"> {message.message}  </p>
+                    <div className="col-7 mt-2">
+                        <div className="bg-glass rounded-4 mt-2">
+                            <p className="p-3 text-light" style={{ wordWrap: "break-word", overflowWrap: "break-word" }}> {message.message} </p>
                         </div>
                     </div>
+                    <p className=""> {formatDate(message.timestamp)}  </p>
                 </div>
             </div>
         )
