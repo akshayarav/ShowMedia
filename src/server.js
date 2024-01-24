@@ -94,6 +94,7 @@ const seasonRatingSchema = new mongoose.Schema({
   comment: String,
   status: String,
   episodes: String,
+  hours: Number,
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
@@ -191,13 +192,13 @@ app.get('/api/user/stats/:username', async (req, res) => {
     // Fetch all season ratings for this user
     const seasonRatings = await SeasonRating.find({ user: user._id });
 
-    // Calculate the total number of shows and episodes seen, and average rating
+    // Calculate the total number of shows, episodes seen, and average rating
     const totalShows = seasonRatings.length;
     const totalEpisodes = seasonRatings.reduce((sum, rating) => {
-      // Extract the first number from the episodes string
       const episodesWatched = rating.episodes.match(/\d+/);
       return sum + (episodesWatched ? parseInt(episodesWatched[0], 10) : 0);
-  }, 0);
+    }, 0);
+    const totalHours = seasonRatings.reduce((sum, rating) => sum + (rating.hours || 0), 0); // Sum the hours
     const averageRating = seasonRatings.reduce((sum, rating) => sum + rating.rating, 0) / totalShows;
 
     // Return the stats
@@ -205,6 +206,7 @@ app.get('/api/user/stats/:username', async (req, res) => {
       username: username,
       totalShows: totalShows,
       totalEpisodes: totalEpisodes,
+      totalHours: totalHours.toFixed(2), // Include total hours
       averageRating: isNaN(averageRating) ? 0 : averageRating.toFixed(2) // in case there are no ratings
     });
   } catch (error) {
@@ -214,24 +216,25 @@ app.get('/api/user/stats/:username', async (req, res) => {
 });
 
 
+
 // GET endpoint to fetch a conversation between two users
 app.get('/api/conversations/find', async (req, res) => {
   try {
-      const { userId1, userId2 } = req.query;
+    const { userId1, userId2 } = req.query;
 
-      // Find a conversation that includes both userId1 and userId2
-      const conversation = await Conversation.findOne({
-          participants: { $all: [userId1, userId2] }
-      }).exec();
+    // Find a conversation that includes both userId1 and userId2
+    const conversation = await Conversation.findOne({
+      participants: { $all: [userId1, userId2] }
+    }).exec();
 
-      if (!conversation) {
-          return res.status(404).send('Conversation not found');
-      }
+    if (!conversation) {
+      return res.status(404).send('Conversation not found');
+    }
 
-      res.json(conversation);
+    res.json(conversation);
   } catch (error) {
-      console.error('Error fetching conversation:', error);
-      res.status(500).send('Server error: ' + error.message);
+    console.error('Error fetching conversation:', error);
+    res.status(500).send('Server error: ' + error.message);
   }
 });
 
@@ -747,7 +750,7 @@ app.get('/followers/:userId', async (req, res) => {
 //Creates new season rating for user with id {userId}
 app.post('/rateSeason', async (req, res) => {
   try {
-    const { userId, showId, seasonNumber, rating, comment, status, episodes, reviewUserName } = req.body;
+    const { userId, showId, seasonNumber, rating, comment, status, episodes, reviewUserName, hours } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -764,7 +767,7 @@ app.post('/rateSeason', async (req, res) => {
 
     const seasonRating = await SeasonRating.findOneAndUpdate(
       { user: userId, show: showId, season: seasonNumber },
-      { $set: { rating: rating, comment: comment, status: status, episodes: episodes } },
+      { $set: { rating: rating, comment: comment, status: status, episodes: episodes, hours: hours } },
       { new: true, upsert: true }
     );
 
