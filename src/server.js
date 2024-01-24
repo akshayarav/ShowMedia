@@ -200,15 +200,33 @@ app.get('/api/user/stats/:username', async (req, res) => {
     }, 0);
     const totalHours = seasonRatings.reduce((sum, rating) => sum + (rating.hours || 0), 0); // Sum the hours
     const averageRating = seasonRatings.reduce((sum, rating) => sum + rating.rating, 0) / totalShows;
+    
+    // Get the current year
+    const currentYear = new Date().getFullYear();
 
-    // Return the stats
+    // Filter activities by the current year and group by month
+    const monthlyActivity = await Activity.aggregate([
+      { $match: { user: user._id, timestamp: { $gte: new Date(`${currentYear}-01-01`), $lt: new Date(`${currentYear + 1}-01-01`) } } },
+      { $group: { _id: { month: { $month: '$timestamp' } }, count: { $sum: 1 } } },
+      { $sort: { '_id.month': 1 } } // Sort by month
+    ]);
+    // Format the data for easier consumption (e.g., array of counts indexed by month)
+    let monthlyCounts = Array(12).fill(0); // Initialize an array for 12 months
+    monthlyActivity.forEach(activity => {
+      const monthIndex = activity._id.month - 1; // Month index (0-11)
+      monthlyCounts[monthIndex] = activity.count;
+    });
+
+    // Return the stats including monthly activity counts
     res.json({
       username: username,
       totalShows: totalShows,
       totalEpisodes: totalEpisodes,
-      totalHours: totalHours.toFixed(2), // Include total hours
-      averageRating: isNaN(averageRating) ? 0 : averageRating.toFixed(2) // in case there are no ratings
+      totalHours: totalHours.toFixed(2),
+      averageRating: isNaN(averageRating) ? 0 : averageRating.toFixed(2),
+      monthlyActivity: monthlyCounts
     });
+    
   } catch (error) {
     console.error('Error fetching user stats:', error);
     res.status(500).json({ message: 'Internal Server Error' });
