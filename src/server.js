@@ -94,6 +94,7 @@ const seasonRatingSchema = new mongoose.Schema({
   comment: String,
   status: String,
   episodes: String,
+  hours: Number,
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
@@ -177,24 +178,81 @@ ENDPOINTS
 =====================================================================================================================================================================
 */
 
+//GET the stats of a user with username {username}
+app.get('/api/user/stats/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    // Find the user by username
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Fetch all season ratings for this user
+    const seasonRatings = await SeasonRating.find({ user: user._id });
+
+    // Calculate the total number of shows, episodes seen, and average rating
+    const totalShows = seasonRatings.length;
+    const totalEpisodes = seasonRatings.reduce((sum, rating) => {
+      const episodesWatched = rating.episodes.match(/\d+/);
+      return sum + (episodesWatched ? parseInt(episodesWatched[0], 10) : 0);
+    }, 0);
+    const totalHours = seasonRatings.reduce((sum, rating) => sum + (rating.hours || 0), 0); // Sum the hours
+    const averageRating = seasonRatings.reduce((sum, rating) => sum + rating.rating, 0) / totalShows;
+    
+    // Get the current year
+    const currentYear = new Date().getFullYear();
+
+    // Filter activities by the current year and group by month
+    const monthlyActivity = await Activity.aggregate([
+      { $match: { user: user._id, timestamp: { $gte: new Date(`${currentYear}-01-01`), $lt: new Date(`${currentYear + 1}-01-01`) } } },
+      { $group: { _id: { month: { $month: '$timestamp' } }, count: { $sum: 1 } } },
+      { $sort: { '_id.month': 1 } } // Sort by month
+    ]);
+    // Format the data for easier consumption (e.g., array of counts indexed by month)
+    let monthlyCounts = Array(12).fill(0); // Initialize an array for 12 months
+    monthlyActivity.forEach(activity => {
+      const monthIndex = activity._id.month - 1; // Month index (0-11)
+      monthlyCounts[monthIndex] = activity.count;
+    });
+
+    // Return the stats including monthly activity counts
+    res.json({
+      username: username,
+      totalShows: totalShows,
+      totalEpisodes: totalEpisodes,
+      totalHours: totalHours.toFixed(2),
+      averageRating: isNaN(averageRating) ? 0 : averageRating.toFixed(2),
+      monthlyActivity: monthlyCounts
+    });
+    
+  } catch (error) {
+    console.error('Error fetching user stats:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 // GET endpoint to fetch a conversation between two users
 app.get('/api/conversations/find', async (req, res) => {
   try {
-      const { userId1, userId2 } = req.query;
+    const { userId1, userId2 } = req.query;
 
-      // Find a conversation that includes both userId1 and userId2
-      const conversation = await Conversation.findOne({
-          participants: { $all: [userId1, userId2] }
-      }).exec();
+    // Find a conversation that includes both userId1 and userId2
+    const conversation = await Conversation.findOne({
+      participants: { $all: [userId1, userId2] }
+    }).exec();
 
-      if (!conversation) {
-          return res.status(404).send('Conversation not found');
-      }
+    if (!conversation) {
+      return res.status(404).send('Conversation not found');
+    }
 
-      res.json(conversation);
+    res.json(conversation);
   } catch (error) {
-      console.error('Error fetching conversation:', error);
-      res.status(500).send('Server error: ' + error.message);
+    console.error('Error fetching conversation:', error);
+    res.status(500).send('Server error: ' + error.message);
   }
 });
 
@@ -710,7 +768,7 @@ app.get('/followers/:userId', async (req, res) => {
 //Creates new season rating for user with id {userId}
 app.post('/rateSeason', async (req, res) => {
   try {
-    const { userId, showId, seasonNumber, rating, comment, status, episodes, reviewUserName } = req.body;
+    const { userId, showId, seasonNumber, rating, comment, status, episodes, reviewUserName, hours } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -727,7 +785,7 @@ app.post('/rateSeason', async (req, res) => {
 
     const seasonRating = await SeasonRating.findOneAndUpdate(
       { user: userId, show: showId, season: seasonNumber },
-      { $set: { rating: rating, comment: comment, status: status, episodes: episodes } },
+      { $set: { rating: rating, comment: comment, status: status, episodes: episodes, hours: hours } },
       { new: true, upsert: true }
     );
 

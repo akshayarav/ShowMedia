@@ -1,6 +1,6 @@
 import { Modal, Button, Alert } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
-import UserCard from '../../SearchBar/UserCard'
+import UserCard from '../../../SearchBar/UserCard'
 
 function FollowersModal({ closeModal, title, following, followers }) {
 

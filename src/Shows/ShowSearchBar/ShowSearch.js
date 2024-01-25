@@ -53,7 +53,7 @@ function ShowSearch({ onSearch, addGenre, selectedGenres }) {
                     <input
                         type="text"
                         className="form-control border-0 fw-light bg-transparent ps-1"
-                        placeholder="Search shows"
+                        placeholder="Search for a show"
                         onChange={(e) => onSearch(e.target.value)}
                     />
                 </div>

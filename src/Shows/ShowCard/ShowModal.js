@@ -35,25 +35,34 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
 
     }, [selectedSeason, seasons, episodes]);
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setSuccess('');
-
+    
         const userId = localStorage.getItem('userId');
-
         if (!userId) {
             setError('Log In First!');
             return;
         }
-
+    
         if (!selectedSeason || !comment || !rating) {
             setError('Please select a season, enter a rating, and write a comment.');
             return;
         }
-
+    
         try {
+            // Fetch season details from TMDb API
+            const tmdbResponse = await fetch(`https://api.themoviedb.org/3/tv/${series_id}/season/${selectedSeasonObject.season_number}?api_key=${process.env.REACT_APP_API_KEY}`);
+            const seasonDetails = await tmdbResponse.json();
+    
+            // Calculate the total hours
+            const episodesWatched = parseInt(episodeProgress.match(/\d+/)[0], 10); // Extract number of episodes watched
+            const averageRuntime = seasonDetails.episodes[0].runtime; // Assuming all episodes have the same runtime
+            const totalHours = (averageRuntime / 60) * episodesWatched; // Convert to hours
+            console.log(totalHours)
+    
+            // POST request to your API
             const response = await fetch(`${apiUrl}/rateSeason`, {
                 method: 'POST',
                 headers: {
@@ -66,28 +75,30 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                     rating: parseInt(rating),
                     comment: comment,
                     status: status,
-                    episodes: episodeProgress
+                    episodes: episodeProgress,
+                    hours: totalHours
                 }),
             });
-
+    
             const data = await response.json();
-
             if (!response.ok) {
                 setError(data.message || `Failed to add rating and comment for Season ${selectedSeason}`);
                 return;
             }
-
+    
             setSuccess('Season rating and comment added successfully!');
             setTimeout(() => {
                 closeModal();
             }, 1000);
-
+    
         } catch (err) {
             setError('Server error');
         } finally {
             if (updateStatus) { updateStatus() }
         }
     };
+    
+
     const renderStars = (rating) => {
         let stars = [];
         for (let i = 1; i <= 10; i++) {
