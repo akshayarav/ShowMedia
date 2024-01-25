@@ -43,6 +43,8 @@ export const AuthProvider = ({ children }) => {
                 email, username, password, first, last
             });
 
+            console.log("STATUS" + response.status)
+
             if (response.status === 201) {
                 const { token, userId } = response.data;
 
@@ -57,7 +59,7 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Error during registration:', error);
-            return { success: false, message: 'Error during registration.' };
+            return { success: false, message: error.response.data.error };
         }
     };
     

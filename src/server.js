@@ -216,6 +216,7 @@ app.get("/api/user/stats/:username", async (req, res) => {
     // Calculate the total number of shows, episodes seen, and average rating
     const totalShows = seasonRatings.length;
     const totalEpisodes = seasonRatings.reduce((sum, rating) => {
+
       if (typeof rating.episodes === "string") {
         const episodesWatched = rating.episodes.match(/\d+/);
         return sum + (episodesWatched ? parseInt(episodesWatched[0], 10) : 0);
@@ -659,10 +660,11 @@ app.get("/api/reviews/following/:userId/:showId", async (req, res) => {
   }
 });
 
-//register a new user via the user's email provided in {req.body.email}
-app.post("/register", async (req, res) => {
+//POST a new user via the user's email provided in {req.body.email}
+app.post('/register', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
+    console.log(user)
     if (user) {
       return res.status(409).json({ error: "Email already has an account" });
     }
@@ -680,6 +682,7 @@ app.post("/register", async (req, res) => {
       first: req.body.first,
       last: req.body.last,
     });
+    console.log(newUser)
 
     const savedUser = await newUser.save();
     const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, {

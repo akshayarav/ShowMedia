@@ -11,10 +11,11 @@ const CommentModal = ({
   isModalOpen,
   closeModal,
   formatTimestamp,
+  commentsInitial
 }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const userId = localStorage.getItem("userId");
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(commentsInitial);
   const [newComment, setNewComment] = useState("");
   const activityId = activity._id;
   const [isReplyModalOpen, setReplyModalOpen] = useState(false);
@@ -43,7 +44,7 @@ const CommentModal = ({
     };
 
     fetchComments();
-  }, [activityId, isModalOpen, comments, refresh, apiUrl, userId]);
+  }, [refresh]);
 
   if (!isModalOpen) return null;
 
