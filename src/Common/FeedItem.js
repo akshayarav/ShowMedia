@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import CommentModal from "./CommentModal";
+import ReviewCard from "../ShowInfoMain/Reviews/ReviewCard/ReviewCard";
 
 function FeedItem({ activity, refresh, toggleRefresh }) {
+  console.log(activity)
   const apiUrl = process.env.REACT_APP_API_URL;
   const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
   const image = activity.showImage
@@ -12,12 +14,16 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
     activity.status === "Watching"
       ? `watched episode ${activity.episodes} of`
       : activity.status === "Planning"
-      ? "is planning to watch"
-      : activity.status === "Completed"
-      ? "completed"
-      : activity.status === "Dropped"
-      ? "dropped"
-      : "unknown";
+        ? "is planning to watch"
+        : activity.status === "Completed"
+          ? "completed"
+          : activity.status === "Dropped"
+            ? "dropped" :
+            activity.status === "Review"
+              ? "Made an official review for the show" :
+              activity.status === "Removed Review"
+                ? "Removed their review for"
+                : "unknown";
 
   const username = activity.user.username;
   const first = activity.user.first;
@@ -117,15 +123,19 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
 
                 <div className="mb-2">
                   <h5 className="mb-0">
-                    {activity.showName} -{" "}
-                    <span>Season {activity.seasonNumber}</span>
+                    {activity.showName}
+                    {activity.status !== "Review" && activity.status !== "Removed Review" && <span> - Season {activity.seasonNumber}</span>}
                   </h5>
                 </div>
 
                 <div className="mb-4">
-                  <h6 className="mb-0 ">{renderStars(activity.rating)}</h6>(
-                  {activity.rating}/10)
-                  <p className="mb-3 mt-3">Comment: "{activity.comment}"</p>
+                  {activity.status !== "Review" && activity.status !== "Removed Review" &&
+                    <div>
+                      <h6 className="mb-0 ">{renderStars(activity.rating)}</h6>
+                      ({activity.rating} / 10)
+                    </div>
+                  }
+                  {activity.status !== "Review" && activity.status !== "Removed Review" && <p className="mb-3 mt-3">Comment: "{activity.comment}"</p>}
                 </div>
 
                 <div className="d-flex align-items-center justify-content-between mb-2">
@@ -200,6 +210,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
             </div>
           </div>
         </div>
+        {activity.status === "Review" && activity.review && <ReviewCard review={activity.review} />}
       </div>
     </div>
   );

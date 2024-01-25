@@ -6,8 +6,7 @@ import ShowCard from "./ShowCard/ShowCard";
 import ShowSearch from "./ShowSearchBar/ShowSearch";
 import MobileBar from "../MobileBar/MobileBar";
 import UserCard from "../SearchBar/UserCard";
-import FollowerRecShows from "./FollowerRecShows/FollowerRecShows";
-import PopularShows from "./PopularShows/PopularShows";
+import ShowList from "./ShowLists/ShowList";
 import defaultImage from "./ShowCard/error.jpg";
 
 function Shows() {
@@ -171,16 +170,7 @@ function Shows() {
                 addGenre={addGenre}
                 selectedGenres={selectedGenres}
               />
-              {recShows && recShows.size > 0 && (
-                <FollowerRecShows
-                  recShows={recShows}
-                  selectedGenres={selectedGenres}
-                />
-              )}
-              <PopularShows
-                recShows={recShows}
-                selectedGenres={selectedGenres}
-              />
+              <ShowList recShows = {recShows} selectedGenres = {selectedGenres} />
             </div>
             <Sidebar
               isOffcanvasOpen={isOffcanvasOpen}
