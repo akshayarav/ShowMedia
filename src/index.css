@@ -224,6 +224,16 @@
     max-width: 100%;
 }
 
+.stats-details-container {
+    white-space: nowrap;
+    /* Keeps the text on a single line */
+    overflow: hidden !important;
+    /* Ensures the overflow is not visible */
+    text-overflow: ellipsis;
+    /* Adds an ellipsis to the end of the text */
+    max-width: 100%;
+}
+
 @media (max-width: 1200px) {
     .search-bar-container {
         display: none;

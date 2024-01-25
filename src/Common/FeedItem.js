@@ -4,7 +4,6 @@ import CommentModal from "./CommentModal";
 import ReviewCard from "../ShowInfoMain/Reviews/ReviewCard/ReviewCard";
 
 function FeedItem({ activity, refresh, toggleRefresh }) {
-  console.log(activity)
   const apiUrl = process.env.REACT_APP_API_URL;
   const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
   const image = activity.showImage
