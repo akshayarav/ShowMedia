@@ -11,10 +11,11 @@ const CommentModal = ({
   isModalOpen,
   closeModal,
   formatTimestamp,
+  commentsInitial
 }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const userId = localStorage.getItem("userId");
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(commentsInitial);
   const [newComment, setNewComment] = useState("");
   const activityId = activity._id;
   const [isReplyModalOpen, setReplyModalOpen] = useState(false);
@@ -43,17 +44,15 @@ const CommentModal = ({
     };
 
     fetchComments();
-  }, [activityId, isModalOpen, comments, refresh, apiUrl, userId]);
+  }, [refresh]);
 
   if (!isModalOpen) return null;
 
   const openReplyModal = () => {
-    console.log("reply modal opened");
     setReplyModalOpen(true);
   };
 
   const closeReplyModal = () => {
-    console.log("reply modal closed");
     setReplyModalOpen(false);
   };
 
@@ -97,7 +96,6 @@ const CommentModal = ({
 
   const handleCommentLike = async (commentId) => {
     const userId = localStorage.getItem("userId");
-    console.log("like");
     setComments(
       comments.map((comment) => {
         if (comment._id === commentId) {
@@ -135,7 +133,6 @@ const CommentModal = ({
 
   const handleCommentUnlike = async (commentId) => {
     const userId = localStorage.getItem("userId");
-    console.log("unlike");
     setComments(
       comments.map((comment) => {
         if (comment._id === commentId) {
