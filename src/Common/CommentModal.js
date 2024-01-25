@@ -48,12 +48,10 @@ const CommentModal = ({
   if (!isModalOpen) return null;
 
   const openReplyModal = () => {
-    console.log("reply modal opened");
     setReplyModalOpen(true);
   };
 
   const closeReplyModal = () => {
-    console.log("reply modal closed");
     setReplyModalOpen(false);
   };
 
@@ -97,7 +95,6 @@ const CommentModal = ({
 
   const handleCommentLike = async (commentId) => {
     const userId = localStorage.getItem("userId");
-    console.log("like");
     setComments(
       comments.map((comment) => {
         if (comment._id === commentId) {
@@ -135,7 +132,6 @@ const CommentModal = ({
 
   const handleCommentUnlike = async (commentId) => {
     const userId = localStorage.getItem("userId");
-    console.log("unlike");
     setComments(
       comments.map((comment) => {
         if (comment._id === commentId) {

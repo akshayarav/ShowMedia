@@ -8,7 +8,7 @@ function MessageCard({ selectedUser, mobile }) {
     const user = selectedUser
     const [message, setMessage] = useState('')
     const [convo, setConvo] = useState(null)
-    
+
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);
@@ -34,7 +34,6 @@ function MessageCard({ selectedUser, mobile }) {
             });
 
             // Handle the response here. For example, clear the message input after sending.
-            console.log('Message sent:', response.data);
             setMessage('');
 
             // Optionally, fetch the updated conversation
