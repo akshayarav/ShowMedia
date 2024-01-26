@@ -319,10 +319,10 @@ function ShowInfo() {
                   <div className="row border-top mt-3">
                     <div className="d-flex p-3">
                       <div
-                        className="d-flex"
                         style={{
                           width: "50%",
                           marginRight: "10px",
+                          maxWidth: "50vw",
                         }}
                       >
                         <div className="bg-glass rounded-4 flex-grow-1">
@@ -360,17 +360,17 @@ function ShowInfo() {
                       </div>
 
                       <div
-                        className="d-flex"
                         style={{
                           width: "50%",
                           marginLeft: "10px",
+                          maxWidth: "50vw",
                         }}
                       >
                         <div className="bg-glass rounded-4 flex-grow-1">
                           <h5 className="fw-bold text-body p-3 mb-0 d-flex justify-content-center">
                             Networks
                           </h5>
-                          <div className="d-flex overflow-auto justify-content-center">
+                          <div className="d-flex justify-content-center overflow-auto">
                             {show &&
                             show.networks &&
                             show.networks.length > 0 ? (
@@ -382,7 +382,7 @@ function ShowInfo() {
                                     src={
                                       network.logo_path
                                         ? `https://image.tmdb.org/t/p/w92/${network.logo_path}`
-                                        : "/default_profile.jpg"
+                                        : "/error.jpg"
                                     }
                                     alt={network.name}
                                   />
