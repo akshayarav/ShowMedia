@@ -148,20 +148,6 @@ function ShowInfo() {
             <div className="col">
               <div className="main-content">
                 <h2 className="fw-bold text-white mb-1">{show?.name}</h2>
-                <div className="pb-4 m-none">
-                  <div
-                    className="rounded-4"
-                    style={{
-                      backgroundImage: `url(https://image.tmdb.org/t/p/w500${show?.backdrop_path})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                      width: "100%",
-                      height: "400px",
-                    }}
-                  />
-                </div>
-
                 <div className="container mt-3">
                   <div className="row bg-glass p-3 feed-item rounded-4 shadow-sm z-top">
                     <div className="col-3">
@@ -299,20 +285,124 @@ function ShowInfo() {
                         </div>
                       </div>
                     </div>
-                    <div className="py-3 px-lg-3 col-9 d-flex flex-column justify-content-between">
-                      <div>{show?.overview}</div>
-                      <div>
-                        <h6 className="fw-bold text-body">
-                          Status: {show?.status}
+                    <div
+                      className="py-3 px-lg-3 col-9 d-flex flex-column overflow-auto"
+                      style={{ maxHeight: "345px", gap: "10px" }}
+                    >
+                      <div className="bg-glass rounded-4 p-3">
+                        <h6 className="fw-bold text-body text-center border-bottom pb-2">
+                          {" "}
+                          Overview
                         </h6>
-                        <a
-                          className="align-self: flex-end"
-                          href={show?.homepage}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <div>{show?.overview}</div>
+                      </div>
+
+                      <div className="d-flex flex-column bg-glass rounded-4 p-3">
+                        <h6 className="fw-bold text-body text-center border-bottom pb-2">
+                          {" "}
+                          Show Information
+                        </h6>
+                        <div
+                          className="d-flex justify-content-center overflow-auto"
+                          style={{ gap: "10px" }}
                         >
-                          {show?.homepage}
-                        </a>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Status
+                            </h6>
+                            <div className="text-center"> {show?.status}</div>
+                          </div>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              First Air Date
+                            </h6>
+                            <div className="text-center">
+                              {" "}
+                              {show?.first_air_date}
+                            </div>
+                          </div>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Genre
+                            </h6>
+                            <div className="text-center">
+                              {show?.genres
+                                ?.map((genre) => genre.name)
+                                .join(", ")}
+                            </div>
+                          </div>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Origin Country
+                            </h6>
+                            <div className="text-center">
+                              {" "}
+                              {show?.origin_country
+                                ?.map((country) => country)
+                                .join(", ")}
+                            </div>
+                          </div>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Original Language
+                            </h6>
+                            <div className="text-center">
+                              {" "}
+                              {show?.original_language}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="d-flex flex-column bg-glass rounded-4 p-3 justify-content-center">
+                        <h6 className="fw-bold text-body text-center border-bottom pb-2">
+                          {" "}
+                          Show Statistics
+                        </h6>
+                        <div
+                          className="d-flex justify-content-center overflow-auto"
+                          style={{ gap: "10px" }}
+                        >
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Vote Average
+                            </h6>
+                            <div className="text-center"> {show?.vote_average}</div>
+                          </div>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Vote Count
+                            </h6>
+                            <div className="text-center"> {show?.vote_count}</div>
+                          </div>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Number of Episodes
+                            </h6>
+                            <div className="text-center">
+                              {" "}
+                              {show?.number_of_episodes}
+                            </div>
+                          </div>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Number of Seasons
+                            </h6>
+                            <div className="text-center">
+                              {" "}
+                              {show?.number_of_seasons}
+                            </div>
+                          </div>
+                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              Popularity
+                            </h6>
+                            <div className="text-center">
+                              {" "}
+                              {show?.popularity}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -375,10 +465,10 @@ function ShowInfo() {
                             show.networks &&
                             show.networks.length > 0 ? (
                               show.networks.map((network) => (
-                                <div className="ms-3 mb-3 me-3 d-flex">
+                                <div className="ms-3 mb-3 me-3 d-flex justify-content-between">
                                   <img
                                     style={{ width: "80px", height: "80px" }}
-                                    className="rounded-circle"
+                                    className="rounded-circle me-2 ms-1"
                                     src={
                                       network.logo_path
                                         ? `https://image.tmdb.org/t/p/w92/${network.logo_path}`
@@ -386,6 +476,9 @@ function ShowInfo() {
                                     }
                                     alt={network.name}
                                   />
+                                  <div className="d-flex flex-column fw-bold text-center justify-content-center me-2">
+                                    {network.name}
+                                  </div>
                                 </div>
                               ))
                             ) : (
@@ -398,14 +491,22 @@ function ShowInfo() {
                       </div>
                     </div>
                   </div>
-
                   <div className="row border-top mt-3">
                     <div className="p-3 scrollable-div">
                       <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
-                        {show && show.users && show.users.length > 0 && (
-                          <h6 className="fw-bold text-body p-3 mb-0 border-bottom">
+                        {show && show.users && show.users.length > 0 ? (
+                          <h6 className="fw-bold text-body p-3 mb-0 d-flex justify-content-center">
                             Seen By
                           </h6>
+                        ) : (
+                          <div className="d-flex flex-column mb-0 d-flex justify-content-center">
+                            <h6 className="fw-bold text-body mt-3 mb-0 d-flex justify-content-center">
+                              Seen By
+                            </h6>
+                            <div className="text-center mt-2 mb-3">
+                              No one has watched this show yet, be the first!
+                            </div>
+                          </div>
                         )}
                         {show &&
                           show.users &&
