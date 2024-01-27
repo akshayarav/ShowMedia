@@ -39,29 +39,28 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
         e.preventDefault();
         setError('');
         setSuccess('');
-    
+
         const userId = localStorage.getItem('userId');
         if (!userId) {
             setError('Log In First!');
             return;
         }
-    
+
         if (!selectedSeason || !comment || !rating) {
             setError('Please select a season, enter a rating, and write a comment.');
             return;
         }
-    
+
         try {
             // Fetch season details from TMDb API
             const tmdbResponse = await fetch(`https://api.themoviedb.org/3/tv/${series_id}/season/${selectedSeasonObject.season_number}?api_key=${process.env.REACT_APP_API_KEY}`);
             const seasonDetails = await tmdbResponse.json();
-    
+
             // Calculate the total hours
             const episodesWatched = parseInt(episodeProgress.match(/\d+/)[0], 10); // Extract number of episodes watched
             const averageRuntime = seasonDetails.episodes[0].runtime; // Assuming all episodes have the same runtime
             const totalHours = (averageRuntime / 60) * episodesWatched; // Convert to hours
-            console.log(totalHours)
-    
+
             // POST request to your API
             const response = await fetch(`${apiUrl}/rateSeason`, {
                 method: 'POST',
@@ -79,25 +78,25 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                     hours: totalHours
                 }),
             });
-    
+
             const data = await response.json();
             if (!response.ok) {
                 setError(data.message || `Failed to add rating and comment for Season ${selectedSeason}`);
                 return;
             }
-    
+
             setSuccess('Season rating and comment added successfully!');
             setTimeout(() => {
                 closeModal();
             }, 1000);
-    
+
         } catch (err) {
             setError('Server error');
         } finally {
             if (updateStatus) { updateStatus() }
         }
     };
-    
+
 
     const renderStars = (rating) => {
         let stars = [];
@@ -196,25 +195,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                 <Button variant="primary" type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase mt-1">Submit</Button>
                             </form>
                         </div>
-                        {!showMore && (
-                            <div className="d-flex justify-content-center">
-                                <Button variant="primary" className="mt-3" onClick={toggleShowMore}>Who's Seen?
-                                    <div>
-                                        <span className="material-icons">expand_more</span>
-                                    </div>
-                                </Button>
-                            </div>
-                        )}
-                        {showMore && (
-                            <div className="p-3 scrollable-div">
-                                <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
-                                    {users && users.length > 0 &&
-                                        <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>}
-                                    {users.map(user => <small key={user}><UserCard username={user} /></small>)}
-                                    <Button variant="primary" className="mt-3" onClick={toggleShowMore}><span className="material-icons">expand_less</span></Button>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             </Modal>
@@ -288,29 +268,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                         </form>
 
                     </div>
-                    {!showMore && (
-                        <div className="d-flex justify-content-center">
-                            <Button variant="primary" className="mt-3" onClick={toggleShowMore}>Who's Seen?
-                                <div>
-                                    <span className="material-icons">expand_more</span>
-                                </div>
-                            </Button>
-                        </div>
-                    )}
-                    {showMore && (
-                        <div>
-                            <div className="d-flex justify-content-center">
-                                <Button variant="primary" className="mt-3" onClick={toggleShowMore}><span className="material-icons">expand_less</span></Button>
-                            </div>
-                            <div className="p-3 scrollable-div">
-                                <div className="bg-glass rounded-4 overflow-hidden shadow-sm account-follow mb-4">
-                                    {users && users.length > 0 &&
-                                        <h6 className="fw-bold text-body p-3 mb-0 border-bottom">Seen By</h6>}
-                                    {users.map(user => <small key={user}><UserCard username={user} /></small>)}
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </Modal>
