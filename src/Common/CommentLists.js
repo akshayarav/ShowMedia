@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function CommentsList({ activityId, refresh, openModal }) {
+function CommentsList({ activityId, refresh, openReplyModal }) {
     const [visibleComments, setVisibleComments] = useState(2);
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
@@ -102,10 +102,6 @@ function CommentsList({ activityId, refresh, openModal }) {
         }
     };
 
-    const handleReplyClick = (commentId) => {
-        openModal()
-    }
-
     return (
         <div className="comments mt-4">
             {comments.slice(0, visibleComments).map(comment => (
@@ -154,7 +150,8 @@ function CommentsList({ activityId, refresh, openModal }) {
                             </span>
                             <button
                                 className="small text-muted text-decoration-none"
-                                onClick={() => handleReplyClick(comment._id)}
+                                onClick={() => openReplyModal(comment._id)
+                                }
                                 style={{
                                     background: "none",
                                     border: "none",

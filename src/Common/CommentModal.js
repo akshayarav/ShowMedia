@@ -9,6 +9,8 @@ const CommentModal = ({
   isModalOpen,
   closeModal,
   formatTimestamp,
+  commentId,
+  replyModalStatus
 }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const userId = localStorage.getItem("userId");
@@ -22,6 +24,11 @@ const CommentModal = ({
   const [replies, setReplies] = useState([])
   const [replyContent, setReplyContent] = useState('')
 
+  useEffect(() => {
+    setReplyModalOpen(replyModalStatus);
+    setSelectedCommentId(commentId)
+  }, [replyModalStatus, commentId]);
+  
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -75,7 +82,7 @@ const CommentModal = ({
     };
 
     fetchCommentAndReplies();
-  }, [selectedCommentId, isReplyModalOpen, apiUrl, refresh]);
+  }, [selectedCommentId, isReplyModalOpen, apiUrl, refresh, commentId]);
 
 
 
@@ -145,6 +152,7 @@ const CommentModal = ({
     setSelectedCommentId(commentId);
     setReplyModalOpen(true);
   };
+
 
   const handleCommentLike = async (commentId, is_reply) => {
     const userId = localStorage.getItem("userId");
@@ -303,7 +311,7 @@ const CommentModal = ({
       className="modal fade modal-xl"
     >
       <div className="modal-dialog modal-dialog-centered modal-xl">
-        {!isReplyModalOpen ?
+        {(!isReplyModalOpen) ?
           <div className="modal-content rounded-4 shadow-sm border-0 bg-brown-gradient-color">
             <div className="modal-body p-0">
               <div className="row m-0">

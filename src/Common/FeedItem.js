@@ -35,7 +35,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const [isReplyModalOpen, setReplyModalOpen] = useState(false);
-  const [selectedCommentId, setSelectedCommentId] = useState(null);
+  const [selectedCommentId, setSelectedCommentId] = useState(null)
 
   const openModal = () => {
     setModalOpen(true);
@@ -44,7 +44,17 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
   // In parent component
   const closeModal = () => {
     setModalOpen(false);
+    toggleRefresh()
+    setReplyModalOpen(false)
+    setModalOpen(false)
+    setSelectedCommentId(null)
   };
+
+  const openReplyModal = (commentId) => {
+    setReplyModalOpen(true)
+    setModalOpen(true)
+    setSelectedCommentId(commentId)
+  }
 
 
   const handleLike = async () => {
@@ -173,7 +183,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                         chat_bubble_outline
                       </span>
                     </div>
-                    {openModal && (
+                    {openModal && isReplyModalOpen ? (
                       <CommentModal
                         activity={activity}
                         refresh={refresh}
@@ -181,8 +191,18 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                         isModalOpen={isModalOpen}
                         closeModal={closeModal}
                         formatTimestamp={formatTimestamp}
-                        setReplyModalOpen = {setReplyModalOpen}
-                        setSelectedCommentId = {setSelectedCommentId}
+                        commentId = {selectedCommentId}
+                        replyModalStatus={true}
+                      />
+                    ) : (
+                      <CommentModal
+                        activity={activity}
+                        refresh={refresh}
+                        toggleRefresh={toggleRefresh}
+                        isModalOpen={isModalOpen}
+                        closeModal={closeModal}
+                        formatTimestamp={formatTimestamp}
+                        replyModalStatus={false}
                       />
                     )}
                   </div>
@@ -217,7 +237,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
           </div>
         </div>
         {activity.status === "Review" && activity.review && <ReviewCard review={activity.review} />}
-        <CommentsList activityId={activity._id} refresh={refresh} toggleRefresh={toggleRefresh} openModal={() => setModalOpen(true)}/>
+        <CommentsList activityId={activity._id} refresh={refresh} toggleRefresh={toggleRefresh} openReplyModal={(commentId) => openReplyModal(commentId)} />
       </div>
     </div>
   );
