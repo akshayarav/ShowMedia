@@ -3,6 +3,7 @@ import axios from "axios";
 import CommentModal from "./CommentModal";
 import ReviewCard from "../ShowInfoMain/Reviews/ReviewCard/ReviewCard";
 import CommentsList from "./CommentLists";
+import { Link } from "react-router-dom";
 
 function FeedItem({ activity, refresh, toggleRefresh }) {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -191,7 +192,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                         isModalOpen={isModalOpen}
                         closeModal={closeModal}
                         formatTimestamp={formatTimestamp}
-                        commentId = {selectedCommentId}
+                        commentId={selectedCommentId}
                         replyModalStatus={true}
                       />
                     ) : (
@@ -226,13 +227,14 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                   </div>
                 </div>
               </div>
-
-              <img
-                src={image}
-                className="img-fluid rounded-4 ms-3"
-                alt={activity.showName}
-                style={{ maxWidth: "100px", height: "auto" }}
-              />
+              <Link to={`/shows/${activity.showId}`}>
+                <img
+                  src={image}
+                  className="img-fluid rounded-4 ms-3"
+                  alt={activity.showName}
+                  style={{ maxWidth: "100px", height: "auto" }}
+                />
+              </Link>
             </div>
           </div>
         </div>
