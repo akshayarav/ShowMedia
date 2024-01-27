@@ -48,7 +48,10 @@ const CommentModal = ({
             isLiked: reply.likes.includes(userId),
           })),
         }));
-        setComments(updatedComments);
+        const sortedComments = updatedComments.sort((a, b) => {
+          return (b.likes.length - a.likes.length)
+        })
+        setComments(sortedComments);
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
@@ -59,7 +62,6 @@ const CommentModal = ({
 
   useEffect(() => {
     if (!selectedCommentId || !isReplyModalOpen) return;
-
     const fetchCommentAndReplies = async () => {
       try {
         const response = await axios.get(
@@ -73,7 +75,10 @@ const CommentModal = ({
             ...comment,
             isLiked: comment.likes.includes(userId),
           }));
-          setReplies(updatedReplies);
+          const sortedReplies = updatedReplies.sort((a, b) => {
+            return (b.likes.length - a.likes.length)
+          })
+          setReplies(sortedReplies);
         } else {
           console.error("Matching comment not found");
         }
@@ -83,7 +88,7 @@ const CommentModal = ({
     };
 
     fetchCommentAndReplies();
-  }, [selectedCommentId, isReplyModalOpen, apiUrl, refresh, commentId, replies]);
+  }, [selectedCommentId, isReplyModalOpen, apiUrl, refresh, commentId]);
 
 
 
@@ -125,7 +130,6 @@ const CommentModal = ({
       return;
     }
 
-    // const fullReply = replyTag + replyContent
     try {
       const response = await axios.post(
         `${apiUrl}/api/activities/comment/${selectedCommentId}/reply`,

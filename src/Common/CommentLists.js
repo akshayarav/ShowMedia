@@ -6,8 +6,6 @@ function CommentsList({ activityId, refresh, openReplyModal }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [comments, setComments] = useState([]);
     const userId = localStorage.getItem('userId')
-    const [visibleReplyBoxId, setVisibleReplyBoxId] = useState(null);
-    const [replyContent, setReplyContent] = useState('');
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -21,7 +19,9 @@ function CommentsList({ activityId, refresh, openReplyModal }) {
                         isLiked: reply.likes.includes(userId)
                     }))
                 }));
-                setComments(updatedComments);
+                const sortedComments = updatedComments.sort((a, b) => {
+                    return( b.likes.length - a.likes.length)}) 
+                setComments(sortedComments);
             } catch (error) {
                 console.error('Error fetching comments:', error);
             }
