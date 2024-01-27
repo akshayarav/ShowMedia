@@ -566,7 +566,6 @@ app.get('/api/reviews/following/:userId/:showId', async (req, res) => {
 app.post('/register', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    console.log(user)
     if (user) {
       return res.status(409).json({ error: "Email already has an account" });
     }
@@ -584,7 +583,6 @@ app.post('/register', async (req, res) => {
       first: req.body.first,
       last: req.body.last
     });
-    console.log(newUser)
 
     const savedUser = await newUser.save();
     const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
@@ -796,8 +794,6 @@ app.post('/rateSeason', async (req, res) => {
       showId: showId // Filter by showId
     });
 
-    console.log(review)
-
     const newActivity = new Activity({
       user: userId,
       type: 'rated',
@@ -921,7 +917,7 @@ app.get('/api/followingFeed/:userId', async (req, res) => {
 
     const activities = await Activity.find({
       user: { $in: following }
-    }).sort({ timestamp: -1 }).populate('user', 'username first profilePicture').lean();
+    }).sort({ timestamp: -1 }).populate('user', 'username first profilePicture').populate({ path: 'review', select: '' }).lean();
 
     res.status(200).json(activities);
   } catch (error) {

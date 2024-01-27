@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import CommentModal from "./CommentModal";
 import ReviewCard from "../ShowInfoMain/Reviews/ReviewCard/ReviewCard";
+import CommentsList from "./CommentLists";
 
 function FeedItem({ activity, refresh, toggleRefresh }) {
-  console.log(activity)
   const apiUrl = process.env.REACT_APP_API_URL;
   const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
   const image = activity.showImage
@@ -34,13 +34,18 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
   const [likeCount, setLikeCount] = useState(activity.likes.length);
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const [isReplyModalOpen, setReplyModalOpen] = useState(false);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
+
   const openModal = () => {
     setModalOpen(true);
   };
 
+  // In parent component
   const closeModal = () => {
     setModalOpen(false);
   };
+
 
   const handleLike = async () => {
     const userId = localStorage.getItem("userId");
@@ -170,13 +175,14 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                     </div>
                     {openModal && (
                       <CommentModal
-                        image={image}
                         activity={activity}
                         refresh={refresh}
                         toggleRefresh={toggleRefresh}
                         isModalOpen={isModalOpen}
                         closeModal={closeModal}
                         formatTimestamp={formatTimestamp}
+                        setReplyModalOpen = {setReplyModalOpen}
+                        setSelectedCommentId = {setSelectedCommentId}
                       />
                     )}
                   </div>
@@ -211,6 +217,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
           </div>
         </div>
         {activity.status === "Review" && activity.review && <ReviewCard review={activity.review} />}
+        <CommentsList activityId={activity._id} refresh={refresh} toggleRefresh={toggleRefresh} openModal={() => setModalOpen(true)}/>
       </div>
     </div>
   );
