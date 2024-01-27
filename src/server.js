@@ -1061,11 +1061,10 @@ app.get("/api/followingFeed/:userId", async (req, res) => {
     const following = user.following;
 
     const activities = await Activity.find({
-      user: { $in: following },
-    })
-      .sort({ timestamp: -1 })
-      .populate("user", "username first profilePicture")
-      .lean();
+
+      user: { $in: following }
+    }).sort({ timestamp: -1 }).populate('user', 'username first profilePicture').populate({ path: 'review', select: '' }).lean();
+
 
     res.status(200).json(activities);
   } catch (error) {

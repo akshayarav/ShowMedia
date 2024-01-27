@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import CommentModal from "./CommentModal";
 import ReviewCard from "../ShowInfoMain/Reviews/ReviewCard/ReviewCard";
+import CommentsList from "./CommentLists";
+import { Link } from "react-router-dom";
 
 function FeedItem({ activity, refresh, toggleRefresh }) {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -33,13 +35,28 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
   const [likeCount, setLikeCount] = useState(activity.likes.length);
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const [isReplyModalOpen, setReplyModalOpen] = useState(false);
+  const [selectedCommentId, setSelectedCommentId] = useState(null)
+
   const openModal = () => {
     setModalOpen(true);
   };
 
+  // In parent component
   const closeModal = () => {
     setModalOpen(false);
+    toggleRefresh()
+    setReplyModalOpen(false)
+    setModalOpen(false)
+    setSelectedCommentId(null)
   };
+
+  const openReplyModal = (commentId) => {
+    setReplyModalOpen(true)
+    setModalOpen(true)
+    setSelectedCommentId(commentId)
+  }
+
 
   const handleLike = async () => {
     const userId = localStorage.getItem("userId");
@@ -167,15 +184,26 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                         chat_bubble_outline
                       </span>
                     </div>
-                    {openModal && (
+                    {openModal && isReplyModalOpen ? (
                       <CommentModal
-                        image={image}
                         activity={activity}
                         refresh={refresh}
                         toggleRefresh={toggleRefresh}
                         isModalOpen={isModalOpen}
                         closeModal={closeModal}
                         formatTimestamp={formatTimestamp}
+                        commentId={selectedCommentId}
+                        replyModalStatus={true}
+                      />
+                    ) : (
+                      <CommentModal
+                        activity={activity}
+                        refresh={refresh}
+                        toggleRefresh={toggleRefresh}
+                        isModalOpen={isModalOpen}
+                        closeModal={closeModal}
+                        formatTimestamp={formatTimestamp}
+                        replyModalStatus={false}
                       />
                     )}
                   </div>
@@ -199,17 +227,19 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                   </div>
                 </div>
               </div>
-
-              <img
-                src={image}
-                className="img-fluid rounded-4 ms-3"
-                alt={activity.showName}
-                style={{ maxWidth: "100px", height: "auto" }}
-              />
+              <Link to={`/shows/${activity.showId}`}>
+                <img
+                  src={image}
+                  className="img-fluid rounded-4 ms-3"
+                  alt={activity.showName}
+                  style={{ maxWidth: "100px", height: "auto" }}
+                />
+              </Link>
             </div>
           </div>
         </div>
         {activity.status === "Review" && activity.review && <ReviewCard review={activity.review} />}
+        <CommentsList activityId={activity._id} refresh={refresh} toggleRefresh={toggleRefresh} openReplyModal={(commentId) => openReplyModal(commentId)} />
       </div>
     </div>
   );

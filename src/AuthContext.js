@@ -43,7 +43,6 @@ export const AuthProvider = ({ children }) => {
                 email, username, password, first, last
             });
 
-            console.log("STATUS" + response.status)
 
             if (response.status === 201) {
                 const { token, userId } = response.data;
