@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const CommentModal = ({
   activity,
@@ -23,12 +24,13 @@ const CommentModal = ({
   const [replyComment, setReplyComment] = useState(null)
   const [replies, setReplies] = useState([])
   const [replyContent, setReplyContent] = useState('')
+  // const [replyTag, setReplyTag] = useState('')
 
   useEffect(() => {
     setReplyModalOpen(replyModalStatus);
     setSelectedCommentId(commentId)
   }, [replyModalStatus, commentId]);
-  
+
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -53,7 +55,7 @@ const CommentModal = ({
     };
 
     fetchComments()
-  }, [refresh, activityId, isModalOpen]);
+  }, [refresh, activityId, isModalOpen, isReplyModalOpen]);
 
   useEffect(() => {
     if (!selectedCommentId || !isReplyModalOpen) return;
@@ -67,7 +69,6 @@ const CommentModal = ({
 
         if (matchingComment) {
           setReplyComment(matchingComment);
-          console.log(matchingComment);
           const updatedReplies = matchingComment.replies.map((comment) => ({
             ...comment,
             isLiked: comment.likes.includes(userId),
@@ -82,7 +83,7 @@ const CommentModal = ({
     };
 
     fetchCommentAndReplies();
-  }, [selectedCommentId, isReplyModalOpen, apiUrl, refresh, commentId]);
+  }, [selectedCommentId, isReplyModalOpen, apiUrl, refresh, commentId, replies]);
 
 
 
@@ -124,6 +125,7 @@ const CommentModal = ({
       return;
     }
 
+    // const fullReply = replyTag + replyContent
     try {
       const response = await axios.post(
         `${apiUrl}/api/activities/comment/${selectedCommentId}/reply`,
@@ -138,9 +140,10 @@ const CommentModal = ({
       setReplies(updatedReplies);
       setReplyContent("");
 
-      toggleRefresh();
     } catch (error) {
       console.error("Error posting reply:", error);
+    } finally {
+      toggleRefresh();
     }
   };
 
@@ -303,6 +306,22 @@ const CommentModal = ({
     }
   };
 
+  const parseComment = (comment) => {
+    const parts = comment.split(/(@\w+)/);
+    return parts.map((part, index) => {
+      if (part.startsWith('@')) {
+        // Assuming username is the part after '@'
+        const username = part.substring(1);
+        return (
+          <Link key={index} to={`/profile/${username}`}>
+            {part}
+          </Link>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
     <Modal
       show={true}
@@ -360,8 +379,7 @@ const CommentModal = ({
                       <p className="mb-0">{activity.rating}/10</p>
                     </div>
                   </div>
-
-                  <div className="comments p-3">
+                  {comments.length > 0 && <div className="comments p-3">
                     <div
                       className={`comments ${comments.length > 6 ? "scrollable-comments" : ""
                         }`}
@@ -434,7 +452,8 @@ const CommentModal = ({
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div>}
+
                   <div className="mt-auto">
                     <div className="d-flex align-items-center p-2 border-top">
                       <span className="material-icons bg-transparent border-0 text-primary pe-2 md-36">
@@ -505,11 +524,11 @@ const CommentModal = ({
                       </h6>
                     </div>
                     <h6 className="ms-3 me-3 p-3 text-bold bg-glass rounded-4" style={{ minWidth: "300px" }}>
-                      {replyComment.comment}
+                      {(replyComment.comment)}
                     </h6>
                   </div>
 
-                  <div className="comments p-3">
+                  {replies.length > 0 && <div className="comments p-3">
                     <div
                       className={`comments ${replies.length > 6 ? "scrollable-comments" : ""
                         }`}
@@ -530,7 +549,7 @@ const CommentModal = ({
                                   {comment.user.username}
                                 </p>
                                 <span className="text-muted comment-text">
-                                  {comment.comment}
+                                  {parseComment(comment.comment)}
                                 </span>
                               </div>
                               <button
@@ -560,7 +579,10 @@ const CommentModal = ({
                               </span>
                               <button
                                 className="small text-muted text-decoration-none"
-                                onClick={() => handleReplyClick(comment._id)}
+                                onClick={() => {
+                                  setReplyContent(`@${comment.user.username} `);
+                                  // setReplyTag(`@${comment.user.username} `);
+                                }}
                                 style={{
                                   background: "none",
                                   border: "none",
@@ -582,7 +604,8 @@ const CommentModal = ({
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div>}
+
                   <div className="mt-auto">
                     <div className="d-flex align-items-center p-2 border-top">
                       <span className="material-icons bg-transparent border-0 text-primary pe-2 md-36">
