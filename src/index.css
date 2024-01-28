@@ -1361,3 +1361,8 @@ label {
     width: 100%;
     text-align: center;
 }
+
+.white-placeholder::placeholder {
+    color: white;
+    opacity: 1;
+}

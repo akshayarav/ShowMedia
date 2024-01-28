@@ -175,6 +175,7 @@ function Reviews({ showId }) {
       <div className="d-flex flex-column">
         {showReviewModal && (
           <AddReviewModal
+            showName={showName}
             showId={showId}
             handleAddReview={handleAddReview}
             closeModal={toggleReviewModal}

@@ -107,7 +107,7 @@ function ReviewCard({ vw, showName, review }) {
           <span className="review-badge bg-primary rounded-4 p-3">
             <span className="review-score">{review.score}</span>
             <span className="review-score-separator"></span>
-            <span className="review-score-total">10</span>
+            <span className="review-score-total">100</span>
           </span>
         </div>
         <div className="d-flex justify-content-between">
