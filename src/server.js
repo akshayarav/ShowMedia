@@ -483,8 +483,6 @@ app.post("/api/reviews", (req, res) => {
           downvotes: [],
         });
 
-        console.log(newReview);
-
         newReview
           .save()
           .then((review) => res.status(201).json(review))
@@ -887,7 +885,6 @@ app.post("/rateSeason", async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      console.log("User not found with ID:", userId);
       return res.status(404).json({ message: "User not found" });
     }
 
@@ -955,7 +952,6 @@ app.post("/delSeason", async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-      console.log("User not found with ID:", userId);
       return res.status(404).json({ message: "User not found" });
     }
 
