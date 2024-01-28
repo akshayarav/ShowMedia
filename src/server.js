@@ -73,6 +73,10 @@ const userSchema = new mongoose.Schema({
     },
   ],
   timestamp: { type: Date, default: Date.now },
+  reviewCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
@@ -467,7 +471,7 @@ app.post("/api/reviews", (req, res) => {
   const { showId, username } = req.body;
 
   Review.findOne({ showId, username })
-    .then((existingReview) => {
+    .then(async (existingReview) => {
       if (existingReview) {
         return res
           .status(400)
@@ -485,7 +489,10 @@ app.post("/api/reviews", (req, res) => {
 
         newReview
           .save()
-          .then((review) => res.status(201).json(review))
+          .then(async (review) => {
+            await User.updateOne({ username }, { $inc: { reviewCount: 1 } });
+            res.status(201).json(review);
+          })
           .catch((err) => res.status(500).json({ error: err.message }));
       }
     })
@@ -497,26 +504,23 @@ app.delete("/api/reviews/:reviewId", (req, res) => {
   const reviewId = req.params.reviewId;
   const username = req.query.username;
 
-  // Find the review by ID
   Review.findById(reviewId)
     .then((review) => {
       if (!review) {
         return res.status(404).json({ message: "Review not found" });
       }
 
-      // Check if the review was written by the user making the request
       if (review.username !== username) {
-        // If usernames do not match
         return res
           .status(403)
           .json({ message: "Unauthorized to delete this review" });
       }
 
-      // Delete the review
       Review.findByIdAndDelete(reviewId)
-        .then(() =>
-          res.status(200).json({ message: "Review deleted successfully" })
-        )
+        .then(async () => {
+          await User.updateOne({ username }, { $inc: { reviewCount: -1 } });
+          res.status(200).json({ message: "Review deleted successfully" });
+        })
         .catch((err) => res.status(500).json({ error: err.message }));
     })
     .catch((err) => res.status(500).json({ error: err.message }));

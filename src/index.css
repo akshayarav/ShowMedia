@@ -234,6 +234,16 @@
     max-width: 100%;
 }
 
+.review-count-details-container {
+    white-space: nowrap;
+    /* Keeps the text on a single line */
+    overflow: hidden !important;
+    /* Ensures the overflow is not visible */
+    text-overflow: ellipsis;
+    /* Adds an ellipsis to the end of the text */
+    max-width: 500px;
+}
+
 @media (max-width: 1200px) {
     .search-bar-container {
         display: none;
@@ -1365,4 +1375,11 @@ label {
 .white-placeholder::placeholder {
     color: white;
     opacity: 1;
+}
+
+.ellipsis-text {
+    display: block; /* Required for text-overflow to work */
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+    text-overflow: ellipsis; /* Adds an ellipsis (...) at the end of the overflowing text */
+    max-width: 200px; /* Set a width, adjust as needed */
 }

@@ -189,7 +189,7 @@ function Reviews({ showId }) {
           {hasReviewed ? (
             <div className="d-flex justify-content-center align-items-center">
               <ReviewCard
-                vw={35}
+                vw={55}
                 showName={showName}
                 key={userReviewId}
                 review={userReview}
@@ -222,7 +222,7 @@ function Reviews({ showId }) {
               .filter((review) => review._id !== userReviewId)
               .map((review) => (
                 <ReviewCard
-                  vw={40}
+                  vw={60}
                   showName={showName}
                   key={review._id}
                   review={review}
@@ -239,7 +239,7 @@ function Reviews({ showId }) {
               .filter((review) => review._id !== userReviewId)
               .map((review) => (
                 <ReviewCard
-                  vw={40}
+                  vw={60}
                   showName={showName}
                   key={review._id}
                   review={review}

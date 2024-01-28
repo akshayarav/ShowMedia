@@ -76,7 +76,10 @@ function ReviewCard({ vw, showName, review }) {
 
   return (
     <div className="d-flex justify-content-between p-2">
-      <div className="bg-glass rounded-4 shadow-sm p-1" style={{ width: `${vw}vw` }}>
+      <div
+        className="bg-glass rounded-4 shadow-sm p-1"
+        style={{ width: `${vw}vw` }}
+      >
         <div className="d-flex border-bottom justify-content-between p-3">
           <div className="d-flex">
             <Link
@@ -99,7 +102,9 @@ function ReviewCard({ vw, showName, review }) {
                 <p className="ms-1 text-muted mb-0">@{review.username}</p>
                 <p className="text-muted ms-2 mb-0">{formattedTimestamp}</p>
               </div>
-              <h6 className="text-primary">
+              <h6 className="review-count-details-container mt-1 text-muted">
+                {userDetails && userDetails.reviewCount} total reviews
+                <span className="fs-3 material-icons mx-1">circle</span>
                 {showName}
               </h6>
             </div>
@@ -112,13 +117,12 @@ function ReviewCard({ vw, showName, review }) {
         </div>
         <div className="d-flex justify-content-between">
           <div className="mb-2 col-10">
-            <p className="ms-4 mt-2" style={{ wordBreak: 'break-all' }}>{review.text}</p>
+            <p className="ms-4 mt-2" style={{ wordBreak: "break-all" }}>
+              {review.text}
+            </p>
           </div>
           <div className="d-flex align-items-end justify-content-center mb-1">
-            <div
-              role="button"
-              onClick={() => handleVote("upvote")}
-            >
+            <div role="button" onClick={() => handleVote("upvote")}>
               <span
                 className="material-icons"
                 style={{
