@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-function ReviewCard({ showName, review }) {
+function ReviewCard({ vw, showName, review }) {
   const apiUrl = process.env.REACT_APP_API_URL;
   const reviewId = review._id;
   const userId = localStorage.getItem("userId");
@@ -76,7 +76,7 @@ function ReviewCard({ showName, review }) {
 
   return (
     <div className="d-flex justify-content-between p-2">
-      <div className="bg-glass rounded-4 shadow-sm p-1" style={{ width: "35vw" }}>
+      <div className="bg-glass rounded-4 shadow-sm p-1" style={{ width: `${vw}vw` }}>
         <div className="d-flex border-bottom justify-content-between p-3">
           <div className="d-flex">
             <Link
@@ -100,7 +100,7 @@ function ReviewCard({ showName, review }) {
                 <p className="text-muted ms-2 mb-0">{formattedTimestamp}</p>
               </div>
               <h6 className="text-primary">
-                Submitted a review for: {showName}
+                {showName}
               </h6>
             </div>
           </div>

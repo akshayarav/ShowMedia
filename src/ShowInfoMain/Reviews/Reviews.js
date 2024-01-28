@@ -203,42 +203,48 @@ function Reviews({ showId }) {
         >
           <h2 className="fw-bold text-white mb-1">Your Review</h2>
           <ReviewCard
+            vw={35}
             showName={showName}
             key={userReviewId}
             review={userReview}
           />
         </div>
       )}
-      <h2 className="fw-bold text-white mt-4">Reviews by Following</h2>
-      {reviewsFollowing.length > 0 && (
-        <>
-          {reviewsFollowing
-            .filter((review) => review._id !== userReviewId)
-            .map((review) => (
-              <ReviewCard
-                showName={showName}
-                key={review._id}
-                review={review}
-              />
-            ))}
-        </>
-      )}
-
-      <h2 className="fw-bold text-white mt-4">Top Reviews</h2>
-      <div className="d-flex flex-column">
-        {reviews.length > 0 && (
-          <>
-            {reviews
+      <div className="d-flex justify-content-around" style={{ width: "100%" }}>
+        <div className="d-flex flex-column align-items-center">
+          <h2 className="fw-bold text-white mt-4">Reviews by Following</h2>
+          {reviewsFollowing.length > 0 ? (
+            reviewsFollowing
               .filter((review) => review._id !== userReviewId)
               .map((review) => (
                 <ReviewCard
+                  vw={31}
                   showName={showName}
                   key={review._id}
                   review={review}
                 />
-              ))}
-          </>
-        )}
+              ))
+          ) : (
+            <p className="text-muted">No reviews by following yet.</p>
+          )}
+        </div>
+        <div className="d-flex flex-column align-items-center">
+          <h2 className="fw-bold text-white mt-4">Top Reviews</h2>
+          {reviews.length > 0 ? (
+            reviews
+              .filter((review) => review._id !== userReviewId)
+              .map((review) => (
+                <ReviewCard
+                  vw={31}
+                  showName={showName}
+                  key={review._id}
+                  review={review}
+                />
+              ))
+          ) : (
+            <p className="text-muted">No top reviews yet.</p>
+          )}
+        </div>
       </div>
     </div>
   );
