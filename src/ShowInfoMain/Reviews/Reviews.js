@@ -214,7 +214,7 @@ function Reviews({ showId }) {
         </div>
       </div>
 
-      <div className="d-flex justify-content-around" style={{ width: "100%" }}>
+      <div className="d-flex flex-column justify-content-around" style={{ width: "100%" }}>
         <div className="d-flex flex-column align-items-center">
           <h2 className="fw-bold text-white mt-4">Reviews by Following</h2>
           {reviewsFollowing.length > 0 ? (
@@ -222,7 +222,7 @@ function Reviews({ showId }) {
               .filter((review) => review._id !== userReviewId)
               .map((review) => (
                 <ReviewCard
-                  vw={31}
+                  vw={40}
                   showName={showName}
                   key={review._id}
                   review={review}
@@ -239,7 +239,7 @@ function Reviews({ showId }) {
               .filter((review) => review._id !== userReviewId)
               .map((review) => (
                 <ReviewCard
-                  vw={31}
+                  vw={40}
                   showName={showName}
                   key={review._id}
                   review={review}
