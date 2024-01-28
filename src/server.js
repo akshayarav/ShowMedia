@@ -464,27 +464,23 @@ app.post("/api/messages/send", async (req, res) => {
 
 //Add a new review
 app.post("/api/reviews", (req, res) => {
-  const { showId, username } = req.body; // Assuming you're passing the user's ID in the request body
+  const { showId, username } = req.body;
 
-  // First, check if the user has already reviewed this show
   Review.findOne({ showId, username })
     .then((existingReview) => {
       if (existingReview) {
-        // User has already reviewed this show
         return res
           .status(400)
           .json({ message: "You have already reviewed this show." });
       } else {
-        // No existing review, create a new one
         const newReview = new Review({
           showId: req.body.showId,
-          userId: req.body.userId, // Save the user's ID with the review
           score: req.body.score,
           text: req.body.text,
           profileImg: req.body.profileImg,
           username: req.body.username,
-          upvotes: [], // Initialize as an empty array
-          downvotes: [], // Initialize as an empty array
+          upvotes: [],
+          downvotes: [],
         });
 
         console.log(newReview);
@@ -539,7 +535,6 @@ app.get("/api/reviews/:showId", (req, res) => {
 app.post("/api/reviews/:reviewId/upvote", (req, res) => {
   const reviewId = req.params.reviewId;
   const userId = req.body.userId; // The ID of the user who is upvoting
-  console.log("USERID" + userId);
 
   Review.findById(reviewId)
     .then((review) => {

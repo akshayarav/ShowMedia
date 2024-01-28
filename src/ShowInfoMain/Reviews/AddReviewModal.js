@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Modal, Alert } from "react-bootstrap";
 
 function AddReviewModal({ showId, handleAddReview, closeModal }) {
-    // State for handling form inputs
     const [score, setScore] = useState('');
     const [text, setText] = useState('');
     const [error, setError] = useState('');
@@ -12,11 +11,10 @@ function AddReviewModal({ showId, handleAddReview, closeModal }) {
         e.preventDefault();
         setError('');
         setSuccess('test');
-        // Call the handleAddReview passed from parent with the review details
         handleAddReview(showId, score, text);
         setTimeout(() => {
             closeModal();
-        }, 1000);// Close the modal after submitting the review
+        }, 1000);
     };
 
     return (

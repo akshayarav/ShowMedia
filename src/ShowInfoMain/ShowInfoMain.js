@@ -32,7 +32,6 @@ function ShowInfoMain() {
                                         id="pills-feed-tab"
                                         type="button"
                                         onClick={() => {
-                                            // handleActivityTabClick();
                                             setActiveTab('reviews');
                                         }}>
                                         Reviews
