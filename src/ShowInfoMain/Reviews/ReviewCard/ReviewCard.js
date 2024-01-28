@@ -112,9 +112,9 @@ function ReviewCard({ showName, review }) {
         </div>
         <div className="d-flex justify-content-between">
           <div className="mb-2 col-9">
-            <p className="ms-5 mt-3">{review.text}</p>
+            <p className="ms-4 mt-2">{review.text}</p>
           </div>
-          <div className="d-flex align-items-end justify-content-center">
+          <div className="d-flex align-items-end justify-content-center mb-1">
             <div
               role="button"
               onClick={() => handleVote("upvote")}
