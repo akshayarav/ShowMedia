@@ -106,7 +106,6 @@ function Overview() {
     const numFollowing = profileUser.following ? profileUser.following.length : 0;
     const numFollowers = profileUser.followers ? profileUser.followers.length : 0;
     return (
-        //Handle picture upload using Amazon S3, upload image to cloud which then stores in the server
         <div>
             <div className="border-bottom pb-3">
                 {isAuthenticated &&

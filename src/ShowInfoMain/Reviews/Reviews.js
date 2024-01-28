@@ -1,197 +1,257 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard/ReviewCard";
 import axios from "axios";
-import AddReviewModal from './AddReviewModal';
+import AddReviewModal from "./AddReviewModal";
 
 function Reviews({ showId }) {
-    const [reviews, setReviews] = useState([]);
-    const [reviewsFollowing, setReviewsFollowing] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsFollowing, setReviewsFollowing] = useState([]);
+  const [showName, setShowName] = useState("");
 
-    const [hasReviewed, setHasReviewed] = useState(false);
-    const [userReviewId, setUserReviewId] = useState(null);
-    const [userReview, setUserReview] = useState(null);
-    const user = JSON.parse(localStorage.getItem('user'));
-    const [showReviewModal, setShowReviewModal] = useState(false);
-    const toggleReviewModal = () => setShowReviewModal(!showReviewModal);
-    const apiUrl = process.env.REACT_APP_API_URL;
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const [userReviewId, setUserReviewId] = useState(null);
+  const [userReview, setUserReview] = useState(null);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const toggleReviewModal = () => setShowReviewModal(!showReviewModal);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
-    const fetchReviewsFromFollowing = async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/api/reviews/following/${user._id}/${showId}`);
-            return response.data; // This should be an array of review IDs
-        } catch (error) {
-            console.error("Error fetching reviews from following:", error);
-            return [];
-        }
+  const fetchReviewsFromFollowing = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/api/reviews/following/${user._id}/${showId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching reviews from following:", error);
+      return [];
+    }
+  };
+
+  const handleAddReview = async (showId, score, text) => {
+    const newReview = {
+      showId,
+      score,
+      text,
+      profileImg: user.profilePicture,
+      username: user.username,
     };
 
+    try {
+      const response = await axios.post(`${apiUrl}/api/reviews`, newReview);
 
-    const handleAddReview = async (showId, score, text) => {
-        const newReview = {
-            showId, // Assuming you want to include the showId in the review
-            score,
-            text,
-            profileImg: user.profilePicture, // User's profile image
-            username: user.username, // User's username
-            // No need to include upvotes and downvotes here; they start as empty in the backend
-        };
+      setHasReviewed(true);
+      setUserReview(response.data);
+      setUserReviewId(response.data._id);
 
-        try {
-            const response = await axios.post(`${apiUrl}/api/reviews`, newReview);
+      setReviews((prevReviews) => [...prevReviews, response.data]);
+    } catch (error) {
+      console.error("Error adding review:", error);
+    }
 
-            // Update states with the response data
-            setHasReviewed(true);
-            setUserReview(response.data); // The new review now includes the _id
-            setUserReviewId(response.data._id); // Store the ID of the user's review
+    try {
+      const response = await fetch(`${apiUrl}/rateSeason`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          showId: showId,
+          rating: score,
+          comment: text,
+          status: "Review",
+          reviewUserName: user.username,
+        }),
+      });
 
-            // Append the new review to the current list
-            setReviews(prevReviews => [...prevReviews, response.data]);
-        } catch (error) {
-            console.error("Error adding review:", error);
-        }
+      const data = await response.json();
 
-        try {
-            const response = await fetch(`${apiUrl}/rateSeason`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: localStorage.getItem('userId'),
-                    showId: showId,
-                    rating: score,
-                    comment: text,
-                    status: "Review",
-                    reviewUserName: user.username
-                }),
-            });
+      if (!response.ok) {
+        console.error(
+          data.message || `Failed to add rating and comment for Show`
+        );
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-            const data = await response.json();
+  const handleRemoveReview = async () => {
+    try {
+      await axios.delete(
+        `${apiUrl}/api/reviews/${userReviewId}?username=${encodeURIComponent(
+          user.username
+        )}`
+      );
+      setReviews(reviews.filter((review) => review._id !== userReviewId));
+      setHasReviewed(false);
+      setUserReviewId(null);
+    } catch (error) {
+      console.error("Error removing review:", error);
+    }
+    try {
+      const response = await fetch(`${apiUrl}/rateSeason`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: localStorage.getItem("userId"),
+          showId: showId,
+          status: "Removed Review",
+          reviewUserName: user.username,
+        }),
+      });
 
-            if (!response.ok) {
-                console.error(data.message || `Failed to add rating and comment for Show`);
-                return;
-            }
+      const data = await response.json();
 
-        } catch (err) {
-            console.error(err)
-        }
+      if (!response.ok) {
+        console.error(
+          data.message || `Failed to add rating and comment for Show`
+        );
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchShowDetails = async () => {
+      const tmdbApiKey = process.env.REACT_APP_API_KEY;
+      const tmdbApiUrl = `https://api.themoviedb.org/3/tv/${showId}?api_key=${tmdbApiKey}`;
+
+      try {
+        const response = await axios.get(tmdbApiUrl);
+        setShowName(response.data.name);
+      } catch (error) {
+        console.error("Error fetching show details:", error);
+      }
     };
 
-    const handleRemoveReview = async () => {
-        try {
-            await axios.delete(`${apiUrl}/api/reviews/${userReviewId}?username=${encodeURIComponent(user.username)}`);
-            setReviews(reviews.filter(review => review._id !== userReviewId));
-            setHasReviewed(false);
-            setUserReviewId(null); // Reset the userReviewId
-        } catch (error) {
-            console.error("Error removing review:", error);
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/reviews/${showId}`);
+        const userReview = response.data.find(
+          (review) => review.username === user.username
+        );
+        const followingReviews = await fetchReviewsFromFollowing();
+        setReviewsFollowing(followingReviews);
+
+        const filteredReviews = response.data.filter(
+          (review) =>
+            !followingReviews.some(
+              (followingReview) => followingReview._id === review._id
+            )
+        );
+
+        const sortedReviews = filteredReviews.sort((a, b) => {
+          return b.votes - a.votes;
+        });
+
+        setReviews(
+          sortedReviews.filter((review) => review._id !== userReviewId)
+        );
+        if (userReview) {
+          setHasReviewed(true);
+          setUserReviewId(userReview._id);
+          setUserReview(userReview);
+        } else {
+          setUserReviewId(null);
+          setReviews(response.data);
         }
-        try {
-            const response = await fetch(`${apiUrl}/rateSeason`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: localStorage.getItem('userId'),
-                    showId: showId,
-                    status: "Removed Review",
-                    reviewUserName: user.username
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                console.error(data.message || `Failed to add rating and comment for Show`);
-                return;
-            }
-
-        } catch (err) {
-            console.error(err)
-        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
     };
 
+    fetchShowDetails();
+    fetchReviews();
+  }, [showId, user.username]);
 
-    useEffect(() => {
-        const fetchReviews = async () => {
-            try {
-                const response = await axios.get(`${apiUrl}/api/reviews/${showId}`);
-                const userReview = response.data.find(review => review.username === user.username);
-                const followingReviews = await fetchReviewsFromFollowing();
-                setReviewsFollowing(followingReviews)
-
-                const filteredReviews = response.data.filter(review => 
-                    !followingReviews.some(followingReview => followingReview._id === review._id)
-                );
-
-                const sortedReviews = filteredReviews.sort((a, b) => {
-                    return b.votes - a.votes; // Sort by 'votes' in descending order
-                });
-
-                setReviews(sortedReviews.filter(review => review._id !== userReviewId));
-                if (userReview) {
-                    setHasReviewed(true);
-                    setUserReviewId(userReview._id); // Store the ID of the user's review
-                    setUserReview(userReview)
-                } else {
-                    setUserReviewId(null); // Reset the userReviewId if no review is found
-                    setReviews(response.data)
-                }
-            } catch (error) {
-                console.error("Error fetching reviews:", error);
-            }
-        };
-
-        fetchReviews();
-    }, [showId, user.username]);
-
-    return (
-        <div className="d-flex flex-column align-items-center">
-            {hasReviewed ? (
-                <button type="button" className="btn btn-outline-danger btn-sm px-3 rounded-pill" onClick={handleRemoveReview}>
-                    Remove My Review
-                </button>
-            ) : (
-                <button type="button" className="btn btn-outline-primary btn-sm px-3 rounded-pill" onClick={toggleReviewModal}>
-                    Add Review
-                </button>
-            )}
-            {showReviewModal && <AddReviewModal
-                showId={showId}
-                handleAddReview={handleAddReview}
-                closeModal={toggleReviewModal}
-            />}
-            {hasReviewed &&
-                <div className="mt-5 d-flex flex-column align-items-center" style={{ width: "100%" }}>
-                    <h2 className="fw-bold text-white mb-1">Your Review</h2>
-                    <ReviewCard key={userReviewId} review={userReview} />
-                </div>
-            }
-            <h2 className="fw-bold text-white mt-4">Reviews by Following</h2>
-            {
-                reviewsFollowing.length > 0 && (
-                    <>
-                        {reviewsFollowing.filter(review => review._id !== userReviewId).map((review) => (
-                            <ReviewCard key={review._id} review={review} />
-                        ))}
-                    </>
-                )
-            }
-
-            <h2 className="fw-bold text-white mt-4">Top Reviews</h2>
-            {
-                reviews.length > 0 && (
-                    <>
-                        {reviews.filter(review => review._id !== userReviewId).map((review) => (
-                            <ReviewCard key={review._id} review={review} />
-                        ))}
-                    </>
-                )
-            }
+  return (
+    <div className="d-flex flex-column align-items-center">
+      <div className="d-flex flex-column">
+        {showReviewModal && (
+          <AddReviewModal
+            showName={showName}
+            showId={showId}
+            handleAddReview={handleAddReview}
+            closeModal={toggleReviewModal}
+          />
+        )}
+        <div
+          className="mt-2 d-flex flex-column align-items-center"
+          style={{ width: "100%" }}
+        >
+          <h2 className="fw-bold text-white mb-1">Your Review</h2>
+          {hasReviewed ? (
+            <div className="d-flex justify-content-center align-items-center">
+              <ReviewCard
+                vw={35}
+                showName={showName}
+                key={userReviewId}
+                review={userReview}
+              />
+              <button
+                type="button"
+                className="btn btn-outline-danger btn-sm ms-2"
+                onClick={handleRemoveReview}
+              >
+                <span className="material-icons">delete_outline</span>
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm mt-2 mb-2"
+              onClick={toggleReviewModal}
+            >
+              <span className="material-icons">add</span>
+            </button>
+          )}
         </div>
-    );
+      </div>
+
+      <div className="d-flex justify-content-around" style={{ width: "100%" }}>
+        <div className="d-flex flex-column align-items-center">
+          <h2 className="fw-bold text-white mt-4">Reviews by Following</h2>
+          {reviewsFollowing.length > 0 ? (
+            reviewsFollowing
+              .filter((review) => review._id !== userReviewId)
+              .map((review) => (
+                <ReviewCard
+                  vw={31}
+                  showName={showName}
+                  key={review._id}
+                  review={review}
+                />
+              ))
+          ) : (
+            <p className="text-muted">No reviews by following yet.</p>
+          )}
+        </div>
+        <div className="d-flex flex-column align-items-center">
+          <h2 className="fw-bold text-white mt-4">Top Reviews</h2>
+          {reviews.length > 0 ? (
+            reviews
+              .filter((review) => review._id !== userReviewId)
+              .map((review) => (
+                <ReviewCard
+                  vw={31}
+                  showName={showName}
+                  key={review._id}
+                  review={review}
+                />
+              ))
+          ) : (
+            <p className="text-muted">No top reviews yet.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Reviews;
