@@ -111,8 +111,8 @@ function ReviewCard({ vw, showName, review }) {
           </span>
         </div>
         <div className="d-flex justify-content-between">
-          <div className="mb-2 col-9">
-            <p className="ms-4 mt-2">{review.text}</p>
+          <div className="mb-2 col-10">
+            <p className="ms-4 mt-2" style={{ wordBreak: 'break-all' }}>{review.text}</p>
           </div>
           <div className="d-flex align-items-end justify-content-center mb-1">
             <div

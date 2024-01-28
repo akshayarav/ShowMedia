@@ -172,44 +172,47 @@ function Reviews({ showId }) {
 
   return (
     <div className="d-flex flex-column align-items-center">
-      {hasReviewed ? (
-        <button
-          type="button"
-          className="btn btn-outline-danger btn-sm px-3 rounded-pill"
-          onClick={handleRemoveReview}
-        >
-          Remove My Review
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="btn btn-outline-primary btn-sm px-3 rounded-pill"
-          onClick={toggleReviewModal}
-        >
-          Add Review
-        </button>
-      )}
-      {showReviewModal && (
-        <AddReviewModal
-          showId={showId}
-          handleAddReview={handleAddReview}
-          closeModal={toggleReviewModal}
-        />
-      )}
-      {hasReviewed && (
+      <div className="d-flex flex-column">
+        {showReviewModal && (
+          <AddReviewModal
+            showId={showId}
+            handleAddReview={handleAddReview}
+            closeModal={toggleReviewModal}
+          />
+        )}
         <div
-          className="mt-5 d-flex flex-column align-items-center"
+          className="mt-2 d-flex flex-column align-items-center"
           style={{ width: "100%" }}
         >
           <h2 className="fw-bold text-white mb-1">Your Review</h2>
-          <ReviewCard
-            vw={35}
-            showName={showName}
-            key={userReviewId}
-            review={userReview}
-          />
+          {hasReviewed ? (
+            <div className="d-flex justify-content-center align-items-center">
+              <ReviewCard
+                vw={35}
+                showName={showName}
+                key={userReviewId}
+                review={userReview}
+              />
+              <button
+                type="button"
+                className="btn btn-outline-danger btn-sm ms-2"
+                onClick={handleRemoveReview}
+              >
+                <span className="material-icons">delete_outline</span>
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm mt-2 mb-2"
+              onClick={toggleReviewModal}
+            >
+              <span className="material-icons">add</span>
+            </button>
+          )}
         </div>
-      )}
+      </div>
+
       <div className="d-flex justify-content-around" style={{ width: "100%" }}>
         <div className="d-flex flex-column align-items-center">
           <h2 className="fw-bold text-white mt-4">Reviews by Following</h2>
