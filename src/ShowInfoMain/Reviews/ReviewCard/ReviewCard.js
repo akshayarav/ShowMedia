@@ -75,8 +75,8 @@ function ReviewCard({ showName, review }) {
   };
 
   return (
-    <div className="d-flex justify-content-between">
-      <div className="bg-glass rounded-4 shadow-sm" style={{ width: "35vw" }}>
+    <div className="d-flex justify-content-between p-2">
+      <div className="bg-glass rounded-4 shadow-sm p-1" style={{ width: "35vw" }}>
         <div className="d-flex border-bottom justify-content-between p-3">
           <div className="d-flex">
             <Link
