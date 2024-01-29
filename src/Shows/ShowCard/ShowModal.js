@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Alert, Form } from 'react-bootstrap';
 import UserCard from '../../SearchBar/UserCard';
 
-function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateStatus, users, status }) {
+function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateStatus, status }) {
     const [selectedSeason, setSelectedSeason] = useState('');
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');

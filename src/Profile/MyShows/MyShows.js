@@ -11,6 +11,11 @@ function MyShows() {
     const [error, setError] = useState(null);
     const [reload, toggleReload] = useState(false)
 
+    const watchingRatings = ratings.filter(rating => rating.status === "Watching");
+    const completedRatings = ratings.filter(rating => rating.status === "Completed");
+    const planningRatings = ratings.filter(rating => rating.status === "Planning");
+    const droppedRatings = ratings.filter(rating => rating.status === "Dropped");
+
     useEffect(() => {
         axios.get(`${apiUrl}/api/user/${username}`)
             .then(response => {
@@ -49,117 +54,103 @@ function MyShows() {
 
     return (
         <div className="feeds">
-            <div className="bg-glass p-4 feed-item rounded-4 shadow-sm faq-page account-follow">
+            <div className="p-4 feed-item rounded-4 shadow-sm faq-page account-follow">
                 <div className="rounded-3">
                     <div className="row justify-content-center">
                         <div className="col-lg-12">
-                            <div className="accordion overflow-hidden bg-glass" id="accordionExample">
-                                <div className="accordion-item">
-                                    <h3 className="accordion-header" id="headingOne"><button className="accordion-button custom-accordion-arrow fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Watching</button></h3>
-                                    <div className="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" >
-                                        <div className="accordion-body">
-                                            {sortedRatings.map(rating => {
-                                                if (rating.status === "Watching") {
-                                                    return (
-                                                        <MyShowCard
-                                                            key={`${rating.show}-${rating.season}`}
-                                                            rating={rating.rating}
-                                                            showId={rating.show}
-                                                            seasonNumber={rating.season}
-                                                            comment={rating.comment}
-                                                            episodes={rating.episodes}
-                                                            status={rating.status}
-                                                            updateStatus={updateStatus}
-                                                        />
-                                                    );
-                                                } else {
-                                                    return null;
-                                                }
-                                            })}
-                                        </div>
-                                    </div>
+                            {watchingRatings?.length > 0 && <div className="mb-4">
+                                <h5 className="fw-bold text-primary"> Watching </h5>
+                                <div className="bg-glass">
+                                    {watchingRatings.map(rating => {
+                                        if (rating.status === "Watching") {
+                                            return (
+                                                <MyShowCard
+                                                    key={`${rating.show}-${rating.season}`}
+                                                    rating={rating.rating}
+                                                    showId={rating.show}
+                                                    seasonNumber={rating.season}
+                                                    comment={rating.comment}
+                                                    episodes={rating.episodes}
+                                                    status={rating.status}
+                                                    updateStatus={updateStatus}
+                                                />
+                                            );
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
                                 </div>
-                                <div className="accordion-item">
-                                    <h3 className="accordion-header" id="headingTwo">
-                                        <button className="accordion-button custom-accordion-arrow fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                            Completed
-                                        </button>
-                                    </h3>
-                                    <div className="accordion-collapse collapse show" id="collapseTwo" aria-labelledby="headingOne" >
-                                        <div className="accordion-body">
-                                            {sortedRatings.map(rating => {
-                                                if (rating.status === "Completed") {
-                                                    return (
-                                                        <MyShowCard
-                                                            key={`${rating.show}-${rating.season}`}
-                                                            rating={rating.rating}
-                                                            showId={rating.show}
-                                                            seasonNumber={rating.season}
-                                                            comment={rating.comment}
-                                                            status={rating.status}
-                                                            updateStatus={updateStatus}
+                            </div>}
+                            {completedRatings?.length > 0 && <div className="mb-4">
+                                <h5 className="fw-bold text-primary"> Completed </h5>
+                                <div className="bg-glass">
+                                    {completedRatings.map(rating => {
+                                        if (rating.status === "Completed") {
+                                            return (
+                                                <MyShowCard
+                                                    key={`${rating.show}-${rating.season}`}
+                                                    rating={rating.rating}
+                                                    showId={rating.show}
+                                                    seasonNumber={rating.season}
+                                                    comment={rating.comment}
+                                                    status={rating.status}
+                                                    updateStatus={updateStatus}
 
-                                                        />
-                                                    );
-                                                } else {
-                                                    return null;
-                                                }
-                                            })}
-                                        </div>
-                                    </div>
+                                                />
+                                            );
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
                                 </div>
+                            </div>}
 
-                                <div className="accordion-item">
-                                    <h3 className="accordion-header" id="headingThree"><button className="accordion-button custom-accordion-arrow fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Planning</button></h3>
-                                    <div className="accordion-collapse collapse show" id="collapseThree" aria-labelledby="headingThree" >
-                                        <div className="accordion-body">
-                                            {sortedRatings.map(rating => {
-                                                if (rating.status === "Planning") {
-                                                    return (
-                                                        <MyShowCard
-                                                            key={`${rating.show}-${rating.season}`}
-                                                            rating={rating.rating}
-                                                            showId={rating.show}
-                                                            seasonNumber={rating.season}
-                                                            comment={rating.comment}
-                                                            status={rating.status}
-                                                            updateStatus={updateStatus}
+                            {planningRatings?.length > 0 && <div className="mb-4">
+                                <h5 className="fw-bold text-primary"> Planning </h5>
+                                <div className="accordion-body">
+                                    {planningRatings.map(rating => {
+                                        if (rating.status === "Planning") {
+                                            return (
+                                                <MyShowCard
+                                                    key={`${rating.show}-${rating.season}`}
+                                                    rating={rating.rating}
+                                                    showId={rating.show}
+                                                    seasonNumber={rating.season}
+                                                    comment={rating.comment}
+                                                    status={rating.status}
+                                                    updateStatus={updateStatus}
 
-                                                        />
-                                                    );
-                                                } else {
-                                                    return null;
-                                                }
-                                            })}
-                                        </div>
-                                    </div>
+                                                />
+                                            );
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
                                 </div>
+                            </div>}
 
-                                <div className="accordion-item">
-                                    <h3 className="accordion-header" id="headingFour"><button className="accordion-button custom-accordion-arrow fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">Dropped</button></h3>
-                                    <div className="accordion-collapse collapse show" id="collapseFour" aria-labelledby="headingOne" >
-                                        <div className="accordion-body">
-                                            {sortedRatings.map(rating => {
-                                                if (rating.status === "Dropped") {
-                                                    return (
-                                                        <MyShowCard
-                                                            key={`${rating.show}-${rating.season}`}
-                                                            rating={rating.rating}
-                                                            showId={rating.show}
-                                                            seasonNumber={rating.season}
-                                                            comment={rating.comment}
-                                                            status={rating.status}
-                                                            updateStatus={updateStatus}
-                                                        />
-                                                    );
-                                                } else {
-                                                    return null;
-                                                }
-                                            })}
-                                        </div>
-                                    </div>
+                            {droppedRatings?.length > 0 && <div className="mb-4">
+                                <h5 className="fw-bold text-primary"> Dropped </h5>
+                                <div className="accordion-body">
+                                    {sortedRatings.map(rating => {
+                                        if (rating.status === "Dropped") {
+                                            return (
+                                                <MyShowCard
+                                                    key={`${rating.show}-${rating.season}`}
+                                                    rating={rating.rating}
+                                                    showId={rating.show}
+                                                    seasonNumber={rating.season}
+                                                    comment={rating.comment}
+                                                    status={rating.status}
+                                                    updateStatus={updateStatus}
+                                                />
+                                            );
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
                                 </div>
-                            </div>
+                            </div>}
                         </div>
                     </div>
                 </div>
