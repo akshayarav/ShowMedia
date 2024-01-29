@@ -92,7 +92,7 @@ function Stats() {
       <div className="bg-glass rounded-4 mt-3 col-12">
         <div className="d-flex justify-content-between mt-2 mb-2">
           <div className="d-flex flex-column align-items-center border-end flex-grow-1 mt-2">
-            <h6 className="fw-bold text-primary">Shows Seen</h6>
+            <h6 className="fw-bold text-primary">Seasons Seen</h6>
             <h4>{stats.showsSeen}</h4>
           </div>
           <div className="border-end d-flex flex-column align-items-center flex-grow-1 mt-2">

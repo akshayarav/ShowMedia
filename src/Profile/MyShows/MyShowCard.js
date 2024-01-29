@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ShowModal from '../../Shows/ShowCard/ShowModal';
 import error from './error.jpg'
+import { Link } from 'react-router-dom';
 
 function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, updateStatus }) {
     const [show, setShow] = useState('');
@@ -135,21 +136,22 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
         <div className="p-3 border-bottom border-top d-flex flex-column text-light text-decoration-none account-item">
             <div className="d-flex align-items-start justify-content-between">
                 <div className="d-flex align-items-center">
-                    <img src={image} className="img-fluid rounded-circle me-3" alt={show.name} />
+                    <Link to={`/shows/${showId}`}>
+                        <img src={image} className="img-fluid me-3" alt={show.name} />
+                    </Link>
                     <div>
                         <p className="fw-bold mb-0">
                             <a href="#" className="text-decoration-none text-light">{show.name} - Season {seasonNumber}</a>
                         </p>
                         <div className="text-muted fw-light">
-                            <p className="mb-1 small">Rating: {rating}</p>
-                            {comment && <p className="mb-1 small">"{comment}"</p>}
+                            <p className="mb-1 small">{rating}/10 ~ "{comment}"</p>
                         </div>
                     </div>
                 </div>
                 <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
                     {isAuthenticated && <div className="ms-auto">
                         <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-20 bg-glass rounded-circle p-1" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false">more_vert</a>
-                        <ul className="dropdown-menu fs-13 dropdown-menu-end bg-glass" aria-labelledby="dropdownMenuButton6">
+                        <ul className="dropdown-menu fs-13 dropdown-menu-end bg-light" aria-labelledby="dropdownMenuButton6">
                             <li>
                                 <button onClick={toggleShowModal} className="dropdown-item text-muted" htmlFor="btncheck1">
                                     <span className="material-icons md-13 me-1">edit</span>
