@@ -206,7 +206,7 @@ function Reviews({ showId }) {
         </div>
       </div>
 
-      <div className="accordion overflow-hidden rounded-4" id="accordionExample" style = {{minWidth: "60vw"}}> 
+      <div className="accordion overflow-hidden rounded-4" id="accordionExample" style = {{minWidth: "60vw"}}>
         <div className="accordion-item">
           <div>
             <h2 className="accordion-header" id="headingFive">
@@ -226,7 +226,7 @@ function Reviews({ showId }) {
                     />
                   ))
               ) : (
-                <p className="text-muted">No chats by friends yet, share this show!</p>
+                <p className="m-3 text-muted">No chats by friends yet, share this show!</p>
               )}
             </div>
           </div>
@@ -251,7 +251,7 @@ function Reviews({ showId }) {
                     />
                   ))
               ) : (
-                <p className="text-muted">No chats yet, be the first!</p>
+                <p className="text-muted m-3">No chats yet, be the first!</p>
               )}
             </div>
           </div>
