@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Alert, Form } from 'react-bootstrap';
 
+
 function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateStatus }) {
     const apiUrl = process.env.REACT_APP_API_URL;
-
     const [selectedSeason, setSelectedSeason] = useState('');
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');

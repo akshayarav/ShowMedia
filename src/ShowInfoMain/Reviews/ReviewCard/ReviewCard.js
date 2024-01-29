@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import AuthContext from "../../../AuthContext";
 
-function ReviewCard({ vw, showName, review }) {
+function ReviewCard({ showName, review, handleRemoveReview }) {
   const apiUrl = process.env.REACT_APP_API_URL;
   const reviewId = review._id;
   const userId = localStorage.getItem("userId");
@@ -17,6 +18,8 @@ function ReviewCard({ vw, showName, review }) {
     : null;
   const [userVote, setUserVote] = useState(state);
   const formattedTimestamp = new Date(review.updatedAt).toLocaleString();
+
+  const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -78,46 +81,101 @@ function ReviewCard({ vw, showName, review }) {
     <div className="d-flex justify-content-between p-2">
       <div
         className="bg-glass rounded-4 shadow-sm p-1"
-        style={{ width: `${vw}vw` }}
+        style={{ width: "60vw" }}
       >
-        <div className="d-flex border-bottom justify-content-between p-3">
-          <div className="d-flex">
-            <Link
-              to={`/profile/${review.username}`}
-              className="d-flex me-3 mt-3"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <img
-                src={review.profileImg}
-                alt="Profile"
-                className="rounded-circle"
-                style={{ width: "40px", height: "40px" }}
-              />
-            </Link>
-            <div className="d-flex flex-column justify-content-center">
-              <div className="d-flex align-items-center">
-                <p className="text-white mb-0">
-                  {userDetails && userDetails.first}
-                </p>
-                <p className="ms-1 text-muted mb-0">@{review.username}</p>
-                <p className="text-muted ms-2 mb-0">{formattedTimestamp}</p>
-              </div>
-              <h6 className="review-count-details-container mt-1 text-muted">
-                {userDetails && userDetails.reviewCount} total reviews
-                <span className="fs-3 material-icons mx-1">circle</span>
-                {showName}
-              </h6>
+        <div className="d-flex justify-content-between border-bottom">
+          <Link
+            to={`/profile/${review.username}`}
+            className="d-flex p-3 mt-1"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <img
+              src={review.profileImg}
+              alt="Profile"
+              className="rounded-circle"
+              style={{ width: "40px", height: "40px" }}
+            />
+          </Link>
+          <div className="d-flex flex-column justify-content-center me-4">
+            <div className="d-flex align-items-center">
+              <p className="text-white mb-0">
+                {userDetails && userDetails.first}
+              </p>
+              <p className="ms-1 text-muted mb-0">@{review.username}</p>
+              <p className="text-muted ms-2 mb-0">{formattedTimestamp}</p>
             </div>
+            <h6 className="review-count-details-container mt-1 text-muted">
+              {userDetails && userDetails.reviewCount} total chats
+              <span className="fs-3 material-icons md-10 ms-1 me-1">
+                circle
+              </span>
+              {showName}
+            </h6>
           </div>
-          <span className="review-badge bg-primary rounded-4 p-3">
-            <span className="review-score">{review.score}</span>
-            <span className="review-score-separator"></span>
-            <span className="review-score-total">100</span>
-          </span>
+          <div className="d-flex justify-content-between align-items-center flex-grow-1 rounded-4 p-1">
+            <div className="d-flex flex-column" style={{ width: "100%" }}>
+              {" "}
+              <div className="progress mt-2 me-3">
+                <div
+                  className="progress-bar bg-brown"
+                  role="progressbar"
+                  style={{ width: `${review.score}%` }}
+                  aria-valuenow={review.score}
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+              <div className="mt-1">
+                <div className="review-score text-center">
+                  {review.score} / 100
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="#"
+              className="text-muted text-decoration-none material-icons ms-3 md-20 bg-glass rounded-circle p-1 mb-5"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              more_vert
+            </a>
+            <ul
+              className="dropdown-menu fs-13 dropdown-menu-end bg-light"
+              aria-labelledby="dropdownMenuButton6"
+            >
+              {handleRemoveReview ? (
+                <li>
+                  <button
+                    onClick={handleRemoveReview}
+                    className="dropdown-item text-muted"
+                    htmlFor="btncheck1"
+                  >
+                    <span className="material-icons md-13 me-1">
+                      {" "}
+                      delete_outline
+                    </span>
+                    Remove Review
+                  </button>
+                </li>
+              ) : (
+                <li>
+                  <button
+                    className="dropdown-item text-muted"
+                    htmlFor="btncheck2"
+                  >
+                    <span className="material-icons md-13 me-1"> report </span>
+                    Report
+                  </button>
+                </li>
+              )}
+            </ul>
+          </div>
         </div>
-        <div className="d-flex justify-content-between">
-          <div className="mb-2 col-10">
-            <p className="ms-4 mt-2" style={{ wordBreak: "break-all" }}>
+        <div className="d-flex justify-content-between bg-glass m-2">
+          <div className="col-10">
+            <p className="ms-4 mt-3" style={{ wordBreak: "break-all" }}>
               {review.text}
             </p>
           </div>

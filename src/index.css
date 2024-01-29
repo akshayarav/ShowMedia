@@ -14,12 +14,14 @@
 */
 
 .dynamic-message {
-    word-wrap: break-word; /* Ensures text wraps and doesn't overflow */
+    word-wrap: break-word;
+    /* Ensures text wraps and doesn't overflow */
 }
 
 
 .message-container {
-    height: 70%; /* Adjust the height as needed */
+    height: 70%;
+    /* Adjust the height as needed */
     overflow-y: auto;
 }
 
@@ -508,6 +510,10 @@ h6 {
     font-size: 3px !important;
 }
 
+.md-10 {
+    font-size: 10px !important;
+}
+
 .md-13 {
     font-size: 13px !important;
 }
@@ -541,7 +547,7 @@ h6 {
 }
 
 .bold-icon {
-    font-weight:800;
+    font-weight: 800;
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
     /* Optional, for extra boldness */
 }
@@ -1292,6 +1298,16 @@ h6 {
     background-color: #e76f51;
 }
 
+.custom-accordion-arrow::after {
+    content: '\25B2';
+    font-size: 1.2em;
+
+}
+
+.custom-accordion-arrow.collapsed::after {
+    content: '\25BD';
+}
+
 label {
     color: #ececec;
 }
@@ -1378,8 +1394,12 @@ label {
 }
 
 .ellipsis-text {
-    display: block; /* Required for text-overflow to work */
-    white-space: nowrap; /* Prevents text from wrapping to the next line */
-    text-overflow: ellipsis; /* Adds an ellipsis (...) at the end of the overflowing text */
-    max-width: 200px; /* Set a width, adjust as needed */
+    display: block;
+    /* Required for text-overflow to work */
+    white-space: nowrap;
+    /* Prevents text from wrapping to the next line */
+    text-overflow: ellipsis;
+    /* Adds an ellipsis (...) at the end of the overflowing text */
+    max-width: 200px;
+    /* Set a width, adjust as needed */
 }

@@ -10,7 +10,7 @@ function AddReviewModal({ showName, showId, handleAddReview, closeModal }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("test");
+    setSuccess("Box Review Added!");
     handleAddReview(showId, score, text);
     setTimeout(() => {
       closeModal();
