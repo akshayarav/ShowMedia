@@ -208,16 +208,13 @@ app.get("/api/user/stats/:username", async (req, res) => {
   try {
     const { username } = req.params;
 
-    // Find the user by username
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Fetch all season ratings for this user
     const seasonRatings = await SeasonRating.find({ user: user._id });
 
-    // Calculate the total number of shows, episodes seen, and average rating
     const totalShows = seasonRatings.length;
     const totalEpisodes = seasonRatings.reduce((sum, rating) => {
 
@@ -230,15 +227,13 @@ app.get("/api/user/stats/:username", async (req, res) => {
     const totalHours = seasonRatings.reduce(
       (sum, rating) => sum + (rating.hours || 0),
       0
-    ); // Sum the hours
+    );
     const averageRating =
       seasonRatings.reduce((sum, rating) => sum + rating.rating, 0) /
       totalShows;
 
-    // Get the current year
     const currentYear = new Date().getFullYear();
 
-    // Filter activities by the current year and group by month
     const monthlyActivity = await Activity.aggregate([
       {
         $match: {
@@ -255,12 +250,12 @@ app.get("/api/user/stats/:username", async (req, res) => {
           count: { $sum: 1 },
         },
       },
-      { $sort: { "_id.month": 1 } }, // Sort by month
+      { $sort: { "_id.month": 1 } },
     ]);
-    // Format the data for easier consumption (e.g., array of counts indexed by month)
-    let monthlyCounts = Array(12).fill(0); // Initialize an array for 12 months
+
+    let monthlyCounts = Array(12).fill(0);
     monthlyActivity.forEach((activity) => {
-      const monthIndex = activity._id.month - 1; // Month index (0-11)
+      const monthIndex = activity._id.month - 1;
       monthlyCounts[monthIndex] = activity.count;
     });
 
@@ -292,7 +287,7 @@ app.get("/api/user/stats/:username", async (req, res) => {
         highestRatedShow = {
           showId: rating.show,
           highestRating: rating.rating,
-          showName: undefined, // Temporarily undefined until fetched from API
+          showName: undefined,
         };
       }
     }
@@ -302,15 +297,14 @@ app.get("/api/user/stats/:username", async (req, res) => {
         const showResponse = await axios.get(
           `https://api.themoviedb.org/3/tv/${highestRatedShow.showId}?api_key=${process.env.REACT_APP_API_KEY}`
         );
-        highestRatedShow.showName = showResponse.data.name; // Set the show name from the API response
+        highestRatedShow.showName = showResponse.data.name;
         highestRatedShow.showDetails = showResponse.data;
       } catch (apiError) {
         console.error("Error fetching show details:", apiError);
-        highestRatedShow.showName = "Unknown"; // Fallback name in case of an error
+        highestRatedShow.showName = "Unknown";
       }
     }
 
-    // Return the stats including monthly activity counts
     res.json({
       username: username,
       totalShows: totalShows,
@@ -332,7 +326,6 @@ app.get("/api/conversations/find", async (req, res) => {
   try {
     const { userId1, userId2 } = req.query;
 
-    // Find a conversation that includes both userId1 and userId2
     const conversation = await Conversation.findOne({
       participants: { $all: [userId1, userId2] },
     }).exec();
@@ -353,10 +346,9 @@ app.get("/api/conversations/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    // Fetch conversations where the user is a participant
     const conversations = await Conversation.find({ participants: userId })
-      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
-      .populate("participants", "username") // Optionally populate participant details
+      .sort({ updatedAt: -1 })
+      .populate("participants", "username")
       .exec();
 
     res.json(conversations);
@@ -370,29 +362,24 @@ app.post("/api/conversations/create", async (req, res) => {
   try {
     const { userId1, userId2 } = req.body;
 
-    // Check if users exist in the database
     const user1 = await User.findById(userId1);
     const user2 = await User.findById(userId2);
     if (!user1 || !user2) {
       return res.status(404).send("One or both users not found");
     }
 
-    // Check if a conversation between these users already exists
     let conversation = await Conversation.findOne({
       participants: { $all: [userId1, userId2] },
     });
 
     if (conversation) {
-      // Conversation already exists, return it
       return res.json(conversation);
     } else {
-      // Create a new conversation
       conversation = new Conversation({
         participants: [userId1, userId2],
-        messages: [], // Starting with an empty message array
+        messages: [],
       });
 
-      // Save the conversation to the database
       await conversation.save();
 
       res.status(201).json(conversation);
@@ -407,7 +394,6 @@ app.get("/api/messages/:messageId", async (req, res) => {
   try {
     const messageId = req.params.messageId;
 
-    // Find the message by ID
     const message = await Message.findById(messageId).exec();
 
     if (!message) {
@@ -426,27 +412,22 @@ app.post("/api/messages/send", async (req, res) => {
   try {
     const { sender, receiver, message } = req.body;
 
-    // Basic validation
     if (!sender || !receiver || !message) {
       return res.status(400).send("Missing required fields");
     }
 
-    // Create a new message
     const newMessage = new Message({
       sender,
       receiver,
       message,
     });
 
-    // Save the message to the database
     await newMessage.save();
 
-    // Find the conversation between sender and receiver
     let conversation = await Conversation.findOne({
       participants: { $all: [sender, receiver] },
     });
 
-    // If conversation doesn't exist, create a new one
     if (!conversation) {
       conversation = new Conversation({
         participants: [sender, receiver],
@@ -454,10 +435,8 @@ app.post("/api/messages/send", async (req, res) => {
       });
     }
 
-    // Add the new message to the conversation
     conversation.messages.push(newMessage._id);
 
-    // Update the conversation in the database
     await conversation.save();
 
     res.status(201).send("Message sent successfully");
@@ -536,7 +515,7 @@ app.get("/api/reviews/:showId", (req, res) => {
 // Endpoint to upvote a review
 app.post("/api/reviews/:reviewId/upvote", (req, res) => {
   const reviewId = req.params.reviewId;
-  const userId = req.body.userId; // The ID of the user who is upvoting
+  const userId = req.body.userId;
 
   Review.findById(reviewId)
     .then((review) => {
@@ -544,7 +523,6 @@ app.post("/api/reviews/:reviewId/upvote", (req, res) => {
         return res.status(404).json({ message: "Review not found" });
       }
 
-      // Add userId to upvotes if not already there, and remove from downvotes if present
       const alreadyUpvoted = review.upvotes.includes(userId);
       const alreadyDownvoted = review.downvotes.includes(userId);
       if (!alreadyUpvoted) {
@@ -565,7 +543,7 @@ app.post("/api/reviews/:reviewId/upvote", (req, res) => {
 // Endpoint to downvote a review
 app.post("/api/reviews/:reviewId/downvote", (req, res) => {
   const reviewId = req.params.reviewId;
-  const userId = req.body.userId; // The ID of the user who is downvoting
+  const userId = req.body.userId;
 
   Review.findById(reviewId)
     .then((review) => {
@@ -573,7 +551,6 @@ app.post("/api/reviews/:reviewId/downvote", (req, res) => {
         return res.status(404).json({ message: "Review not found" });
       }
 
-      // Add userId to downvotes if not already there, and remove from upvotes if present
       const alreadyDownvoted = review.downvotes.includes(userId);
       const alreadyUpvoted = review.upvotes.includes(userId);
       if (!alreadyDownvoted) {
@@ -594,7 +571,7 @@ app.post("/api/reviews/:reviewId/downvote", (req, res) => {
 //Endpoint to remove vote on review with id {reviewId} by user with id {userId}
 app.post("/api/reviews/:reviewId/unvote", (req, res) => {
   const reviewId = req.params.reviewId;
-  const userId = req.body.userId; // The ID of the user who is retracting their vote
+  const userId = req.body.userId;
 
   Review.findById(reviewId)
     .then((review) => {
@@ -602,7 +579,6 @@ app.post("/api/reviews/:reviewId/unvote", (req, res) => {
         return res.status(404).json({ message: "Review not found" });
       }
 
-      // Check if the user has upvoted or downvoted and remove their vote
       const indexUpvote = review.upvotes.indexOf(userId);
       const indexDownvote = review.downvotes.indexOf(userId);
       let voteRemoved = false;
