@@ -34,7 +34,7 @@ function ShowInfoMain() {
                                         onClick={() => {
                                             setActiveTab('reviews');
                                         }}>
-                                        Reviews
+                                        Chatter
                                     </button>
                                 </li>
                             </ul>

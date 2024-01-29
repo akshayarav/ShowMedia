@@ -55,7 +55,7 @@ function MyShows() {
                         <div className="col-lg-12">
                             <div className="accordion overflow-hidden bg-glass" id="accordionExample">
                                 <div className="accordion-item">
-                                    <h3 className="accordion-header" id="headingOne"><button className="accordion-button fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Watching</button></h3>
+                                    <h3 className="accordion-header" id="headingOne"><button className="accordion-button custom-accordion-arrow fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Watching</button></h3>
                                     <div className="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" >
                                         <div className="accordion-body">
                                             {sortedRatings.map(rating => {
@@ -80,7 +80,11 @@ function MyShows() {
                                     </div>
                                 </div>
                                 <div className="accordion-item">
-                                    <h3 className="accordion-header" id="headingTwo"><button className="accordion-button fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">Completed</button></h3>
+                                    <h3 className="accordion-header" id="headingTwo">
+                                        <button className="accordion-button custom-accordion-arrow fw-bold m-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                            Completed
+                                        </button>
+                                    </h3>
                                     <div className="accordion-collapse collapse show" id="collapseTwo" aria-labelledby="headingOne" >
                                         <div className="accordion-body">
                                             {sortedRatings.map(rating => {
@@ -106,7 +110,7 @@ function MyShows() {
                                 </div>
 
                                 <div className="accordion-item">
-                                    <h3 className="accordion-header" id="headingThree"><button className="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Planning</button></h3>
+                                    <h3 className="accordion-header" id="headingThree"><button className="accordion-button custom-accordion-arrow fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Planning</button></h3>
                                     <div className="accordion-collapse collapse show" id="collapseThree" aria-labelledby="headingThree" >
                                         <div className="accordion-body">
                                             {sortedRatings.map(rating => {
@@ -132,7 +136,7 @@ function MyShows() {
                                 </div>
 
                                 <div className="accordion-item">
-                                    <h3 className="accordion-header" id="headingFour"><button className="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">Dropped</button></h3>
+                                    <h3 className="accordion-header" id="headingFour"><button className="accordion-button custom-accordion-arrow fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">Dropped</button></h3>
                                     <div className="accordion-collapse collapse show" id="collapseFour" aria-labelledby="headingOne" >
                                         <div className="accordion-body">
                                             {sortedRatings.map(rating => {
