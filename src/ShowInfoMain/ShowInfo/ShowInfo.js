@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import MobileBar from "../../MobileBar/MobileBar";
 import UserCard from "../../SearchBar/UserCard";
 import AddToListButton from "../../Common/AddToListButton"
+import ShowModal from "../../Shows/ShowCard/ShowModal";
 
 function ShowInfo() {
   const { showId } = useParams();
@@ -19,19 +20,10 @@ function ShowInfo() {
   const [recShows, setRecShows] = useState(null);
   const [seasons, setSeasons] = useState(null);
 
-  const [showCompletedModal, setShowCompletedModal] = useState(false);
-  const [showWatchingModal, setShowWatchingModal] = useState(false);
-  const [showPlanningModal, setShowPlanningModal] = useState(false);
-  const [showDroppedModal, setShowDroppedModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = () => setShowModal(!showModal)
 
-  const toggleShowCompletedModal = () =>
-    setShowCompletedModal(!showCompletedModal);
-  const toggleShowWatchingModal = () =>
-    setShowWatchingModal(!showWatchingModal);
-  const toggleShowPlanningModal = () =>
-    setShowPlanningModal(!showPlanningModal);
-  const toggleShowDroppedModal = () => setShowDroppedModal(!showDroppedModal);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     axios
@@ -154,8 +146,18 @@ function ShowInfo() {
                         style={{ maxWidth: "100%", height: "auto" }}
                       />
                       <div className="d-flex mb-3 mt-3 justify-content-center">
-                      <AddToListButton show={show} seasons={seasons} isLoading={isLoading} toggleShowPlanningModal={toggleShowPlanningModal} showPlanningModal={showPlanningModal} toggleShowDroppedModal={toggleShowDroppedModal} showDroppedModal={showDroppedModal}/>
+                        <AddToListButton show={show} openModal = {toggleModal}/>
                       </div>
+                      {!isLoading &&
+                        showModal && (
+                          <ShowModal
+                            closeModal={() => setShowModal(false)}
+                            showName={show.name}
+                            showImg={`https://image.tmdb.org/t/p/w500${show?.poster_path}`}
+                            series_id={show.id}
+                            seasons={seasons}
+                          />
+                        )}
                     </div>
                     <div
                       className="py-3 px-lg-3 col-9 d-flex flex-column overflow-auto"
@@ -293,8 +295,8 @@ function ShowInfo() {
                           </h5>
                           <div className="d-flex overflow-auto justify-content-center">
                             {show &&
-                            show.created_by &&
-                            show.created_by.length > 0 ? (
+                              show.created_by &&
+                              show.created_by.length > 0 ? (
                               show.created_by.map((creator) => (
                                 <div className="d-flex ms-3 mb-3 me-3 justify-content-between">
                                   <img
@@ -334,8 +336,8 @@ function ShowInfo() {
                           </h5>
                           <div className="d-flex justify-content-center overflow-auto">
                             {show &&
-                            show.networks &&
-                            show.networks.length > 0 ? (
+                              show.networks &&
+                              show.networks.length > 0 ? (
                               show.networks.map((network) => (
                                 <div className="ms-3 mb-3 me-3 d-flex justify-content-between">
                                   <img

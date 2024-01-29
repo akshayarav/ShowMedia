@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Alert, Form } from 'react-bootstrap';
 
-function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateStatus, users, status }) {
+function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateStatus }) {
+    const apiUrl = process.env.REACT_APP_API_URL;
+
     const [selectedSeason, setSelectedSeason] = useState('');
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const apiUrl = process.env.REACT_APP_API_URL;
-    const [selectedSeasonObject, setSelectedSeasonObject] = useState(null);
-    const [episodesTotal, setEpisodesTotal] = useState(null);
+    const [status, setStatus] = useState('');
     const [episodes, setEpisodes] = useState('');
     const [episodeProgress, setEpisodeProgress] = useState(null);
-    const [showMore, setShowMore] = useState(false);
+    const [episodesTotal, setEpisodesTotal] = useState(null);
 
-    const toggleShowMore = () => {
-        setShowMore(!showMore);
-    };
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+
+    const [selectedSeasonObject, setSelectedSeasonObject] = useState(null);
 
     useEffect(() => {
         const seasonObj = seasons.find(season => season.id === parseInt(selectedSeason));
@@ -101,7 +100,7 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
         let stars = [];
         for (let i = 1; i <= 10; i++) {
             stars.push(
-                <div key={i} className="star" role = "button" onClick = {() => setRating(i)}>
+                <div key={i} className="star" role="button" onClick={() => setRating(i)}>
                     <span className="material-icons">
                         {i <= rating ? 'star' : 'star_border'}
                     </span>
@@ -110,37 +109,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
         }
         return <div className="stars-container">{stars}</div>;
     };
-
-    const status_title = status === "Completed" ? (
-        <div className="d-flex ">
-            <h6 className> Status: Completed  </h6>
-            <span className="material-icons ms-1">add_task</span>
-        </div>
-    ) : (status === "Watching" ? (
-        <>
-            <div className="d-flex justify-content-between">
-                <h6> Status: Watching </h6>
-                <span className="material-icons ms-1">theaters</span>
-            </div>
-
-        </>
-    ) : (status === "Planning" ? (
-        <>
-            <div className="d-flex ">
-                <h6> Status: Planning </h6>
-                <span className="material-icons ms-1">date_range</span>
-            </div>
-
-        </>
-    ) : (
-        <>
-            <div className="d-flex ">
-                <h6> Status: Dropped </h6>
-                <span className="material-icons ms-1">close</span>
-            </div>
-        </>
-    )
-    ))
 
     if (window.innerWidth < 1200) {
         return (
@@ -151,7 +119,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                         <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
                     </div>
                     <div className="modal-body p-0">
-                        <h4 className="text-muted ms-2"> {status_title}</h4>
                         {error && <Alert variant="danger">{error}</Alert>}
                         {success && <Alert variant="success">{success}</Alert>}
                         <div className="d-flex justify-content-between">
@@ -207,7 +174,6 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                     <h3 className="fw-bold text-primary">{showName}</h3>
                     <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
                 </div>
-                <h4 className="text-muted ms-2"> {status_title}</h4>
                 <div className="modal-body p-0">
                     {error && <Alert variant="danger">{error}</Alert>}
                     {success && <Alert variant="success">{success}</Alert>}
@@ -224,6 +190,77 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                                     </div>
                                     <div className="col-6">
                                         <div className="container">
+                                            <div className="dropdown flex-grow-1 mb-2">
+                                                <Button
+                                                    variant="primary"
+                                                    type="submit"
+                                                    className="btn btn-primary"
+                                                    style={{ width: "100%", height: "auto" }}
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                >
+                                                    <div className="d-flex align-items-center justify-content-center">
+                                                        {!status ? "Status" : status}
+                                                        <span className="material-icons md-20">
+                                                            expand_more
+                                                        </span>
+                                                    </div>
+                                                </Button>
+                                                <ul
+                                                    className="dropdown-menu fs-13 dropdown-menu-end"
+                                                    aria-labelledby="dropdownMenuButton7"
+                                                    style={{ position: "relative", zIndex: 1000 }}
+                                                >
+                                                    <li>
+                                                        <button
+                                                            onClick={(e) => { e.preventDefault(); setStatus("Completed") }}
+                                                            className="dropdown-item text-muted z-top"
+                                                            htmlFor="btncheck1"
+                                                        >
+                                                            <span className="material-icons md-13 me-1">
+                                                                add_task
+                                                            </span>
+                                                            Completed
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button
+                                                            onClick={(e) => { e.preventDefault(); setStatus("Watching") }}
+                                                            className="dropdown-item text-muted z-top"
+                                                            htmlFor="btncheck2"
+                                                        >
+                                                            <span className="material-icons md-13 me-1">
+                                                                theaters
+                                                            </span>
+                                                            Watching
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button
+                                                            onClick={(e) => { e.preventDefault(); setStatus("Planning") }}
+                                                            className="dropdown-item text-muted z-top"
+                                                            htmlFor="btncheck2"
+                                                        >
+                                                            <span className="material-icons md-13 me-1">
+                                                                date_range
+                                                            </span>
+                                                            Planning
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button
+                                                            onClick={(e) => { e.preventDefault(); setStatus("Dropped") }}
+                                                            className="dropdown-item text-muted z-top"
+                                                            htmlFor="btncheck2"
+                                                        >
+                                                            <span className="material-icons md-13 me-1">
+                                                                theaters
+                                                            </span>
+                                                            Dropped
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                             <Form.Group className="mb-3 row">
                                                 <h4 className="fw-bold text-white col-3 me-4">Season:</h4>
                                                 <div className="col-10">
