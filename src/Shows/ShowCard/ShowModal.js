@@ -4,7 +4,6 @@ import { Modal, Button, Alert, Form } from "react-bootstrap";
 function ShowModal({
   closeModal,
   showName,
-  showImg,
   series_id,
   seasons,
   updateStatus,
@@ -104,31 +103,11 @@ function ShowModal({
     }
   };
 
-  const renderStars = (rating) => {
-    let stars = [];
-    for (let i = 1; i <= 10; i++) {
-      stars.push(
-        <div
-          key={i}
-          className="star"
-          role="button"
-          onClick={() => setRating(i)}
-        >
-          <span className="material-icons">
-            {i <= rating ? "star" : "star_border"}
-          </span>
-        </div>
-      );
-    }
-    return <div className="stars-container">{stars}</div>;
-  };
-
   if (window.innerWidth < 1200) {
     return (
       <Modal
         show={true}
         onHide={closeModal}
-        centered={true}
         className="fade bg-glass modal-xl"
       >
         <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
@@ -150,17 +129,6 @@ function ShowModal({
             <div className="d-flex justify-content-between">
               <form onSubmit={handleSubmit} className="flex-grow-1">
                 <div className="d-flex">
-                  <div className="image-container showmodal">
-                    <img
-                      src={
-                        selectedSeasonObject && selectedSeasonObject.poster_path
-                          ? `https://image.tmdb.org/t/p/w500${selectedSeasonObject.poster_path}`
-                          : showImg
-                      }
-                      className="img-fluid showmodal-img"
-                      alt={showName}
-                    />
-                  </div>
                   <div className="flex-grow-1 offset-xl-1 ms-2 col-xl-5">
                     <Form.Group className="mb-3">
                       <h6 className="fw-bold mx-1 mb-2 text-white">Season:</h6>
@@ -277,18 +245,6 @@ function ShowModal({
                 </div>
 
                 <div className="row">
-                  <div className="image-container showmodal col-6">
-                    <img
-                      src={
-                        selectedSeasonObject && selectedSeasonObject.poster_path
-                          ? `https://image.tmdb.org/t/p/w500${selectedSeasonObject.poster_path}`
-                          : showImg
-                      }
-                      className="img-fluid showmodal-img"
-                      alt={showName}
-                    />
-                  </div>
-
                   <div className="col-6">
                     <div className="container">
                       <Form.Group className="mb-3 row">
@@ -409,7 +365,6 @@ function ShowModal({
                     onChange={(e) => setComment(e.target.value)}
                   />
                 </Form.Group>
-                <h2>{renderStars(rating)}</h2>
                 <Button
                   variant="primary"
                   type="submit"

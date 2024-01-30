@@ -187,7 +187,6 @@ function Reviews({ showId }) {
           {hasReviewed ? (
             <div className="d-flex justify-content-center align-items-center">
               <ReviewCard
-                vw={55}
                 showName={showName}
                 key={userReviewId}
                 review={userReview}
@@ -205,58 +204,62 @@ function Reviews({ showId }) {
           )}
         </div>
       </div>
-
-      <div className="accordion overflow-hidden rounded-4" id="accordionExample" style = {{minWidth: "60vw"}}>
-        <div className="accordion-item">
-          <div>
-            <h2 className="accordion-header" id="headingFive">
-              <button className="accordion-button custom-accordion-arrow fw-bold m-0 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-                Chats by Friends
-              </button>
-            </h2>
-            <div className="accordion-collapse collapse show" id="collapseFive" aria-labelledby="headingFive" >
-              {reviewsFollowing.length > 0 ? (
-                reviewsFollowing
-                  .filter((review) => review._id !== userReviewId)
-                  .map((review) => (
-                    <ReviewCard
-                      showName={showName}
-                      key={review._id}
-                      review={review}
-                    />
-                  ))
-              ) : (
-                <p className="m-3 text-muted">No chats by friends yet, share this show!</p>
-              )}
+      <div className="container">
+        <div className="row">
+          <div className="accordion overflow-hidden rounded-4" id="accordionExample" >
+            <div className="accordion-item">
+              <div>
+                <h2 className="accordion-header" id="headingFive">
+                  <button className="accordion-button custom-accordion-arrow fw-bold m-0 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                    Chats by Friends
+                  </button>
+                </h2>
+                <div className="accordion-collapse collapse show" id="collapseFive" aria-labelledby="headingFive" >
+                  {reviewsFollowing.length > 0 ? (
+                    reviewsFollowing
+                      .filter((review) => review._id !== userReviewId)
+                      .map((review) => (
+                        <ReviewCard
+                          showName={showName}
+                          key={review._id}
+                          review={review}
+                        />
+                      ))
+                  ) : (
+                    <p className="m-3 text-muted">No chats by friends yet, share this show!</p>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="accordion-item">
-          <div>
-            <h2 className="accordion-header" id="headingSix">
-              <button className="accordion-button custom-accordion-arrow fw-bold m-0 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix">
-                Top Chats
-              </button>
-            </h2>
-            <div className="accordion-collapse collapse show" id="collapseSix" aria-labelledby="headingSix" >
-              {reviews.length > 0 ? (
-                reviews
-                  .filter((review) => review._id !== userReviewId)
-                  .map((review) => (
-                    <ReviewCard
-                      showName={showName}
-                      key={review._id}
-                      review={review}
-                    />
-                  ))
-              ) : (
-                <p className="text-muted m-3">No chats yet, be the first!</p>
-              )}
+            <div className="accordion-item">
+              <div>
+                <h2 className="accordion-header" id="headingSix">
+                  <button className="accordion-button custom-accordion-arrow fw-bold m-0 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix">
+                    Top Chats
+                  </button>
+                </h2>
+                <div className="accordion-collapse collapse show" id="collapseSix" aria-labelledby="headingSix" >
+                  {reviews.length > 0 ? (
+                    reviews
+                      .filter((review) => review._id !== userReviewId)
+                      .map((review) => (
+                        <ReviewCard
+                          showName={showName}
+                          key={review._id}
+                          review={review}
+                        />
+                      ))
+                  ) : (
+                    <p className="text-muted m-3">No chats yet, be the first!</p>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   );
 }

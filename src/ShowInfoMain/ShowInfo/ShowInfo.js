@@ -26,6 +26,7 @@ function ShowInfo() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     axios
       .get(`${apiUrl}/api/following/shows/${userId}`)
       .then((response) => {
@@ -137,8 +138,11 @@ function ShowInfo() {
           <div className="row position-relative">
             <div className="col">
               <div className="main-content">
-                <h2 className="fw-bold text-white mb-1">{show?.name}</h2>
+                <h2 className="fw-bold text-primary mb-1">{show?.name}</h2>
                 <div className="container mt-3">
+                  <div className="rounded-4 mb-4">
+                    <div>{show?.overview}</div>
+                  </div>
                   <div className="row bg-glass p-3 feed-item rounded-4 shadow-sm z-top">
                     <div className="col-3">
                       <img
@@ -146,7 +150,7 @@ function ShowInfo() {
                         style={{ maxWidth: "100%", height: "auto" }}
                       />
                       <div className="d-flex mb-3 mt-3 justify-content-center">
-                        <AddToListButton show={show} openModal = {toggleModal}/>
+                        <AddToListButton show={show} openModal={toggleModal} />
                       </div>
                       {!isLoading &&
                         showModal && (
@@ -160,33 +164,25 @@ function ShowInfo() {
                         )}
                     </div>
                     <div
-                      className="py-3 px-lg-3 col-9 d-flex flex-column overflow-auto"
+                      className="py-3 px-lg-3 col-9 d-flex flex-column"
                       style={{ maxHeight: "345px", gap: "10px" }}
                     >
-                      <div className="bg-glass rounded-4 p-3">
-                        <h6 className="fw-bold text-body text-center border-bottom pb-2">
-                          {" "}
-                          Overview
-                        </h6>
-                        <div>{show?.overview}</div>
-                      </div>
+                      <div className="container">
+                        <div className="row">
+                          <h6 className="fw-bold text-body text-center border-bottom pb-2">
+                            {" "}
+                            Show Information
+                          </h6>
+                        </div>
 
-                      <div className="d-flex flex-column bg-glass rounded-4 p-3">
-                        <h6 className="fw-bold text-body text-center border-bottom pb-2">
-                          {" "}
-                          Show Information
-                        </h6>
-                        <div
-                          className="d-flex justify-content-center overflow-auto"
-                          style={{ gap: "10px" }}
-                        >
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                        <div className="row">
+                          <div className="bg-brown-gradient-color rounded-4 col-2 p-3">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Status
                             </h6>
                             <div className="text-center"> {show?.status}</div>
                           </div>
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                          <div className="bg-brown-gradient-color rounded-4 p-3 col-2 ms-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               First Air Date
                             </h6>
@@ -195,9 +191,9 @@ function ShowInfo() {
                               {show?.first_air_date}
                             </div>
                           </div>
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                          <div className="bg-brown-gradient-color rounded-4 p-3 col-4 m-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
-                              Genre
+                              Genres
                             </h6>
                             <div className="text-center">
                               {show?.genres
@@ -205,51 +201,20 @@ function ShowInfo() {
                                 .join(", ")}
                             </div>
                           </div>
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
-                            <h6 className="fw-bold text-primary text-center mt-2">
-                              Origin Country
-                            </h6>
-                            <div className="text-center">
-                              {" "}
-                              {show?.origin_country
-                                ?.map((country) => country)
-                                .join(", ")}
-                            </div>
-                          </div>
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
-                            <h6 className="fw-bold text-primary text-center mt-2">
-                              Original Language
-                            </h6>
-                            <div className="text-center">
-                              {" "}
-                              {show?.original_language}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
 
-                      <div className="d-flex flex-column bg-glass rounded-4 p-3 justify-content-center">
-                        <h6 className="fw-bold text-body text-center border-bottom pb-2">
-                          {" "}
-                          Show Statistics
-                        </h6>
-                        <div
-                          className="d-flex justify-content-center overflow-auto"
-                          style={{ gap: "10px" }}
-                        >
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                          <div className="bg-brown-gradient-color rounded-4 p-3 col-2 m-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Vote Average
                             </h6>
                             <div className="text-center"> {show?.vote_average}</div>
                           </div>
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                          <div className="bg-brown-gradient-color rounded-4 col-2 p-3 m-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Vote Count
                             </h6>
                             <div className="text-center"> {show?.vote_count}</div>
                           </div>
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                          <div className="bg-brown-gradient-color rounded-4 col-2 p-3 m-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Number of Episodes
                             </h6>
@@ -258,7 +223,7 @@ function ShowInfo() {
                               {show?.number_of_episodes}
                             </div>
                           </div>
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                          <div className="bg-brown-gradient-color rounded-4 col-2 p-3 m-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Number of Seasons
                             </h6>
@@ -267,7 +232,7 @@ function ShowInfo() {
                               {show?.number_of_seasons}
                             </div>
                           </div>
-                          <div className="d-flex bg-brown-gradient-color rounded-4 flex-column p-3">
+                          <div className="bg-brown-gradient-color rounded-4 col-2 p-3 m-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Popularity
                             </h6>
@@ -277,92 +242,47 @@ function ShowInfo() {
                             </div>
                           </div>
                         </div>
+
+                        <div className="row">
+                          <div className = "d-flex justify-content-center">
+                                {(
+                                  show?.networks?.map((network, index) => (  // Include 'index' here
+                                      <img src={
+                                        network.logo_path
+                                          ? `https://image.tmdb.org/t/p/w92/${network.logo_path}`
+                                          : "/error.jpg"
+                                      }>
+                                      </img>
+                                  ))
+                                )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div className="row border-top mt-3">
-                    <div className="d-flex p-3">
-                      <div
-                        style={{
-                          width: "50%",
-                          marginRight: "10px",
-                          maxWidth: "50vw",
-                        }}
-                      >
+                    <div className="d-flex p-3 flex-grow-1">
+                      {show &&
+                        show.created_by &&
+                        show.created_by.length > 0 &&
                         <div className="bg-glass rounded-4 flex-grow-1">
                           <h5 className="fw-bold text-body p-3 mb-0 d-flex justify-content-center">
                             Created By
                           </h5>
                           <div className="d-flex overflow-auto justify-content-center">
-                            {show &&
-                              show.created_by &&
-                              show.created_by.length > 0 ? (
-                              show.created_by.map((creator) => (
-                                <div className="d-flex ms-3 mb-3 me-3 justify-content-between">
-                                  <img
-                                    style={{ width: "80px", height: "80px" }}
-                                    className="rounded-circle me-2 ms-1"
-                                    src={
-                                      creator.profile_path
-                                        ? `https://image.tmdb.org/t/p/w92/${creator.profile_path}`
-                                        : "/default_profile.jpg"
-                                    }
-                                    alt={creator.name}
-                                  />
-                                  <div className="d-flex flex-column fw-bold text-center justify-content-center me-2">
-                                    {creator.name}
-                                  </div>
+                            {(
+                              show.created_by.map((creator, index) => (  // Include 'index' here
+                                <div key={index} className="d-flex fw-bold text-center text-primary justify-content-center me-2">
+                                  <p>{creator.name}</p>
+                                  {index !== show.created_by.length - 1 && (
+                                    <span className="material-icons md-10 m-1 text-white">circle</span>
+                                  )}
                                 </div>
                               ))
-                            ) : (
-                              <div className="fw-bold text-body p-3">
-                                No creator information
-                              </div>
                             )}
                           </div>
                         </div>
-                      </div>
-
-                      <div
-                        style={{
-                          width: "50%",
-                          marginLeft: "10px",
-                          maxWidth: "50vw",
-                        }}
-                      >
-                        <div className="bg-glass rounded-4 flex-grow-1">
-                          <h5 className="fw-bold text-body p-3 mb-0 d-flex justify-content-center">
-                            Networks
-                          </h5>
-                          <div className="d-flex justify-content-center overflow-auto">
-                            {show &&
-                              show.networks &&
-                              show.networks.length > 0 ? (
-                              show.networks.map((network) => (
-                                <div className="ms-3 mb-3 me-3 d-flex justify-content-between">
-                                  <img
-                                    style={{ width: "80px", height: "80px" }}
-                                    className="rounded-circle me-2 ms-1"
-                                    src={
-                                      network.logo_path
-                                        ? `https://image.tmdb.org/t/p/w92/${network.logo_path}`
-                                        : "/error.jpg"
-                                    }
-                                    alt={network.name}
-                                  />
-                                  <div className="d-flex flex-column fw-bold text-center justify-content-center me-2">
-                                    {network.name}
-                                  </div>
-                                </div>
-                              ))
-                            ) : (
-                              <div className="fw-bold text-body p-3">
-                                No network information
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      }
                     </div>
                   </div>
                   <div className="row border-top mt-3">
@@ -378,7 +298,7 @@ function ShowInfo() {
                               Seen By
                             </h6>
                             <div className="text-center mt-2 mb-3">
-                              No one has watched this show yet, be the first!
+                              No one you follow has watched this show yet, be the first!
                             </div>
                           </div>
                         )}
