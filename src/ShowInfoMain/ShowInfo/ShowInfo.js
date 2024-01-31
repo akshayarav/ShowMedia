@@ -20,6 +20,11 @@ function ShowInfo() {
   const [recShows, setRecShows] = useState(null);
   const [seasons, setSeasons] = useState(null);
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => setShowModal(!showModal)
 
@@ -168,30 +173,21 @@ function ShowInfo() {
                       style={{ maxHeight: "345px", gap: "10px" }}
                     >
                       <div className="container">
-                        <div className="row">
+                        <div className="row ">
                           <h6 className="fw-bold text-body text-center border-bottom pb-2">
                             {" "}
                             Show Information
                           </h6>
                         </div>
 
-                        <div className="row">
+                        <div className="row d-flex justify-content-center border-bottom p-2">
                           <div className="bg-brown-gradient-color rounded-4 col-2 p-3">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Status
                             </h6>
                             <div className="text-center"> {show?.status}</div>
                           </div>
-                          <div className="bg-brown-gradient-color rounded-4 p-3 col-2 ms-1">
-                            <h6 className="fw-bold text-primary text-center mt-2">
-                              First Air Date
-                            </h6>
-                            <div className="text-center">
-                              {" "}
-                              {show?.first_air_date}
-                            </div>
-                          </div>
-                          <div className="bg-brown-gradient-color rounded-4 p-3 col-4 m-1">
+                          <div className="bg-brown-gradient-color rounded-4 p-3 col-6 m-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Genres
                             </h6>
@@ -201,7 +197,18 @@ function ShowInfo() {
                                 .join(", ")}
                             </div>
                           </div>
+                          <div className="bg-brown-gradient-color rounded-4 p-3 col-2 ms-1">
+                            <h6 className="fw-bold text-primary text-center mt-2">
+                              First Air Date
+                            </h6>
+                            <div className="text-center">
+                              {" "}
+                              {formatDate(show?.first_air_date)}
+                            </div>
+                          </div>
+                        </div>
 
+                        <div className="row d-flex justify-content-center border-bottom p-2">
                           <div className="bg-brown-gradient-color rounded-4 p-3 col-2 m-1">
                             <h6 className="fw-bold text-primary text-center mt-2">
                               Vote Average
@@ -244,17 +251,18 @@ function ShowInfo() {
                         </div>
 
                         <div className="row">
-                          <div className = "d-flex justify-content-center">
-                                {(
-                                  show?.networks?.map((network, index) => (  // Include 'index' here
-                                      <img src={
-                                        network.logo_path
-                                          ? `https://image.tmdb.org/t/p/w92/${network.logo_path}`
-                                          : "/error.jpg"
-                                      }>
-                                      </img>
-                                  ))
-                                )}
+                          <div className="d-flex justify-content-center">
+                            {(
+                              show?.networks?.map((network, index) => (  // Include 'index' here
+                                <img src={
+                                  network.logo_path
+                                    ? `https://image.tmdb.org/t/p/w45/${network.logo_path}`
+                                    : "/error.jpg"
+                                }
+                                className = "m-3">
+                                </img>
+                              ))
+                            )}
                           </div>
                         </div>
                       </div>
@@ -319,7 +327,7 @@ function ShowInfo() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

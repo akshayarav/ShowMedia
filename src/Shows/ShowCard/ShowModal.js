@@ -22,10 +22,6 @@ function ShowModal({
     const [episodesTotal, setEpisodesTotal] = useState(0);
 
     const [isCommentVisible, setIsCommentVisible] = useState(false)
-    const [isEpisodesVisible, setIsEpisodesVisible] = useState(false)
-    const [isRatingsVisible, setIsRatingsVisible] = useState(false)
-
-
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -60,8 +56,8 @@ function ShowModal({
             return;
         }
 
-        if (!selectedSeason || !comment || !rating) {
-            setError("Please select a season, enter a rating, and write a comment.");
+        if (!selectedSeason || !rating) {
+            setError("Please select a season and enter a rating.");
             setTimeout(() => setError(""), 3000)
             return;
         }
