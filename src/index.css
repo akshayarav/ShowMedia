@@ -13,6 +13,65 @@
 -- Dark
 */
 
+/* For Webkit Browsers like Chrome, Safari */
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px; /* Width and height of the slider thumb */
+    height: 20px;
+    background: #e76f51; /* Thumb color */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 50%; /* Make it circular */
+}
+
+/* For Mozilla Firefox */
+input[type='range']::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #e76f51;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+/* For Microsoft Edge */
+input[type='range']::-ms-thumb {
+    width: 20px;
+    height: 20px;
+    background: orange;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+
+/* For Chrome, Safari, Edge, Opera */
+.review-score input::-webkit-outer-spin-button,
+.review-score input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* For Firefox */
+.review-score input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.review-score input:hover {
+    text-decoration: underline;
+}
+
+
+.fade-in {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s, max-height 0.8s;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    max-height: 500px; /* Adjust this value based on your content's height */
+}
+
 .dynamic-message {
     word-wrap: break-word;
     /* Ensures text wraps and doesn't overflow */

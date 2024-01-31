@@ -1,27 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Button, Alert, Form } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Alert, Form } from "react-bootstrap";
 
-
-function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateStatus }) {
+function ShowModal({
+    closeModal,
+    showName,
+    series_id,
+    seasons,
+    updateStatus,
+}) {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const [selectedSeason, setSelectedSeason] = useState('');
-    const [rating, setRating] = useState('');
-    const [comment, setComment] = useState('');
-    const [status, setStatus] = useState('');
-    const [episodes, setEpisodes] = useState('');
-    const [episodeProgress, setEpisodeProgress] = useState(null);
-    const [episodesTotal, setEpisodesTotal] = useState(null);
 
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    //Stores the season ID
+    const [selectedSeason, setSelectedSeason] = useState(seasons[0].id);
+    //Stores the season number
+    const [selectedSeasonNum, setSelectedSeasonNum] = useState(1)
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
+    const [status, setStatus] = useState("");
+    const [episodes, setEpisodes] = useState(0);
+    const [episodeProgress, setEpisodeProgress] = useState(null);
+    const [episodesTotal, setEpisodesTotal] = useState(0);
+
+    const [isCommentVisible, setIsCommentVisible] = useState(false)
+
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     const [selectedSeasonObject, setSelectedSeasonObject] = useState(null);
 
     useEffect(() => {
-        const seasonObj = seasons.find(season => season.id === parseInt(selectedSeason));
+        const seasonObj = seasons.find(
+            (season) => season.id === parseInt(selectedSeason)
+        );
         setSelectedSeasonObject(seasonObj);
 
         if (seasonObj) {
+            console.log("REACHED", seasonObj)
             const newEpisodesTotal = seasonObj.episodes.length;
             setEpisodesTotal(newEpisodesTotal);
         }
@@ -29,41 +43,39 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
         if (episodes && episodesTotal) {
             setEpisodeProgress(`${episodes}/${episodesTotal}`);
         }
-
-
     }, [selectedSeason, seasons, episodes]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
+        setError("");
+        setSuccess("");
 
-        const userId = localStorage.getItem('userId');
+        const userId = localStorage.getItem("userId");
         if (!userId) {
-            setError('Log In First!');
+            setError("Log In First!");
             return;
         }
 
-        if (!selectedSeason || !comment || !rating) {
-            setError('Please select a season, enter a rating, and write a comment.');
+        if (!selectedSeason || !rating) {
+            setError("Please select a season and enter a rating.");
+            setTimeout(() => setError(""), 3000)
             return;
         }
 
         try {
-            // Fetch season details from TMDb API
-            const tmdbResponse = await fetch(`https://api.themoviedb.org/3/tv/${series_id}/season/${selectedSeasonObject.season_number}?api_key=${process.env.REACT_APP_API_KEY}`);
+            const tmdbResponse = await fetch(
+                `https://api.themoviedb.org/3/tv/${series_id}/season/${selectedSeasonObject.season_number}?api_key=${process.env.REACT_APP_API_KEY}`
+            );
             const seasonDetails = await tmdbResponse.json();
 
-            // Calculate the total hours
-            const episodesWatched = parseInt(episodeProgress.match(/\d+/)[0], 10); // Extract number of episodes watched
-            const averageRuntime = seasonDetails.episodes[0].runtime; // Assuming all episodes have the same runtime
-            const totalHours = (averageRuntime / 60) * episodesWatched; // Convert to hours
+            const episodesWatched = parseInt(episodeProgress.match(/\d+/)[0], 10);
+            const averageRuntime = seasonDetails.episodes[0].runtime;
+            const totalHours = (averageRuntime / 60) * episodesWatched;
 
-            // POST request to your API
             const response = await fetch(`${apiUrl}/rateSeason`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     userId,
@@ -73,241 +85,306 @@ function ShowModal({ closeModal, showName, showImg, series_id, seasons, updateSt
                     comment: comment,
                     status: status,
                     episodes: episodeProgress,
-                    hours: totalHours
+                    hours: totalHours,
                 }),
             });
 
             const data = await response.json();
             if (!response.ok) {
-                setError(data.message || `Failed to add rating and comment for Season ${selectedSeason}`);
+                setError(
+                    data.message ||
+                    `Failed to add rating and comment for Season ${selectedSeason}`
+                );
                 return;
             }
 
-            setSuccess('Season rating and comment added successfully!');
+            setSuccess("Season rating and comment added successfully!");
             setTimeout(() => {
                 closeModal();
             }, 1000);
-
         } catch (err) {
-            setError('Server error');
+            setError("Server error");
         } finally {
-            if (updateStatus) { updateStatus() }
+            if (updateStatus) {
+                updateStatus();
+            }
         }
     };
-
-
-    const renderStars = (rating) => {
-        let stars = [];
-        for (let i = 1; i <= 10; i++) {
-            stars.push(
-                <div key={i} className="star" role="button" onClick={() => setRating(i)}>
-                    <span className="material-icons">
-                        {i <= rating ? 'star' : 'star_border'}
-                    </span>
-                </div>
-            );
-        }
-        return <div className="stars-container">{stars}</div>;
-    };
-
-    if (window.innerWidth < 1200) {
-        return (
-            <Modal show={true} onHide={closeModal} centered={true} className="fade bg-glass modal-xl">
-                <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
-                    <div className="modal-header border-0 p-1 mb-4">
-                        <h6 className="modal-title fw-bold text-primary fs-6">{showName}</h6>
-                        <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
-                    </div>
-                    <div className="modal-body p-0">
-                        {error && <Alert variant="danger">{error}</Alert>}
-                        {success && <Alert variant="success">{success}</Alert>}
-                        <div className="d-flex justify-content-between">
-                            <form onSubmit={handleSubmit} className="flex-grow-1">
-                                <div className="d-flex">
-                                    <div className="image-container showmodal">
-                                        <img
-                                            src={selectedSeasonObject && selectedSeasonObject.poster_path ? `https://image.tmdb.org/t/p/w500${selectedSeasonObject.poster_path}` : showImg}
-                                            className="img-fluid showmodal-img"
-                                            alt={showName}
-                                        />
-                                    </div>
-                                    <div className="flex-grow-1 offset-xl-1 ms-2 col-xl-5">
-                                        <Form.Group className="mb-3">
-                                            <h6 className="fw-bold mx-1 mb-2 text-white">Season:</h6>
-                                            <Form.Control as="select" value={selectedSeason} onChange={e => setSelectedSeason(e.target.value)}>
-                                                <option value="">Select Season</option>
-                                                {seasons.map(season => (
-                                                    <option key={season.id} value={season.id}>
-                                                        Season {season.season_number}
-                                                    </option>
-                                                ))}
-                                            </Form.Control>
-                                        </Form.Group>
-                                        <Form.Group className="mb-3">
-                                            <h6 className="fw-bold mx-1 mb-2 text-white">Episodes Seen</h6>
-
-                                            <Form.Control type="number" min="1" max={episodesTotal} placeholder={`(${episodesTotal} Total)`} value={episodes} onChange={e => setEpisodes(e.target.value)} />
-                                        </Form.Group>
-                                        <Form.Group className="mb-3">
-                                            <h6 className="fw-bold mx-1 mb-2 text-white">Rating</h6>
-                                            <Form.Control type="number" min="1" max="10" placeholder="Enter rating" value={rating} onChange={e => setRating(e.target.value)} />
-                                        </Form.Group>
-                                    </div>
-                                </div>
-                                <Form.Group className="mb-3">
-                                    <h6 className="fw-bold mx-1 mt-2 text-white">Comment</h6>
-                                    <Form.Control as="textarea" rows={3} value={comment} onChange={e => setComment(e.target.value)} />
-                                </Form.Group>
-                                <Button variant="primary" type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase mt-1">Submit</Button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </Modal>
-        )
-    }
 
     return (
-        <Modal show={true} onHide={closeModal} centered={true} className="fade bg-glass modal">
-            <div className="rounded-4 shadow-sm p-4 border-0 bg-brown-gradient-color">
-                <div className="modal-header border-0 p-1 mb-4">
-                    <h3 className="fw-bold text-primary">{showName}</h3>
-                    <a href="#" className="text-muted text-decoration-none material-icons ms-2 md-" onClick={closeModal}>close</a>
+        <Modal
+            show={true}
+            onHide={closeModal}
+            centered={true}
+            className="fade modal"
+        >
+            <div className="rounded-4 shadow-sm p-3 border-0 bg-brown-gradient-color">
+                <div className="d-flex justify-content-end">
+                    <a
+                        href="#"
+                        className="text-muted text-decoration-none material-icons ms-2"
+                        onClick={closeModal}
+                    >
+                        close
+                    </a>
                 </div>
-                <div className="modal-body p-0">
+
+                <div className="border-bottom text-center">
+                    <h3 className="fw-bold text-white">{showName}</h3>
+                </div>
+                <div className="modal-body p-2 mt-4">
                     {error && <Alert variant="danger">{error}</Alert>}
                     {success && <Alert variant="success">{success}</Alert>}
                     <div className="d-flex justify-content-between">
                         <form onSubmit={handleSubmit} className="flex-grow-1">
                             <div className="container">
-                                <div className="row">
-                                    <div className="image-container showmodal col-6">
-                                        <img
-                                            src={selectedSeasonObject && selectedSeasonObject.poster_path ? `https://image.tmdb.org/t/p/w500${selectedSeasonObject.poster_path}` : showImg}
-                                            className="img-fluid showmodal-img"
-                                            alt={showName}
-                                        />
+                                <div className="row d-flex justify-content-center">
+                                    <div className="col-5 d-flex text-center">
+                                        <div className="dropdown flex-grow-1">
+                                            <Button
+                                                variant="primary"
+                                                type="submit"
+                                                className="btn btn-primary"
+                                                style={{ width: "100%", height: "auto" }}
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                            >
+                                                <div className="d-flex align-items-center justify-content-center">
+                                                    Season {selectedSeasonNum}
+                                                    <span className="material-icons md-20">
+                                                        expand_more
+                                                    </span>
+                                                </div>
+                                            </Button>
+                                            <ul
+                                                className="dropdown-menu fs-13 dropdown-menu-end"
+                                                aria-labelledby="dropdownMenuButton7"
+
+                                            >
+                                                {seasons?.map(season => (
+                                                    <li>
+                                                        <button
+                                                            key={season.id}
+                                                            value={season.id}
+                                                            className="dropdown-item text-muted"
+                                                            htmlFor={`btncheck${season.id}`}
+                                                            onClick={(e) => { e.preventDefault(); setSelectedSeason(season.id); setSelectedSeasonNum(season.season_number) }}>
+                                                            Season {season.season_number}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div className="col-6">
-                                        <div className="container">
-                                            <div className="dropdown flex-grow-1 mb-2">
-                                                <Button
-                                                    variant="primary"
-                                                    type="submit"
-                                                    className="btn btn-primary"
-                                                    style={{ width: "100%", height: "auto" }}
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                >
-                                                    <div className="d-flex align-items-center justify-content-center">
-                                                        {!status ? "Status" : status}
-                                                        <span className="material-icons md-20">
-                                                            expand_more
-                                                        </span>
-                                                    </div>
-                                                </Button>
-                                                <ul
-                                                    className="dropdown-menu fs-13 dropdown-menu-end"
-                                                    aria-labelledby="dropdownMenuButton7"
-                                                    style={{ position: "relative", zIndex: 1000 }}
-                                                >
-                                                    <li>
-                                                        <button
-                                                            onClick={(e) => { e.preventDefault(); setStatus("Completed") }}
-                                                            className="dropdown-item text-muted z-top"
-                                                            htmlFor="btncheck1"
-                                                        >
-                                                            <span className="material-icons md-13 me-1">
-                                                                add_task
-                                                            </span>
-                                                            Completed
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button
-                                                            onClick={(e) => { e.preventDefault(); setStatus("Watching") }}
-                                                            className="dropdown-item text-muted z-top"
-                                                            htmlFor="btncheck2"
-                                                        >
-                                                            <span className="material-icons md-13 me-1">
-                                                                theaters
-                                                            </span>
-                                                            Watching
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button
-                                                            onClick={(e) => { e.preventDefault(); setStatus("Planning") }}
-                                                            className="dropdown-item text-muted z-top"
-                                                            htmlFor="btncheck2"
-                                                        >
-                                                            <span className="material-icons md-13 me-1">
-                                                                date_range
-                                                            </span>
-                                                            Planning
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button
-                                                            onClick={(e) => { e.preventDefault(); setStatus("Dropped") }}
-                                                            className="dropdown-item text-muted z-top"
-                                                            htmlFor="btncheck2"
-                                                        >
-                                                            <span className="material-icons md-13 me-1">
-                                                                theaters
-                                                            </span>
-                                                            Dropped
-                                                        </button>
-                                                    </li>
-                                                </ul>
+                                </div>
+                                <div className={`row mt-2 mb-2 p-2 fade-in ${selectedSeason ? 'visible' : ''}`}>
+                                    <div className="col-12 bg-glass rounded-4 p-3">
+                                        <div className="d-flex align-items-center justify-content-between">
+                                            <div className="d-flex text-center align-items-center">
+                                                <span className="material-icons md-20 me-3" style={{ maxWidth: "20px" }}>live_tv_outlined</span>
+                                                <div className="fw-bold text-muted">Episodes Seen</div>
                                             </div>
-                                            <Form.Group className="mb-3 row">
-                                                <h4 className="fw-bold text-white col-3 me-4">Season:</h4>
-                                                <div className="col-10">
-                                                    <Form.Control as="select" value={selectedSeason} onChange={e => setSelectedSeason(e.target.value)} >
-                                                        <option value="">Select</option>
-                                                        {seasons.map(season => (
-                                                            <option key={season.id} value={season.id}>
-                                                                Season {season.season_number}
-                                                            </option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </div>
-                                            </Form.Group>
-                                            {<Form.Group className="mb-3">
-                                                <h4 className="fw-bold text-white col-10 me-4">Ep. Seen:</h4>
-                                                <div className="col-10">
-                                                    <Form.Control className="white-placeholder" type="number" min="1" max={episodesTotal} placeholder={`(${episodesTotal} Total)`} value={episodes} onChange={e => setEpisodes(e.target.value)} />
-                                                </div>
-                                            </Form.Group>}
-                                            <Form.Group className="row mb-0">
-                                                <h4 className="fw-bold text-white col-3 me-4">Rating:</h4>
-                                                <div className="col-10 text-white">
-                                                    <Form.Control className="white-placeholder" type="number" min="1" max="10" placeholder="(1-10)" value={rating} onChange={e => setRating(e.target.value)} />
-                                                </div>
-                                            </Form.Group>
-                                            <div className="row">
-                                                <div className="col-4">
+                                            <div className="mt-1">
+                                                <div className="review-score text-muted mb-1">
+                                                    <input
+                                                        type="number"
+                                                        value={episodes}
+                                                        onChange={(e) => setEpisodes(e.target.value)}
+                                                        onBlur={(e) => {
+                                                            if (e.target.value === '') {
+                                                                setEpisodes(0);
+                                                            }
+                                                        }}
+                                                        min="0"
+                                                        max={episodesTotal}
+                                                        className="text-muted fw-bold"
+                                                        style={{
+                                                            border: 'none',
+                                                            outline: 'none',
+                                                            background: 'transparent',
+                                                            width: 'auto',
+                                                            textAlign: 'right',
+                                                        }}
+                                                    /> / {episodesTotal}
                                                 </div>
                                             </div>
                                         </div>
+                                        <Form.Group className={`mt-2 `}>
+                                            <Form.Control
+                                                type="range"
+                                                min="0"
+                                                max={episodesTotal}
+                                                value={episodes}
+                                                onChange={(e) => setEpisodes(e.target.value)}
+                                                className="progress-bar bg-brown rounded-4"
+                                                id="customRange"
+                                            />
+                                        </Form.Group>
                                     </div>
-
                                 </div>
-                                <Form.Group className="mt-3 mb-3">
-                                    <h3 className="fw-bold text-white col-3 me-5">Comment:</h3>
-                                    <Form.Control as="textarea" rows={3} value={comment} onChange={e => setComment(e.target.value)} />
-                                </Form.Group>
-                                <h2>{renderStars(rating)}</h2>
-                                <Button variant="primary" type="submit" className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase">Submit</Button>
-                            </div>
-                        </form>
 
+                                <div className="row mt-2 mb-2 p-2">
+                                    <div className="col-12 bg-glass rounded-4 p-3">
+                                        <div role="button" className="d-flex align-items-center justify-content-between">
+                                            <div className="d-flex text-center align-items-center">
+                                                <span className="material-icons md-20 me-3" style={{ maxWidth: "20px" }}>star_border_outlined</span>
+                                                <div className="fw-bold text-muted">Rating</div>
+                                            </div>
+                                            <div className="mt-1">
+                                                <div className="review-score text-muted mb-1">
+                                                <input
+                                                        type="number"
+                                                        value={rating}
+                                                        onChange={(e) => setRating(e.target.value)}
+                                                        onBlur={(e) => {
+                                                            if (e.target.value === '') {
+                                                                setRating(0);
+                                                            }
+                                                        }}
+                                                        min="0"
+                                                        max={100}
+                                                        className="text-muted fw-bold"
+                                                        style={{
+                                                            border: 'none',
+                                                            outline: 'none',
+                                                            background: 'transparent',
+                                                            width: 'auto',
+                                                            textAlign: 'right',
+                                                        }}
+                                                    /> / {100}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <Form.Group className={`mt-2`}>
+                                            <Form.Control
+                                                type="range"
+                                                min="0"
+                                                max="100"
+                                                value={rating}
+                                                onChange={(e) => setRating(e.target.value)}
+                                                className="progress-bar bg-brown rounded-4"
+                                                id="customRange"
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                </div>
+
+                                <div className={`row mt-2 mb-2 p-2`}>
+                                    <div className="col-12 bg-glass rounded-4 p-3">
+                                        <div role="button" onClick={() => setIsCommentVisible(!isCommentVisible)} className="d-flex align-items-center justify-content-between">
+                                            <div className="d-flex text-center align-items-center">
+                                                <span className="material-icons md-20 me-3">notes</span>
+                                                <div className="fw-bold text-muted">Add a comment</div>
+                                            </div>
+                                        </div>
+                                        <Form.Group className={`mt-2 fade-in ${isCommentVisible ? 'visible' : ''}`}>
+                                            <Form.Control
+                                                as="textarea"
+                                                value={comment}
+                                                onChange={(e) => setComment(e.target.value)}
+
+                                            />
+                                        </Form.Group>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="container mt-4">
+                                <div className="row ">
+                                    <div className="col-6">
+                                        <div className="mt-2">
+                                            <button
+                                                className="btn btn-outline-primary rounded-pill mb-1"
+                                                style={{
+                                                    width: "100%",
+                                                    backgroundColor: status === "Completed" ? '#e76f51' : undefined,
+                                                    color: status === "Completed" ? 'white' : undefined
+                                                }}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setStatus("Completed");
+                                                }}
+                                            >
+                                                <span className="material-icons md-13 me-1">
+                                                    add_task
+                                                </span>
+                                                Completed
+                                            </button>
+                                            <button
+                                                className="btn btn-outline-primary rounded-pill mb-1"
+                                                style={{
+                                                    width: "100%",
+                                                    backgroundColor: status === "Watching" ? '#e76f51' : undefined,
+                                                    color: status === "Watching" ? 'white' : undefined
+                                                }}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setStatus("Watching");
+                                                }}
+                                            >
+                                                <span className="material-icons md-13 me-1">
+                                                    theaters
+                                                </span>
+                                                Watching
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="col-6">
+                                        <div className="mt-2">
+                                            <button
+                                                className="btn btn-outline-primary rounded-pill mb-1"
+                                                style={{
+                                                    width: "100%",
+                                                    backgroundColor: status === "Planning" ? '#e76f51' : undefined,
+                                                    color: status === "Planning" ? 'white' : undefined
+                                                }}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setStatus("Planning");
+                                                }}
+                                            >
+                                                <span className="material-icons md-13 me-1">
+                                                    date_range
+                                                </span>
+                                                Planning
+                                            </button>
+                                            <button
+                                                className="btn btn-outline-primary rounded-pill mb-1"
+                                                style={{
+                                                    width: "100%",
+                                                    backgroundColor: status === "Dropped" ? '#e76f51' : undefined,
+                                                    color: status === "Dropped" ? 'white' : undefined
+                                                }}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setStatus("Dropped");
+                                                }}
+                                            >
+                                                <span className="material-icons md-13 me-1">
+                                                    cancel
+                                                </span>
+                                                Dropped
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                className="btn btn-primary w-100 text-decoration-none rounded-5 py-3 fw-bold text-uppercase mt-4"
+                            >
+                                Add to MY List
+                            </Button>
+                        </form>
                     </div>
                 </div>
-            </div>
-        </Modal>
+            </div >
+        </Modal >
     );
-};
+}
 
 export default ShowModal;
