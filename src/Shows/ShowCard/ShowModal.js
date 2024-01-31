@@ -225,7 +225,7 @@ function ShowModal({
 
                                 <div className="row mt-2 mb-2 p-2">
                                     <div className="col-12 bg-glass rounded-4 p-3">
-                                        <div role="button" className="d-flex align-items-center justify-content-between">
+                                        <div className="d-flex align-items-center justify-content-between">
                                             <div className="d-flex text-center align-items-center">
                                                 <span className="material-icons md-20 me-3" style={{ maxWidth: "20px" }}>star_border_outlined</span>
                                                 <div className="fw-bold text-muted">Rating</div>
