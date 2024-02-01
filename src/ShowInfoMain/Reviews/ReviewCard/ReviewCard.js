@@ -14,8 +14,8 @@ function ReviewCard({ showName, review, handleRemoveReview }) {
   const state = review.upvotes.includes(userId)
     ? "upvote"
     : review.downvotes.includes(userId)
-    ? "downvote"
-    : null;
+      ? "downvote"
+      : null;
   const [userVote, setUserVote] = useState(state);
   const formattedTimestamp = new Date(review.updatedAt).toLocaleString();
 
@@ -63,8 +63,8 @@ function ReviewCard({ showName, review, handleRemoveReview }) {
               ? votesState + 2
               : votesState + 1
             : userVote === "upvote"
-            ? votesState - 2
-            : votesState - 1;
+              ? votesState - 2
+              : votesState - 1;
         setUserVote(type);
       } catch (error) {
         console.error(
@@ -78,135 +78,137 @@ function ReviewCard({ showName, review, handleRemoveReview }) {
   };
 
   return (
-    <div className="d-flex justify-content-between p-2">
-      <div
-        className="bg-glass rounded-4 shadow-sm p-1"
-        style={{ width: "60vw" }}
-      >
-        <div className="d-flex justify-content-between border-bottom">
-          <Link
-            to={`/profile/${review.username}`}
-            className="d-flex p-3 mt-1"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            <img
-              src={review.profileImg}
-              alt="Profile"
-              className="rounded-circle"
-              style={{ width: "40px", height: "40px" }}
-            />
-          </Link>
-          <div className="d-flex flex-column justify-content-center me-4">
-            <div className="d-flex align-items-center">
-              <p className="text-white mb-0">
-                {userDetails && userDetails.first}
-              </p>
-              <p className="ms-1 text-muted mb-0">@{review.username}</p>
-              <p className="text-muted ms-2 mb-0">{formattedTimestamp}</p>
-            </div>
-            <h6 className="review-count-details-container mt-1 text-muted">
-              {userDetails && userDetails.reviewCount} total chats
-              <span className="fs-3 material-icons md-10 ms-1 me-1">
-                circle
-              </span>
-              {showName}
-            </h6>
-          </div>
-          <div className="d-flex justify-content-between align-items-center flex-grow-1 rounded-4 p-1">
-            <div className="d-flex flex-column" style={{ width: "100%" }}>
-              {" "}
-              <div className="progress mt-2 me-3">
-                <div
-                  className="progress-bar bg-brown"
-                  role="progressbar"
-                  style={{ width: `${review.score}%` }}
-                  aria-valuenow={review.score}
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                ></div>
+    <div className="container">
+      <div className = "row"> 
+        <div
+          className="bg-glass rounded-4 shadow-sm p-1 col-10 offset-1"
+        >
+          <div className="d-flex justify-content-between border-bottom">
+            <Link
+              to={`/profile/${review.username}`}
+              className="d-flex p-3 mt-1"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <img
+                src={review.profileImg}
+                alt="Profile"
+                className="rounded-circle"
+                style={{ width: "40px", height: "40px" }}
+              />
+            </Link>
+            <div className="d-flex flex-column justify-content-center me-4">
+              <div className="d-flex align-items-center">
+                <p className="text-white mb-0">
+                  {userDetails && userDetails.first}
+                </p>
+                <p className="ms-1 text-muted mb-0">@{review.username}</p>
+                <p className="text-muted ms-2 mb-0">{formattedTimestamp}</p>
               </div>
-              <div className="mt-1">
-                <div className="review-score text-center">
-                  {review.score} / 100
+              <h6 className="review-count-details-container mt-1 text-muted">
+                {userDetails && userDetails.reviewCount} total chats
+                <span className="fs-3 material-icons md-10 ms-1 me-1">
+                  circle
+                </span>
+                {showName}
+              </h6>
+            </div>
+            <div className="d-flex justify-content-between align-items-center flex-grow-1 rounded-4 p-1">
+              <div className="d-flex flex-column" style={{ width: "100%" }}>
+                {" "}
+                <div className="progress mt-2 me-3">
+                  <div
+                    className="progress-bar bg-brown"
+                    role="progressbar"
+                    style={{ width: `${review.score}%` }}
+                    aria-valuenow={review.score}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+                <div className="mt-1">
+                  <div className="review-score text-center">
+                    {review.score} / 100
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <a
-              href="#"
-              className="text-muted text-decoration-none material-icons ms-3 md-20 bg-glass rounded-circle p-1 mb-5"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              more_vert
-            </a>
-            <ul
-              className="dropdown-menu fs-13 dropdown-menu-end bg-light"
-              aria-labelledby="dropdownMenuButton6"
-            >
-              {handleRemoveReview ? (
-                <li>
-                  <button
-                    onClick={handleRemoveReview}
-                    className="dropdown-item text-muted"
-                    htmlFor="btncheck1"
-                  >
-                    <span className="material-icons md-13 me-1">
-                      {" "}
-                      delete_outline
-                    </span>
-                    Remove Review
-                  </button>
-                </li>
-              ) : (
-                <li>
-                  <button
-                    className="dropdown-item text-muted"
-                    htmlFor="btncheck2"
-                  >
-                    <span className="material-icons md-13 me-1"> report </span>
-                    Report
-                  </button>
-                </li>
-              )}
-            </ul>
-          </div>
-        </div>
-        <div className="d-flex justify-content-between bg-glass m-2">
-          <div className="col-10">
-            <p className="ms-4 mt-3" style={{ wordBreak: "break-all" }}>
-              {review.text}
-            </p>
-          </div>
-          <div className="d-flex align-items-end justify-content-center mb-1">
-            <div role="button" onClick={() => handleVote("upvote")}>
-              <span
-                className="material-icons"
-                style={{
-                  color: userVote === "upvote" ? "orange" : "white",
-                  fontSize: userVote === "upvote" ? "22px" : "20px",
-                }}
+              <a
+                href="#"
+                className="text-muted text-decoration-none material-icons ms-3 md-20 bg-glass rounded-circle p-1 mb-5"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
               >
-                arrow_upward
-              </span>
+                more_vert
+              </a>
+              <ul
+                className="dropdown-menu fs-13 dropdown-menu-end bg-light"
+                aria-labelledby="dropdownMenuButton6"
+              >
+                {handleRemoveReview ? (
+                  <li>
+                    <button
+                      onClick={handleRemoveReview}
+                      className="dropdown-item text-muted"
+                      htmlFor="btncheck1"
+                    >
+                      <span className="material-icons md-13 me-1">
+                        {" "}
+                        delete_outline
+                      </span>
+                      Remove Review
+                    </button>
+                  </li>
+                ) : (
+                  <li>
+                    <button
+                      className="dropdown-item text-muted"
+                      htmlFor="btncheck2"
+                    >
+                      <span className="material-icons md-13 me-1"> report </span>
+                      Report
+                    </button>
+                  </li>
+                )}
+              </ul>
             </div>
-            <div className="mb-1 ms-1 me-1">{votesState}</div>
-            <div role="button" onClick={() => handleVote("downvote")}>
-              <span
-                className="material-icons me-2"
-                style={{
-                  color: userVote === "downvote" ? "orange" : "white",
-                  fontSize: userVote === "downvote" ? "22px" : "20px",
-                }}
-              >
-                arrow_downward
-              </span>
+          </div>
+          <div className="d-flex justify-content-between bg-glass m-2">
+            <div className="col-10">
+              <p className="ms-4 mt-3" style={{ wordBreak: "break-all" }}>
+                {review.text}
+              </p>
+            </div>
+            <div className="d-flex align-items-end justify-content-center mb-1">
+              <div role="button" onClick={() => handleVote("upvote")}>
+                <span
+                  className="material-icons"
+                  style={{
+                    color: userVote === "upvote" ? "orange" : "white",
+                    fontSize: userVote === "upvote" ? "22px" : "20px",
+                  }}
+                >
+                  arrow_upward
+                </span>
+              </div>
+              <div className="mb-1 ms-1 me-1">{votesState}</div>
+              <div role="button" onClick={() => handleVote("downvote")}>
+                <span
+                  className="material-icons me-2"
+                  style={{
+                    color: userVote === "downvote" ? "orange" : "white",
+                    fontSize: userVote === "downvote" ? "22px" : "20px",
+                  }}
+                >
+                  arrow_downward
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   );
 }
 

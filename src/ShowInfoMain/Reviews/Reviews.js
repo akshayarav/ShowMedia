@@ -168,7 +168,7 @@ function Reviews({ showId }) {
 
   return (
     <div className="d-flex flex-column align-items-center">
-      <div className="d-flex flex-column">
+      <div className="container">
         {showReviewModal && (
           <AddReviewModal
             showName={showName}
@@ -178,30 +178,31 @@ function Reviews({ showId }) {
           />
         )}
         <div
-          className="mt-2 d-flex flex-column align-items-center border-bottom p-2 mb-3"
-          style={{ width: "100%" }}
+          className="mt-2 border-bottom p-2 mb-3 col-12"
         >
-          <div className="d-flex justify-content-center" style={{ width: "100%" }}>
-            <h2 className="fw-bold text-white mb-1">Your Chat</h2>
+          <div className="" style={{ width: "100%" }}>
+            {hasReviewed ? (
+              <div className="container d-flex flex-column align-items-center">
+                <h2 className="fw-bold text-white mb-1">Your Chat</h2>
+                <ReviewCard
+                  showName={showName}
+                  key={userReviewId}
+                  review={userReview}
+                  handleRemoveReview={handleRemoveReview}
+                />
+              </div>
+            ) : (
+              <div className="container d-flex flex-column align-items-center">
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm ms-3 mb-2"
+                  onClick={toggleReviewModal}
+                >
+                  Add a Chat
+                </button>
+              </div>
+            )}
           </div>
-          {hasReviewed ? (
-            <div className="d-flex justify-content-center align-items-center">
-              <ReviewCard
-                showName={showName}
-                key={userReviewId}
-                review={userReview}
-                handleRemoveReview={handleRemoveReview}
-              />
-            </div>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm mt-2 mb-2"
-              onClick={toggleReviewModal}
-            >
-              <span className="material-icons">add</span>
-            </button>
-          )}
         </div>
       </div>
       <div className="container">
@@ -219,11 +220,13 @@ function Reviews({ showId }) {
                     reviewsFollowing
                       .filter((review) => review._id !== userReviewId)
                       .map((review) => (
-                        <ReviewCard
-                          showName={showName}
-                          key={review._id}
-                          review={review}
-                        />
+                        <div className="m-3">
+                          <ReviewCard
+                            showName={showName}
+                            key={review._id}
+                            review={review}
+                          />
+                        </div>
                       ))
                   ) : (
                     <p className="m-3 text-muted">No chats by friends yet, share this show!</p>
@@ -244,11 +247,13 @@ function Reviews({ showId }) {
                     reviews
                       .filter((review) => review._id !== userReviewId)
                       .map((review) => (
-                        <ReviewCard
-                          showName={showName}
-                          key={review._id}
-                          review={review}
-                        />
+                        <div className="m-3">
+                          <ReviewCard
+                            showName={showName}
+                            key={review._id}
+                            review={review}
+                          />
+                        </div>
                       ))
                   ) : (
                     <p className="text-muted m-3">No chats yet, be the first!</p>

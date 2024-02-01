@@ -131,6 +131,10 @@ function ShowInfo() {
     );
   }
 
+  function removeDuplicates(array) {
+    return [...new Set(array)];
+  }
+
   return (
     <div className="bg-brown-gradient">
       <MobileBar
@@ -313,7 +317,7 @@ function ShowInfo() {
                         {show &&
                           show.users &&
                           show.seasons &&
-                          show.users.map((user) => (
+                          removeDuplicates(show.users).map((user) => (
                             <small key={user}>
                               <UserCard username={user} />
                             </small>
