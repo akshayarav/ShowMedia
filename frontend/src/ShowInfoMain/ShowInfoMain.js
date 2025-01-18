@@ -2,12 +2,13 @@ import { useState } from "react";
 import ShowInfo from "./ShowInfo/ShowInfo";
 import Sidebar from "../Sidebar/sidebar";
 import Reviews from "./Reviews/Reviews";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function ShowInfoMain() {
     const [activeTab, setActiveTab] = useState('info')
     const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false)
     const showId = useParams().showId
+    const navigate = useNavigate();
 
     return (
         <div className="bg-brown-gradient">
@@ -15,7 +16,12 @@ function ShowInfoMain() {
                 <div className="container">
                     <div className="row justify-content-center ">
                         <main className="col col-xl-9 order-lg-2 col-lg-12 col-md-12 col-sm-12 border-start">
-                            <a href="/shows" className="material-icons text-white text-decoration-none mb-4 me-5">arrow_back</a>
+                            <button
+                                className="material-icons text-white text-decoration-none mb-4 me-5"
+                                onClick={() => navigate(-1)} // Go back to the previous page
+                            >
+                                arrow_back
+                            </button>
                             <ul className="top-osahan-nav-tab nav nav-pills justify-content-center nav-justified mb-4 shadow-sm rounded-4 overflow-hidden bg-glass my-3 mx-lg-3" id="pills-tab" role="tablist">
                                 <li className="nav-item" role="presentation">
                                     <button
@@ -43,7 +49,7 @@ function ShowInfoMain() {
                                     <ShowInfo />
                                 </div>
                                 <div className={`tab-pane fade ${activeTab === 'reviews' ? 'show active' : ''}`} id="pills-feed" role="tabpanel" aria-labelledby="pills-feed-tab">
-                                    <Reviews showId={showId}/>
+                                    <Reviews showId={showId} />
                                 </div>
                             </div>
                         </main>

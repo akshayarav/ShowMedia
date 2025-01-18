@@ -11,7 +11,11 @@ function AddReviewModal({ showName, showId, handleAddReview, closeModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    if (text.length === 0){
+      setError("Please enter your chat")
+      setTimeout((e) => setError(""), 5000)
+      return
+    }
     setSuccess("Box Review Added!");
     handleAddReview(showId, score, text);
     setTimeout(() => {

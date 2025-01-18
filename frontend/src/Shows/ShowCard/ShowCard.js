@@ -3,7 +3,7 @@ import axios from "axios";
 import ShowModal from "./ShowModal";
 import { Link } from "react-router-dom";
 import AddToListButton from "../../Common/AddToListButton"
-import { useParams } from "react-router-dom";
+import { useScrollPosition } from "../../ScrollPositionContext";
 
 function ShowCard({ name, image, series_id, users }) {
     const [seasons, setSeasons] = useState([]);
@@ -14,7 +14,22 @@ function ShowCard({ name, image, series_id, users }) {
     const tmdbApiKey = process.env.REACT_APP_API_KEY;
     const apiUrl = process.env.REACT_APP_API_URL;
 
-    const toggleModal = () => {console.log("CLICKED"); setShowModal(!showModal)}
+    const toggleModal = () => {setShowModal(!showModal)}
+
+    const { scrollPosition, setScrollPosition } = useScrollPosition();
+
+    useEffect(() => {
+        if (scrollPosition !== undefined) {
+            window.scrollTo(0, scrollPosition);
+        }
+    }, [scrollPosition]);
+
+    useEffect(() => {
+        return () => {
+            setScrollPosition(window.scrollY);
+            localStorage.setItem('scrollPosition', JSON.stringify(window.scrollY));
+        };
+    }, [setScrollPosition]);
 
     useEffect(() => {
         if (users) {

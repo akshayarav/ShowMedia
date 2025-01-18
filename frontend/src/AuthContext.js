@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Error during registration:', error);
+            console.log('${apiUrl}');
             return { success: false, message: error.response.data.error };
         }
     };

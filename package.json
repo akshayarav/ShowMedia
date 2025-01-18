@@ -2,42 +2,16 @@
   "name": "review",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.6.3",
-    "bcrypt": "^5.1.1",
-    "bootstrap": "^5.3.2",
-    "chart.js": "^4.4.1",
-    "cors": "^2.8.5",
-    "date-fns": "^3.3.1",
-    "dotenv": "^16.3.1",
-    "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.3.0",
-    "mongoose": "^8.0.3",
-    "react": "^18.2.0",
-    "react-bootstrap": "^2.9.2",
-    "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.1",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
+  "homepage":".",
   "scripts": {
-    "start": "react-scripts start",
-    "server": "node src/server.js",
-    "dev": "npm install && concurrently \"npm start\" \"npm run server\"",
+    "start:frontend": "npm --prefix frontend start",
+    "start:backend": "npm --prefix backend start",
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "react-scripts build && aws s3 sync build/ s3://social-media-startup"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "deploy": "react-scripts build && aws s3 sync build/ s3://social-media-startup",
+    "postinstall": "npm install --prefix frontend && npm install --prefix backend"
   },
   "browserslist": {
     "production": [
