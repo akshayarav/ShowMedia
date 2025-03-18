@@ -5,44 +5,100 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null); // Add user state
     const apiUrl = process.env.REACT_APP_API_URL;
     const [isLoading, setIsLoading] = useState(true);
 
+    // On component mount, check if user is already authenticated
     useEffect(() => {
-        setIsLoading(true);
-        const token = localStorage.getItem('token');
-        if (token) {
-            setIsAuthenticated(true);
-        }
-        setIsLoading(false);
+        const initializeAuth = async () => {
+            setIsLoading(true);
+            try {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    const userId = localStorage.getItem('userId');
+                    const username = localStorage.getItem('username');
+                    const userString = localStorage.getItem('user');
+                    
+                    if (userId && username) {
+                        setIsAuthenticated(true);
+                        
+                        // Try to load user data from localStorage
+                        if (userString) {
+                            try {
+                                const userData = JSON.parse(userString);
+                                setUser(userData);
+                            } catch (e) {
+                                console.error("Error parsing user data:", e);
+                                // Try to refresh user data if parse fails
+                                if (username && userId) {
+                                    await fetchUserData(username, userId);
+                                }
+                            }
+                        } else if (username && userId) {
+                            // If no user data in localStorage, fetch it
+                            await fetchUserData(username, userId);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Auth initialization error:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        initializeAuth();
     }, []);
-
-    const login = async (token, userId, username) => {
+    
+    // Function to fetch user data
+    const fetchUserData = async (username, userId) => {
         try {
-            // Set authentication info right away
-            localStorage.setItem('token', token);
-            localStorage.setItem('userId', userId);
-            localStorage.setItem('username', username);
-            setIsAuthenticated(true);
-            
-            // Then fetch user data
+            // Fetch user data
             const userResponse = await axios.get(`${apiUrl}/api/user/${username}`);
             const userData = userResponse.data;
             
             // Fetch following and followers data
-            const followingResponse = await axios.get(`${apiUrl}/following/${userId}`);
-            userData.following = followingResponse.data;    
+            const followingResponse = await axios.get(`${apiUrl}/api/user/following/${userId}`);
+            userData.following = followingResponse.data || [];
             
-            const followersResponse = await axios.get(`${apiUrl}/followers/${userId}`);
-            userData.followers = followersResponse.data;
+            const followersResponse = await axios.get(`${apiUrl}/api/user/followers/${userId}`);
+            userData.followers = followersResponse.data || [];
             
-            // Store complete user data
-            localStorage.setItem('user', JSON.stringify(userData));
+            // Update state and localStorage
+            setUser(userData);
+            try {
+                localStorage.setItem('user', JSON.stringify(userData));
+            } catch (e) {
+                console.error("Error saving user data to localStorage:", e);
+            }
+            
+            return userData;
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+            return null;
+        }
+    };
+
+    const login = async (token, userId, username) => {
+        try {
+            // Set authentication info right away
+            try {
+                localStorage.setItem('token', token);
+                localStorage.setItem('userId', userId);
+                localStorage.setItem('username', username);
+            } catch (e) {
+                console.error("Error saving auth data to localStorage:", e);
+            }
+            
+            setIsAuthenticated(true);
+            
+            // Fetch user data
+            const userData = await fetchUserData(username, userId);
             
             return { success: true, userData };
         } catch (error) {
             console.error('Error during login:', error);
-            // You might want to consider cleaning up partially stored data on error
             return { success: false, error: error.message };
         }
     };
@@ -53,39 +109,52 @@ export const AuthProvider = ({ children }) => {
                 email, username, password, first, last
             });
 
-
             if (response.status === 201) {
                 const { token, userId } = response.data;
 
-                // Optionally you can log the user in after registration
-                login(token, userId, username);
-
-                // You might want to return some value or state to indicate success
-                return { success: true };
+                // Log the user in after registration
+                const loginResult = await login(token, userId, username);
+                return loginResult;
             } else {
-                // Handle non-successful responses
                 return { success: false, message: response.data.error || 'Registration failed.' };
             }
         } catch (error) {
             console.error('Error during registration:', error);
-            console.log('${apiUrl}');
-            return { success: false, message: error.response.data.error };
+            return { 
+                success: false, 
+                message: error.response?.data?.error || 'Registration failed: ' + error.message 
+            };
         }
     };
     
-
     const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('username');
+        try {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('username');
+            localStorage.removeItem('user'); // Also remove user data
+        } catch (e) {
+            console.error("Error clearing localStorage:", e);
+        }
+        
+        setUser(null);
         setIsAuthenticated(false);
     };
 
+    // Provide the user data and additional functions in the context
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout , isLoading, register}}>
+        <AuthContext.Provider value={{ 
+            isAuthenticated, 
+            user,
+            login, 
+            logout, 
+            isLoading, 
+            register,
+            refreshUserData: fetchUserData // Allow components to refresh user data
+        }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-export default AuthContext
+export default AuthContext;
