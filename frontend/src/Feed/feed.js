@@ -25,6 +25,7 @@ function Feed() {
             axios.get(`${apiUrl}/api/activities/followingFeed/${userId}`)
                 .then(response => {
                     setActivities(response.data);
+                    console.log(response.data);
                 })
                 .catch(error => {
                     console.error('Error fetching following feed:', error);
@@ -71,7 +72,7 @@ function Feed() {
                                     </div>
                                 </div>
                             </main>
-                            <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={handleFeedTabClick} />
+                            <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)}  />
                             <SearchBar />
                         </div>
                     </div>
@@ -117,7 +118,7 @@ function Feed() {
                                 {!isAuthenticated && <p>Please log in to see the feed.</p>}
                             </div>
                         </main>
-                        <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={handleFeedTabClick} />
+                        <Sidebar isOffcanvasOpen={isOffcanvasOpen} toggleOffcanvas={() => setIsOffcanvasOpen(!isOffcanvasOpen)} />
                         <SearchBar />
                     </div>
                 </div>

@@ -28,14 +28,13 @@ function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (offcanvasRef.current && !offcanvasRef.current.contains(event.target)) {
+      if (isOffcanvasOpen && offcanvasRef.current && !offcanvasRef.current.contains(event.target)) {
         toggleOffcanvas();
+        console.log("PRESSED");
       }
     };
 
-    if (isOffcanvasOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);

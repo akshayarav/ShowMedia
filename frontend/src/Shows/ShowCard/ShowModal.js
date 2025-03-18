@@ -62,6 +62,12 @@ function ShowModal({
             return;
         }
 
+        if (!status) {
+            setError("Please select a status (Completed, Watching, Planning, or Dropped).");
+            setTimeout(() => setError(""), 3000);
+            return;
+        }
+
         try {
             const tmdbResponse = await fetch(
                 `https://api.themoviedb.org/3/tv/${series_id}/season/${selectedSeasonObject.season_number}?api_key=${process.env.REACT_APP_API_KEY}`

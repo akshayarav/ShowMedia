@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import CommentModal from "./CommentModal";
+import CommentModal from "../Comments/CommentModal";
 import ReviewCard from "../ShowInfoMain/Reviews/ReviewCard/ReviewCard";
-import CommentsList from "./CommentLists";
+import CommentsList from "../Comments/CommentLists";
 import { Link } from "react-router-dom";
 
 function FeedItem({ activity, refresh, toggleRefresh }) {
@@ -148,7 +148,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                   {activity.status !== "Review" && activity.status !== "Removed Review" &&
                     <div>
                       <h6 className="mb-0 ">{renderStars(activity.rating)}</h6>
-                      ({activity.rating} / 10)
+                      ({activity.rating} / 100)
                     </div>
                   }
                   {activity.status !== "Review" && activity.status !== "Removed Review" && <p className="mb-3 mt-3">Comment: "{activity.comment}"</p>}

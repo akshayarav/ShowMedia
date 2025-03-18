@@ -57,7 +57,6 @@ function CommentsList({ activityId, refresh, openReplyModal }) {
     };
 
 
-
     const handleCommentLike = async (commentId) => {
         const userId = localStorage.getItem('userId');
         setComments(comments.map(comment => {

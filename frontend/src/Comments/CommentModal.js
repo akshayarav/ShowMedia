@@ -332,8 +332,10 @@ const CommentModal = ({
       onHide={closeModal}
       centered
       className="modal fade modal-xl"
+      dialogClassName="modal-dialog-large"
+      style={{ maxWidth: '90%' }}
     >
-      <div className="modal-dialog modal-dialog-centered modal-xl">
+      <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: '90%', width: '90%' }}>
         {(!isReplyModalOpen) ?
           <div className="modal-content rounded-4 shadow-sm border-0 bg-brown-gradient-color">
             <div className="modal-body p-0">
@@ -380,7 +382,7 @@ const CommentModal = ({
                       {activity.showName} Season {activity.seasonNumber}
                     </h6>
                     <div style={{ marginRight: "20px" }}>
-                      <p className="mb-0">{activity.rating}/10</p>
+                      <p className="mb-0">{activity.rating}/100</p>
                     </div>
                   </div>
                   {comments.length > 0 && <div className="comments p-3">
