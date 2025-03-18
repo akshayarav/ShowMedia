@@ -11,10 +11,23 @@ function Reviews({ showId }) {
   const [hasReviewed, setHasReviewed] = useState(false);
   const [userReviewId, setUserReviewId] = useState(null);
   const [userReview, setUserReview] = useState(null);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const toggleReviewModal = () => setShowReviewModal(!showReviewModal);
   const apiUrl = process.env.REACT_APP_API_URL;
+
+  // Add a useEffect to safely load user data
+  useEffect(() => {
+    try {
+      const userString = localStorage.getItem("user");
+      if (userString) {
+        const userData = JSON.parse(userString);
+        setUser(userData);
+      }
+    } catch (err) {
+      console.error("Error loading user data:", err);
+    }
+  }, []);
 
   const fetchReviewsFromFollowing = async () => {
     try {
@@ -29,6 +42,11 @@ function Reviews({ showId }) {
   };
 
   const handleAddReview = async (showId, score, text) => {
+    if (!user) {
+      console.error("User not logged in");
+      return;
+    }
+    
     const newReview = {
       showId,
       score,
@@ -79,6 +97,8 @@ function Reviews({ showId }) {
   };
 
 
+
+  // Update your main useEffect
   useEffect(() => {
     const fetchShowDetails = async () => {
       const tmdbApiKey = process.env.REACT_APP_API_KEY;
@@ -95,27 +115,37 @@ function Reviews({ showId }) {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(`${apiUrl}/api/reviews/${showId}`);
-        const userReview = response.data.find(
-          (review) => review.username === user.username
-        );
-        const followingReviews = await fetchReviewsFromFollowing();
-        console.log(followingReviews)
-        setReviewsFollowing(followingReviews);
+        
+        // Only look for user review if user is logged in
+        if (user && user.username) {
+          const userReview = response.data.find(
+            (review) => review.username === user.username
+          );
+          
+          if (userReview) {
+            setHasReviewed(true);
+            setUserReviewId(userReview._id);
+            setUserReview(userReview);
+          } else {
+            setUserReviewId(null);
+          }
+        }
+        
+        setReviews(response.data);
+        
+        // Only fetch following reviews if user is logged in
+        if (user && user._id) {
+          const followingReviews = await fetchReviewsFromFollowing();
+          console.log(followingReviews);
+          setReviewsFollowing(followingReviews);
 
-        const sortedReviews = followingReviews.sort((a, b) => {
-          return b.votes - a.votes;
-        });
+          const sortedReviews = followingReviews.sort((a, b) => {
+            return b.votes - a.votes;
+          });
 
-        setReviews(
-          sortedReviews.filter((review) => review._id !== userReviewId)
-        );
-        if (userReview) {
-          setHasReviewed(true);
-          setUserReviewId(userReview._id);
-          setUserReview(userReview);
-        } else {
-          setUserReviewId(null);
-          setReviews(response.data);
+          setReviews(
+            sortedReviews.filter((review) => review._id !== userReviewId)
+          );
         }
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -123,8 +153,10 @@ function Reviews({ showId }) {
     };
 
     fetchShowDetails();
-    fetchReviews();
-  }, [showId, user.username]);
+    if (user) {
+      fetchReviews();
+    }
+  }, [showId, user]);
 
   const handleRemoveReview = async () => {
     try {

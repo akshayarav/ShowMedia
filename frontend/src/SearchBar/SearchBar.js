@@ -16,7 +16,7 @@ function SearchBar({ messages, messagesSubmit }) {
 
     useEffect(() => {
         if (searchTerm) {
-            axios.get(`${apiUrl}/api/search/users?q=${searchTerm}`)
+            axios.get(`${apiUrl}/api/user/search?q=${searchTerm}`)
                 .then(response => {
                     const filteredResults = response.data.filter(user => user._id !== userId);
                     setSearchResults(filteredResults);

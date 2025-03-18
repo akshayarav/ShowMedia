@@ -103,6 +103,7 @@ function ShowModal({
                 closeModal();
             }, 1000);
         } catch (err) {
+            console.error("Detailed error:", err);
             setError("Server error");
         } finally {
             if (updateStatus) {
