@@ -1,4 +1,5 @@
 const Conversation = require('../models/Conversation');
+const User = require('../models/User');
 
 // GET endpoint to fetch a conversation between two users
 const getConversation = async (req, res) => {
