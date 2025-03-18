@@ -38,7 +38,7 @@ function Shows() {
 
   useEffect(() => {
     axios
-      .get(`${apiUrl}/api/following/shows/${userId}`)
+      .get(`${apiUrl}/api/user/following/shows/${userId}`)
       .then((response) => {
         let dataMap = new Map(
           response.data.map((item) => {

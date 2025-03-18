@@ -17,24 +17,34 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
     }, []);
 
-    const login = (token, userId, username) => {
-        axios.get(`${apiUrl}/api/user/${username}`)
-            .then(async response => {
-                const userData = response.data;
-                const followingResponse = await axios.get(`${apiUrl}/following/${userId}`);
-                userData.following = followingResponse.data;    
-                const followersResponse = await axios.get(`${apiUrl}/followers/${userId}`);
-                userData.followers = followersResponse.data;
-                localStorage.setItem('user', JSON.stringify(userData));
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-            });
-    
-        localStorage.setItem('token', token);
-        localStorage.setItem('userId', userId);
-        localStorage.setItem('username', username);
-        setIsAuthenticated(true);
+    const login = async (token, userId, username) => {
+        try {
+            // Set authentication info right away
+            localStorage.setItem('token', token);
+            localStorage.setItem('userId', userId);
+            localStorage.setItem('username', username);
+            setIsAuthenticated(true);
+            
+            // Then fetch user data
+            const userResponse = await axios.get(`${apiUrl}/api/user/${username}`);
+            const userData = userResponse.data;
+            
+            // Fetch following and followers data
+            const followingResponse = await axios.get(`${apiUrl}/following/${userId}`);
+            userData.following = followingResponse.data;    
+            
+            const followersResponse = await axios.get(`${apiUrl}/followers/${userId}`);
+            userData.followers = followersResponse.data;
+            
+            // Store complete user data
+            localStorage.setItem('user', JSON.stringify(userData));
+            
+            return { success: true, userData };
+        } catch (error) {
+            console.error('Error during login:', error);
+            // You might want to consider cleaning up partially stored data on error
+            return { success: false, error: error.message };
+        }
     };
 
     const register = async (email, username, password, first, last) => {

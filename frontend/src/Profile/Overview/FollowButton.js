@@ -9,11 +9,30 @@ function FollowButton({ other_user }) {
     const userId = localStorage.getItem('userId')
     const { followerUpdate, setFollowerUpdate } = useContext(FollowerUpdateContext);
 
-    const user = JSON.parse(localStorage.getItem('user'));
-
     useEffect(() => {
-        const isCurrentlyFollowing = user.following.some(userData => userData.username === other_user.username);
-        setIsFollowing(isCurrentlyFollowing);
+        // Safely get user data from localStorage
+        const userString = localStorage.getItem('user');
+        if (!userString) {
+            setError("User data not found");
+            return;
+        }
+        
+        try {
+            const user = JSON.parse(userString);
+            
+            // Check if user has following property
+            if (user && user.following) {
+                const isCurrentlyFollowing = user.following.some(
+                    userData => userData.username === other_user.username
+                );
+                setIsFollowing(isCurrentlyFollowing);
+            } else {
+                setIsFollowing(false);
+            }
+        } catch (err) {
+            console.error("Error parsing user data:", err);
+            setError("Error loading user data");
+        }
     }, [apiUrl, userId, followerUpdate, other_user]);
 
     const handleFollow = (e) => {

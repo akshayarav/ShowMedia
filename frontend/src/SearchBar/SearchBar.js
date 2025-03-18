@@ -30,7 +30,7 @@ function SearchBar({ messages, messagesSubmit }) {
     }, [searchTerm]);
 
     useEffect(() => {
-        axios.get(`${apiUrl}/api/recommendations/${username}`)
+        axios.get(`${apiUrl}/api/user/recommendations/${username}`)
             .then(response => {
                 setRecProfiles(response.data);
             })

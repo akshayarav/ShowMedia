@@ -33,7 +33,7 @@ function ShowInfo() {
   useEffect(() => {
     window.scrollTo(0, 0);
     axios
-      .get(`${apiUrl}/api/following/shows/${userId}`)
+      .get(`${apiUrl}/api/user/following/shows/${userId}`)
       .then((response) => {
         let dataMap = new Map(
           response.data.map((item) => {

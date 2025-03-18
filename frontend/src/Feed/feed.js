@@ -22,7 +22,7 @@ function Feed() {
         setIsLoading(true);
         const userId = localStorage.getItem('userId');
         if (isAuthenticated && userId) {
-            axios.get(`${apiUrl}/api/followingFeed/${userId}`)
+            axios.get(`${apiUrl}/api/activities/followingFeed/${userId}`)
                 .then(response => {
                     setActivities(response.data);
                 })

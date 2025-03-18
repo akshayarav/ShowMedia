@@ -54,10 +54,10 @@ function Overview() {
                 const profileResponse = await axios.get(`${apiUrl}/api/user/${username}`);
                 setProfileUser(profileResponse.data);
 
-                const followingResponse = await axios.get(`${apiUrl}/following/${profileResponse.data._id}`);
+                const followingResponse = await axios.get(`${apiUrl}/api/user/following/${profileResponse.data._id}`);
                 setFollowing(followingResponse.data);
 
-                const followersResponse = await axios.get(`${apiUrl}/followers/${profileResponse.data._id}`);
+                const followersResponse = await axios.get(`${apiUrl}/api/user/followers/${profileResponse.data._id}`);
                 setFollowers(followersResponse.data);
 
             } catch (error) {

@@ -19,8 +19,6 @@ function Activity({ userId, refresh, toggleRefresh }) {
         fetchActivities();
     }, [userId, refresh]);
 
-    console.log(activities)
-
     return (
         <div>
             {activities.length > 0 ? activities.map((activity, index) => (
