@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "server.js",
     "scripts": {
-      "start": "node server.js",
+      "start": "npm install && node server.js",
       "build": "echo 'No build step required for this backend'"
     },
     "dependencies": {
