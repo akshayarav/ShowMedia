@@ -31,7 +31,7 @@ function FollowButton({ other_user }) {
         const newFollowingStatus = !isFollowing;
         setIsFollowing(newFollowingStatus);
 
-        const endpoint = newFollowingStatus ? `${apiUrl}/follow/${other_user.username}` : `${apiUrl}/unfollow/${other_user.username}`;
+        const endpoint = newFollowingStatus ? `${apiUrl}/api/user/follow/${other_user.username}` : `${apiUrl}/api/user/unfollow/${other_user.username}`;
 
         axios.post(endpoint, { userId: userId })
             .then(response => {
