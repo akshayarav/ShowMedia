@@ -6,7 +6,7 @@ const axios = require("axios");
 async function getShowGenres(showId) {
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/tv/${showId}?api_key=${process.env.TMDB_API_KEY}`
+      `https://api.themoviedb.org/3/tv/${showId}?api_key=${process.env.REACT_APP_API_KEY}`
     );
     return response.data.genres.map((genre) => genre.name);
   } catch (error) {
@@ -19,17 +19,17 @@ async function getShowGenres(showId) {
 const getUserStatsByUsername = async (req, res) => {
     try {
       const { username } = req.params;
-  
+
       const user = await User.findOne({ username });
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-  
+
       const seasonRatings = await SeasonRating.find({ user: user._id });
-  
+
       const totalShows = seasonRatings.length;
       const totalEpisodes = seasonRatings.reduce((sum, rating) => {
-  
+
         if (typeof rating.episodes === "string") {
           const episodesWatched = rating.episodes.match(/\d+/);
           return sum + (episodesWatched ? parseInt(episodesWatched[0], 10) : 0);
@@ -43,9 +43,9 @@ const getUserStatsByUsername = async (req, res) => {
       const averageRating =
         seasonRatings.reduce((sum, rating) => sum + rating.rating, 0) /
         totalShows;
-  
+
       const currentYear = new Date().getFullYear();
-  
+
       const monthlyActivity = await Activity.aggregate([
         {
           $match: {
@@ -64,13 +64,13 @@ const getUserStatsByUsername = async (req, res) => {
         },
         { $sort: { "_id.month": 1 } },
       ]);
-  
+
       let monthlyCounts = Array(12).fill(0);
       monthlyActivity.forEach((activity) => {
         const monthIndex = activity._id.month - 1;
         monthlyCounts[monthIndex] = activity.count;
       });
-  
+
       const genreRatings = {};
       for (const rating of seasonRatings) {
         const genres = await getShowGenres(rating.show);
@@ -82,7 +82,7 @@ const getUserStatsByUsername = async (req, res) => {
           genreRatings[genre].count += 1;
         });
       }
-  
+
       let favoriteGenre = "None";
       let highestAverage = 0;
       for (const [genre, data] of Object.entries(genreRatings)) {
@@ -92,7 +92,7 @@ const getUserStatsByUsername = async (req, res) => {
           favoriteGenre = genre;
         }
       }
-  
+
       let highestRatedShow = { showId: null, showName: "None", highestRating: 0 };
       for (const rating of seasonRatings) {
         if (rating.rating > highestRatedShow.highestRating) {
@@ -103,11 +103,11 @@ const getUserStatsByUsername = async (req, res) => {
           };
         }
       }
-  
+
       if (highestRatedShow.showId) {
         try {
           const showResponse = await axios.get(
-            `https://api.themoviedb.org/3/tv/${highestRatedShow.showId}?api_key=${process.env.TMDB_API_KEY}`
+            `https://api.themoviedb.org/3/tv/${highestRatedShow.showId}?api_key=${process.env.REACT_APP_API_KEY}`
           );
           highestRatedShow.showName = showResponse.data.name;
           highestRatedShow.showDetails = showResponse.data;
@@ -116,7 +116,7 @@ const getUserStatsByUsername = async (req, res) => {
           highestRatedShow.showName = "Unknown";
         }
       }
-  
+
       res.json({
         username: username,
         totalShows: totalShows,
