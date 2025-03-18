@@ -10,7 +10,7 @@ function ShowModal({
 }) {
     const apiUrl = process.env.REACT_APP_API_URL;
 
-    //Stores the season ID 
+    //Stores the season ID
     const [selectedSeason, setSelectedSeason] = useState(seasons[0].id);
     //Stores the season number
     const [selectedSeasonNum, setSelectedSeasonNum] = useState(1)
@@ -72,7 +72,7 @@ function ShowModal({
             const averageRuntime = seasonDetails.episodes[0].runtime;
             const totalHours = (averageRuntime / 60) * episodesWatched;
 
-            const response = await fetch(`${apiUrl}/rateSeason`, {
+            const response = await fetch(`${apiUrl}/api/seasonRatings/rateSeason`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
