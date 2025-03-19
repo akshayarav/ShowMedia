@@ -213,7 +213,7 @@ function FeedItem({ activity, refresh, toggleRefresh }) {
                       className="text-muted text-decoration-none d-flex align-items-start fw-light"
                     >
                       <span className="material-icons md-20 me-2">repeat</span>
-                      <span>617</span>
+                      <span></span>
                     </a>
                   </div>
                   <div>
