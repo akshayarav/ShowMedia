@@ -31,10 +31,14 @@ function Reviews({ showId }) {
 
   const fetchReviewsFromFollowing = async () => {
     try {
+      // Fallback to just using userId if we're still getting 404 errors
       const response = await axios.get(
         `${apiUrl}/api/reviews/following/${user._id}/${showId}`
       );
-      return response.data;
+      
+      // If needed, filter the reviews by showId on the client side
+      const filteredReviews = response.data.filter(review => review.showId === showId);
+      return filteredReviews;
     } catch (error) {
       console.error("Error fetching reviews from following:", error);
       return [];
@@ -56,7 +60,7 @@ function Reviews({ showId }) {
     };
 
     try {
-      const response = await axios.post(`${apiUrl}/api/reviews`, newReview);
+      const response = await axios.post(`${apiUrl}/api/reviews/add`, newReview);
 
       setHasReviewed(true);
       setUserReview(response.data);
@@ -114,7 +118,7 @@ function Reviews({ showId }) {
 
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/reviews/${showId}`);
+        const response = await axios.get(`${apiUrl}/api/reviews/get/${showId}`);
         
         // Only look for user review if user is logged in
         if (user && user.username) {
@@ -161,9 +165,7 @@ function Reviews({ showId }) {
   const handleRemoveReview = async () => {
     try {
       await axios.delete(
-        `${apiUrl}/api/reviews/${userReviewId}?username=${encodeURIComponent(
-          user.username
-        )}`
+        `${apiUrl}/api/reviews/remove/${userReviewId}`
       );
       setReviews(reviews.filter((review) => review._id !== userReviewId));
       setHasReviewed(false);
