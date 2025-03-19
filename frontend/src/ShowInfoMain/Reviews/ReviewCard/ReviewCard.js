@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import AuthContext from "../../../AuthContext";
+import AuthContext from "../../../Auth/AuthContext";
 
 function ReviewCard({ showName, review, handleRemoveReview }) {
   const apiUrl = process.env.REACT_APP_API_URL;

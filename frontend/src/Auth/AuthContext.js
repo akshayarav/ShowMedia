@@ -50,7 +50,11 @@ export const AuthProvider = ({ children }) => {
         
         initializeAuth();
     }, []);
-    
+
+    const initiateGoogleSignIn = () => {
+        window.location.href = `${apiUrl}/api/auth/google`;
+    };
+
     // Function to fetch user data
     const fetchUserData = async (username, userId) => {
         try {
@@ -150,6 +154,7 @@ export const AuthProvider = ({ children }) => {
             logout, 
             isLoading, 
             register,
+            initiateGoogleSignIn,
             refreshUserData: fetchUserData // Allow components to refresh user data
         }}>
             {children}

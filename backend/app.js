@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 const path = require("path");
+const session = require('express-session');
+const passport = require('./config/passport');
 
 // Import routes
 const userRoutes = require('./routes/userRoutes');
@@ -34,7 +36,20 @@ if (isTesting) {
   console.log(`CORS restricted to: ${process.env.ALLOWED_ORIGIN}`);
 }
 
+// Configure session
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  }
+}));
+
 // Configure routes with consistent prefixes
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/activities', activityRoutes);
