@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
-import AuthContext from '../AuthContext';
+import AuthContext from './AuthContext';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 function SignModal({ closeModal }) {

@@ -1,4 +1,5 @@
 const Review = require('../models/Review');
+const User = require('../models/User'); // Add this import
 
 //Add a new review
 const addReview = (req, res) => {
@@ -188,5 +189,12 @@ const getReviewFromFollowing = async (req, res) => {
   }
 };
 
-module.exports = {addReview, removeReview, getShowReviews,
-    upvoteReview, downvoteReview, unvoteReview, getReviewFromFollowing};
+module.exports = {
+  addReview, 
+  removeReview, 
+  getShowReviews,
+  upvoteReview, 
+  downvoteReview, 
+  unvoteReview, 
+  getReviewFromFollowing
+};
