@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import AuthContext from '../AuthContext';
+import AuthContext from '../Auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function Sidebar({ isOffcanvasOpen, toggleOffcanvas }) {

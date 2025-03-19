@@ -4,6 +4,15 @@ const jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
 
+// Generate JWT token function (reusable)
+const generateToken = (user) => {
+  return jwt.sign(
+    { userId: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "24h" }
+  );
+};
+
 // Register a new user
 const registerUser = async (req, res) => {
   try {
@@ -36,13 +45,12 @@ const registerUser = async (req, res) => {
     const savedUser = await newUser.save();
 
     // Generate a JWT token
-    const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    const token = generateToken(savedUser);
 
     res.status(201).json({
       token,
       userId: savedUser._id,
+      username: savedUser.username
     });
   } catch (error) {
     console.error("Register error:", error);
@@ -61,6 +69,13 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ error: "User does not exist" });
     }
 
+    // Check if user has a password (Google users might not)
+    if (!user.passwordHash) {
+      return res.status(401).json({ 
+        error: "This account uses Google Sign-In. Please sign in with Google."
+      });
+    }
+
     // Validate the password
     const validPassword = await bcrypt.compare(password, user.passwordHash);
     if (!validPassword) {
@@ -68,9 +83,7 @@ const loginUser = async (req, res) => {
     }
 
     // Generate a JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    const token = generateToken(user);
 
     res.status(200).json({
       token,
@@ -84,4 +97,30 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+// Handle Google authentication callback
+const handleGoogleCallback = (req, res) => {
+  try {
+    // The user is already authenticated by Passport at this point
+    const user = req.user;
+    
+    // Generate a JWT token
+    const token = generateToken(user);
+    
+    // Redirect to frontend with token and user info
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+    res.redirect(
+      `${clientUrl}/auth-callback?token=${token}&userId=${user._id}&username=${user.username}`
+    );
+  } catch (error) {
+    console.error("Google auth callback error:", error);
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+    res.redirect(`${clientUrl}/login?error=auth`);
+  }
+};
+
+module.exports = { 
+  registerUser, 
+  loginUser, 
+  handleGoogleCallback,
+  generateToken
+};

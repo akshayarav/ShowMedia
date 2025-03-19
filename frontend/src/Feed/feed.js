@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import AuthContext from '../AuthContext';
+import AuthContext from '../Auth/AuthContext';
 import FollowingFeed from './FollowingFeed/FollowingFeed';
 import Sidebar from "../Sidebar/sidebar";
 import SearchBar from '../SearchBar/SearchBar';
