@@ -2,7 +2,7 @@
   "name": "review",
   "version": "0.1.0",
   "private": true,
-  "homepage":".",
+  "homepage": ".",
   "scripts": {
     "start:frontend": "npm --prefix frontend start",
     "start:backend": "npm --prefix backend start",
@@ -27,5 +27,8 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "glob": "^11.0.1"
   }
 }
