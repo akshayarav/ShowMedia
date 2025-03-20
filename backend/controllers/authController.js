@@ -107,13 +107,13 @@ const handleGoogleCallback = (req, res) => {
     const token = generateToken(user);
     
     // Redirect to frontend with token and user info
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+    const clientUrl = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
     res.redirect(
       `${clientUrl}/auth-callback?token=${token}&userId=${user._id}&username=${user.username}`
     );
   } catch (error) {
     console.error("Google auth callback error:", error);
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+    const clientUrl = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
     res.redirect(`${clientUrl}/login?error=auth`);
   }
 };
