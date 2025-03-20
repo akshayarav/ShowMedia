@@ -100,7 +100,7 @@ function MyShowCard({ rating, showId, seasonNumber, comment, episodes, status, u
     const handleShowDel = async (e) => {
         e.preventDefault()
         try {
-            const response = await fetch(`${apiUrl}/delSeason`, {
+            const response = await fetch(`${apiUrl}/api/seasonRatings/delSeason`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

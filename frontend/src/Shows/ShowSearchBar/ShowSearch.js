@@ -1,11 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 
-function ShowSearch({ onSearch, addGenre, selectedGenres }) {
-    const tmdbApiKey = process.env.REACT_APP_API_KEY
-    const [genres, setGenres] = useState([])
+function ShowSearch({ onSearch, addGenre, selectedGenres, initialSearchTerm = '' }) {
+    const tmdbApiKey = process.env.REACT_APP_API_KEY;
+    const [genres, setGenres] = useState([]);
+    const [inputValue, setInputValue] = useState(initialSearchTerm);
     const dropdownMenuRef = useRef(null);
+    const typingTimerRef = useRef(null);
 
+    // Initialize with initialSearchTerm if provided
+    useEffect(() => {
+        if (initialSearchTerm) {
+            setInputValue(initialSearchTerm);
+        }
+    }, [initialSearchTerm]);
 
     const handleDropdownClick = (e) => {
         // Check if the click is not on a checkbox
@@ -16,12 +24,11 @@ function ShowSearch({ onSearch, addGenre, selectedGenres }) {
 
     useEffect(() => {
         const dropdownElement = dropdownMenuRef.current;
-        dropdownElement.addEventListener('click', handleDropdownClick);
-
-        return () => dropdownElement.removeEventListener('click', handleDropdownClick);
+        if (dropdownElement) {
+            dropdownElement.addEventListener('click', handleDropdownClick);
+            return () => dropdownElement.removeEventListener('click', handleDropdownClick);
+        }
     }, []);
-
-
 
     useEffect(() => {
         const fetchGenres = async () => {
@@ -34,15 +41,40 @@ function ShowSearch({ onSearch, addGenre, selectedGenres }) {
                 return data.genres; // This will be an array of genre objects
             } catch (error) {
                 console.error('Error fetching genres:', error);
+                return [];
             }
         };
 
         const loadGenres = async () => {
             const fetchedGenres = await fetchGenres();
-            setGenres(fetchedGenres);
+            setGenres(fetchedGenres || []);
         };
 
         loadGenres();
+    }, [tmdbApiKey]);
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setInputValue(value);
+        
+        // Clear any existing timer
+        if (typingTimerRef.current) {
+            clearTimeout(typingTimerRef.current);
+        }
+        
+        // Set a new timer
+        typingTimerRef.current = setTimeout(() => {
+            onSearch(value); // This is what triggers the search
+        }, 500); // 1.2 seconds delay - very noticeable for testing
+    };
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (typingTimerRef.current) {
+                clearTimeout(typingTimerRef.current);
+            }
+        };
     }, []);
 
     return (
@@ -54,7 +86,8 @@ function ShowSearch({ onSearch, addGenre, selectedGenres }) {
                         type="text"
                         className="form-control border-0 fw-light bg-transparent ps-1"
                         placeholder="Search for a show"
-                        onChange={(e) => onSearch(e.target.value)}
+                        value={inputValue}
+                        onChange={handleInputChange}
                     />
                 </div>
             </div>
@@ -68,9 +101,9 @@ function ShowSearch({ onSearch, addGenre, selectedGenres }) {
                             </div>
                         </Button>
                         <ul ref={dropdownMenuRef} className="dropdown-menu fs-13 dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                            {genres?.map(genre => (
-                                <label className="dropdown-item text-muted z-top">
-                                    <li key={genre.id}>
+                            {genres && genres.map(genre => (
+                                <label key={genre.id} className="dropdown-item text-muted z-top">
+                                    <li>
                                         <input
                                             type="checkbox"
                                             checked={selectedGenres?.includes(genre.id)}
