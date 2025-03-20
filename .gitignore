@@ -27,3 +27,4 @@ yarn-error.log*
 .env
 gather-context.js
 frontend-summary.md
+frontend/build

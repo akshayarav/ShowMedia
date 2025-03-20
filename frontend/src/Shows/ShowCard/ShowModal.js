@@ -11,9 +11,9 @@ function ShowModal({
     const apiUrl = process.env.REACT_APP_API_URL;
 
     //Stores the season ID
-    const [selectedSeason, setSelectedSeason] = useState(seasons[0].id);
+    const [selectedSeason, setSelectedSeason] = useState(seasons && seasons.length > 0 ? seasons[0].id : null);
     //Stores the season number
-    const [selectedSeasonNum, setSelectedSeasonNum] = useState(1)
+    const [selectedSeasonNum, setSelectedSeasonNum] = useState(seasons && seasons.length > 0 ? seasons[0].season_number : 1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
     const [status, setStatus] = useState("");
@@ -28,22 +28,32 @@ function ShowModal({
 
     const [selectedSeasonObject, setSelectedSeasonObject] = useState(null);
 
+    // First useEffect - only runs when season selection changes
     useEffect(() => {
+        if (!seasons || seasons.length === 0) return;
+        
         const seasonObj = seasons.find(
             (season) => season.id === parseInt(selectedSeason)
         );
         setSelectedSeasonObject(seasonObj);
 
         if (seasonObj) {
-            console.log("REACHED", seasonObj)
-            const newEpisodesTotal = seasonObj.episodes.length;
+            const newEpisodesTotal = seasonObj.episodes ? seasonObj.episodes.length : 0;
             setEpisodesTotal(newEpisodesTotal);
+            // Initialize episodes to 0 when season changes
+            setEpisodes(0);
         }
+    }, [selectedSeason, seasons]);
 
-        if (episodes && episodesTotal) {
+    // Second useEffect - only runs when episodes or episodesTotal change
+    useEffect(() => {
+        // Only update episodeProgress if both values are valid
+        if (episodes !== null && episodesTotal !== null) {
             setEpisodeProgress(`${episodes}/${episodesTotal}`);
+        } else {
+            setEpisodeProgress(null);
         }
-    }, [selectedSeason, seasons, episodes]);
+    }, [episodes, episodesTotal]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -68,13 +78,21 @@ function ShowModal({
             return;
         }
 
+        if (!selectedSeasonObject || selectedSeasonObject.season_number === undefined) {
+            setError("Please select a valid season.");
+            setTimeout(() => setError(""), 3000);
+            return;
+        }
+
         try {
             const tmdbResponse = await fetch(
                 `https://api.themoviedb.org/3/tv/${series_id}/season/${selectedSeasonObject.season_number}?api_key=${process.env.REACT_APP_API_KEY}`
             );
             const seasonDetails = await tmdbResponse.json();
 
-            const episodesWatched = parseInt(episodeProgress.match(/\d+/)[0], 10);
+            const episodesWatched = episodeProgress && typeof episodeProgress === 'string' 
+                ? parseInt(episodeProgress.match(/\d+/)?.[0] || "0", 10) 
+                : parseInt(episodes || 0, 10);
             const averageRuntime = seasonDetails.episodes[0].runtime;
             const totalHours = (averageRuntime / 60) * episodesWatched;
 
@@ -150,7 +168,7 @@ function ShowModal({
                                         <div className="dropdown flex-grow-1">
                                             <Button
                                                 variant="primary"
-                                                type="submit"
+                                                type="button"
                                                 className="btn btn-primary"
                                                 style={{ width: "100%", height: "auto" }}
                                                 data-bs-toggle="dropdown"
